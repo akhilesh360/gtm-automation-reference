@@ -92,12 +92,12 @@ src/ingestion/         schema validation, raw load, HubSpot mapping
 src/salesforce/        client protocol, mock (with Flow B emulation), real client, sync + task-outcome readback
 src/ai/                optional drafter (one Claude call, template fallback)
 src/monitoring/        JSON logging, integration log, DQ runner, alerts
-src/main.py            CLI: init-db · load-raw · validate · score · evaluate · draft · research · sync · sync-task-outcomes · dq · run-all · demo
+src/main.py            CLI: init-db · load-raw · validate · score · evaluate · draft · research · sync · sync-task-outcomes · dq · run-all · scenarios
 api/                   FastAPI, three routes
 dashboard/app.py       Streamlit, three tabs
 sfdx/                  deployable metadata: objects, fields, permission set, custom setting, two Flows
 tests/                 54 tests incl. exact reproduction of the three scenarios
-docs/                  technical design, data dictionary, Salesforce mapping and setup, demo script, talk track
+docs/                  technical design, data dictionary, Salesforce mapping and setup, scenario tests, talk track
 ```
 
 ## Documentation
