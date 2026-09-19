@@ -2,6 +2,9 @@
 
 Short answers to the questions this project is likely to prompt.
 
+**Status?**
+v1 is complete. I tested the seeded scenarios, deployed the Salesforce metadata to a Developer Org, verified the Flow behavior, and confirmed the offline and Salesforce-connected modes.
+
 **What is this?**
 A Salesforce-centered reference implementation of CPQ-style pricing governance, discount approvals, signal-based account prioritization, CRM data-quality controls and RevOps reporting. Deterministic Python and SQL make every decision; AI only drafts prose; Salesforce executes CRM actions.
 

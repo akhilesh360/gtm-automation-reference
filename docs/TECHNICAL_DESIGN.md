@@ -30,6 +30,8 @@ The project uses deterministic Python and SQL logic for commercial policy and ac
 
 **Scope statement.** This is a CPQ-style reference implementation using Salesforce custom objects. It demonstrates commercial-policy and quote-governance patterns. It is not a replacement for native Salesforce Revenue Cloud or Salesforce CPQ, and it does not model the Revenue Cloud catalog, price books, amendments, renewals, orders, assets, billing schedules or subscription lifecycle. The correct claim is: *"I built a Salesforce-centered CPQ-style reference implementation that models pricing, discount governance, approvals, and quote-to-cash controls."*
 
+**Status:** v1 is complete. I tested the seeded scenarios, deployed the Salesforce metadata to a Developer Org, verified the Flow behavior, and confirmed the offline and Salesforce-connected modes.
+
 **v1 builds exactly four modules.**
 
 | Module | What it does | Output |
@@ -306,7 +308,7 @@ sequenceDiagram
 |---|---|---|---|
 | Local run (default) | false | false | Mock SF client writes to `data/processed/mock_salesforce.json`; template narratives |
 | Local + AI | false | true | Same, plus Claude drafts for Tier 1 accounts |
-| Integrated | true | false/true | Real org via `simple-salesforce`, authenticated by reusing the Salesforce CLI session (`SF_AUTH=cli`, default) or username/password/token (`SF_AUTH=password`); Flows fire in org. Verified end to end against a Developer Edition org |
+| Integrated | true | false/true | A real Salesforce client that authenticates with Salesforce credentials or an access token; a mock client supports offline development and testing. The real client authenticates with an access token from the Salesforce CLI login (`SF_AUTH=cli`, default) or with username/password/security token (`SF_AUTH=password`); Flows fire in org. Verified end to end against a Developer Edition org |
 
 Clay and HubSpot are CSV files in every v1 mode.
 
@@ -756,7 +758,7 @@ class SalesforceClient(Protocol):
     def query(self, soql) -> list[dict]: ...
 
 class MockSalesforceClient:   # default; persists to data/processed/mock_salesforce.json
-class RealSalesforceClient:   # simple_salesforce wrapper; SF_ENABLED=true; SF_AUTH=cli reuses `sf org auth show-access-token`
+class RealSalesforceClient:   # simple_salesforce wrapper; SF_ENABLED=true; access token (SF_AUTH=cli) or credentials (SF_AUTH=password)
 def get_client() -> SalesforceClient
 ```
 

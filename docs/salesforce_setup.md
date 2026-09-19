@@ -19,7 +19,7 @@ Setup → Custom Settings → GTM Settings → Manage → New (organization defa
 
 ## 3. Point the Python engine at the org
 
-The default auth mode reuses the session the Salesforce CLI already holds, so no password or security token is stored anywhere:
+A real Salesforce client that authenticates with Salesforce credentials or an access token; a mock client supports offline development and testing. The default mode obtains an access token from the Salesforce CLI login, so no password or security token is stored anywhere:
 
 ```bash
 SF_ENABLED=true python -m src.main run-all

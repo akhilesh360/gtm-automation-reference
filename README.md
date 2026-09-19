@@ -6,6 +6,8 @@ Deterministic Python and SQL make every commercial-policy and scoring decision. 
 
 ![Architecture](docs/architecture.png)
 
+**Status:** v1 is complete. I tested the seeded scenarios, deployed the Salesforce metadata to a Developer Org, verified the Flow behavior, and confirmed the offline and Salesforce-connected modes.
+
 This is a CPQ-style reference implementation using Salesforce custom objects. It demonstrates commercial-policy and quote-governance patterns.
 
 ## What it does
@@ -36,7 +38,7 @@ uvicorn api.app:app --reload     # API docs at http://127.0.0.1:8000/docs
 pytest -q                        # 54 tests, no env vars needed
 ```
 
-No `.env` is required. To push into a real Salesforce org, deploy `sfdx/` once (see `docs/salesforce_setup.md`), log the Salesforce CLI in with `sf org login web -a gtm-dev`, and run with `SF_ENABLED=true`; the engine reuses the CLI session, so no password is stored. Set `AI_ENABLED=true` with an API key for AI-assisted drafting.
+No `.env` is required. A real Salesforce client that authenticates with Salesforce credentials or an access token; a mock client supports offline development and testing. To push into a real org, deploy `sfdx/` once (see `docs/salesforce_setup.md`) and run with `SF_ENABLED=true`; by default the real client obtains an access token from the Salesforce CLI login, or set `SF_AUTH=password` to use username, password and security token. Set `AI_ENABLED=true` with an API key for AI-assisted drafting.
 
 ## The three test scenarios
 
