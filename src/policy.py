@@ -46,6 +46,17 @@ class ScoringPolicy(BaseModel):
     window_days: int = Field(ge=1)
 
 
+class ForecastPolicy(BaseModel):
+    stage_probabilities: dict[str, float]
+
+    @model_validator(mode="after")
+    def _probabilities(self) -> ForecastPolicy:
+        for stage, prob in self.stage_probabilities.items():
+            if not 0 <= prob <= 1:
+                raise ValueError(f"forecast.stage_probabilities.{stage} must be between 0 and 1")
+        return self
+
+
 class Policy(BaseModel):
     version: str
     discount: DiscountPolicy
@@ -54,6 +65,7 @@ class Policy(BaseModel):
     approver_order: list[str]
     sla: SlaPolicy
     scoring: ScoringPolicy
+    forecast: ForecastPolicy
 
     @model_validator(mode="after")
     def _invariants(self) -> Policy:

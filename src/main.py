@@ -15,6 +15,7 @@ from src.cpq.models import Product, QuoteRequest
 from src.db import run_sql_file, session
 from src.erp.handoff import handoff_approved_quotes
 from src.erp.netsuite_mock import get_erp_client
+from src.forecasting.pipeline_forecast import backfill_history, build_views, snapshot
 from src.ingestion.load_raw import load_all
 from src.ingestion.validate_schema import validate_raw_dir
 from src.monitoring.alerts import summarize
@@ -44,6 +45,7 @@ def stage_init_db(con, cid):
     with workflow_run(con, "init_db", cid):
         run_sql_file(con, "05_reporting_views.sql", {"pending_sla_days": get_policy().sla.pending_approval_days})
         run_sql_file(con, "07_funnel.sql")
+        build_views(con, get_policy())
     print("DuckDB initialized:", settings.duckdb_file)
 
 
@@ -148,6 +150,15 @@ def stage_decide(con, cid, quote_id: str, decision: str, approver: str, reason: 
     print(f"{quote_id} marked {decision} by {approver} in Salesforce ({sf.name}, {sf_id}). Run sync-approval-outcomes to pull it back.")
 
 
+def stage_forecast(con, cid):
+    policy = get_policy()
+    with workflow_run(con, "forecast", cid):
+        hist = backfill_history(con, policy, cid)
+        rows = snapshot(con, policy, cid)
+    fs = con.execute("SELECT open_pipeline, weighted_forecast, weighted_pct FROM v_forecast_summary").fetchone()
+    print(f"Forecast: {rows} snapshot rows today, {hist} backfilled; open pipeline ${float(fs[0]):,.0f}, weighted ${float(fs[1]):,.0f} ({fs[2]}%)")
+
+
 def stage_dq(con, cid) -> bool:
     policy = get_policy()
     with workflow_run(con, "dq_checks", cid):
@@ -185,6 +196,7 @@ def run_all(reset_mock: bool = True) -> int:
         stage_sync_task_outcomes(con, cid)
         stage_sync_approval_outcomes(con, cid)
         stage_erp_handoff(con, cid)
+        stage_forecast(con, cid)
         ok = stage_dq(con, cid)
         stage_report(con)
     return 0 if ok else 1
@@ -242,7 +254,7 @@ def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="gtm", description="GTM Revenue Operations Engine")
     sub = p.add_subparsers(dest="cmd", required=True)
     for name in ("init-db", "load-raw", "validate", "score", "evaluate", "sync", "sync-task-outcomes", "sync-approval-outcomes",
-                 "erp-handoff", "dq", "run-all", "scenarios"):
+                 "erp-handoff", "forecast", "dq", "run-all", "scenarios"):
         sub.add_parser(name)
     d = sub.add_parser("draft")
     d.add_argument("--limit", type=int, default=None)
@@ -307,6 +319,8 @@ def main(argv=None) -> int:
             stage_sync_approval_outcomes(con, cid)
         elif args.cmd == "erp-handoff":
             stage_erp_handoff(con, cid)
+        elif args.cmd == "forecast":
+            stage_forecast(con, cid)
         elif args.cmd == "decide":
             stage_decide(con, cid, args.quote_id, args.decision, args.approver, args.reason)
         elif args.cmd == "dq":

@@ -178,6 +178,33 @@ with tab_pipe:
     st.subheader("Open pipeline by stage")
     st.dataframe(q("SELECT stage, opportunities, amount FROM v_open_pipeline_by_stage"), use_container_width=True, hide_index=True)
 
+    st.subheader("Weighted forecast (v2)")
+    fs = q("SELECT * FROM v_forecast_summary").iloc[0]
+    f1, f2, f3, f4 = st.columns(4)
+    f1.metric("Open pipeline", f"${float(fs.open_pipeline):,.0f}")
+    f2.metric("Weighted forecast", f"${float(fs.weighted_forecast):,.0f}", delta=f"{float(fs.weighted_pct or 0):.0f}% of pipeline", delta_color="off")
+    f3.metric("Closed won, last 3 months", f"${float(fs.closed_won_last_3_months):,.0f}")
+    probs = ", ".join(f"{k} {int(v*100)}%" for k, v in policy.forecast.stage_probabilities.items())
+    f4.caption(f"Stage probabilities from policy.yaml: {probs}")
+    left, right = st.columns(2)
+    with left:
+        st.caption("Weighted forecast by close month and tier")
+        wf = q("SELECT close_month, account_tier, weighted_forecast FROM v_weighted_pipeline")
+        if len(wf):
+            st.plotly_chart(px.bar(wf, x="close_month", y="weighted_forecast", color="account_tier", barmode="stack",
+                                   color_discrete_sequence=PALETTE), use_container_width=True)
+    with right:
+        st.caption("Forecast vs actual on closed months (forecast as of the start of that month)")
+        fva = q("SELECT close_month, account_tier, weighted_forecast, closed_won_actual, attainment_pct FROM v_forecast_vs_actual")
+        if len(fva):
+            tot = fva.groupby("close_month", as_index=False)[["weighted_forecast", "closed_won_actual"]].sum()
+            melted = tot.melt(id_vars="close_month", var_name="series", value_name="amount")
+            st.plotly_chart(px.bar(melted, x="close_month", y="amount", color="series", barmode="group",
+                                   color_discrete_sequence=[PALETTE[0], PALETTE[1]]), use_container_width=True)
+    st.caption("Attainment by tier (actual ÷ forecast)")
+    st.dataframe(q("SELECT close_month, account_tier, weighted_forecast, closed_won_actual, attainment_pct FROM v_forecast_vs_actual ORDER BY close_month DESC, account_tier"),
+                 use_container_width=True, hide_index=True)
+
 # ------------------------------------------------------------------ DQ
 with tab_dq:
     dq = q("SELECT * FROM v_dq_latest")

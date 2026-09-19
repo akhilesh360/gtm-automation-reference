@@ -28,3 +28,10 @@ scoring:
     tier_1: 80
     tier_2: 60
   window_days: 90
+
+forecast:
+  stage_probabilities:        # applied to open opportunities for the weighted forecast
+    Prospecting: 0.10
+    Discovery: 0.25
+    Proposal: 0.50
+    Negotiation: 0.75

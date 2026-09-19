@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/akhilesh360/gtm-automation-reference/actions/workflows/ci.yml/badge.svg)](https://github.com/akhilesh360/gtm-automation-reference/actions/workflows/ci.yml)
 ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
-![Tests](https://img.shields.io/badge/tests-72%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-78%20passing-brightgreen)
 ![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)
 
 A Salesforce-centered reference implementation for CPQ-style pricing governance, discount approvals, signal-based account prioritization, CRM data-quality controls, quote-to-cash handoff, and revenue operations reporting.
@@ -35,7 +35,7 @@ This is a CPQ-style reference implementation using Salesforce custom objects. It
 | **CPQ-style pricing and approvals** | quote request → validation → pricing (subscription and usage overage) → approval route from `config/policy.yaml` → audit trail → Salesforce sync | `quotes`, `approval_audit`, `Quote__c`, `Approval_Audit__c` |
 | **Signal-based account scoring** | accounts, Clay-shaped enrichment, HubSpot-shaped engagement, usage telemetry → deterministic sub-scores → weighted priority → Tier 1/2/3 → `Account_Score__c` → Flow B creates the Salesforce Task | `account_scores`, `sales_tasks`, Salesforce Task |
 | **Quote-to-cash** (v2) | human approve/reject in Salesforce → read back with audit row → sales-order payload with billing schedule → NetSuite-style mock ERP → reconciliation written back | `erp_orders`, `Quote__c.ERP_Status__c` |
-| **Pipeline analytics** (v2) | opportunities with stage history → funnel, bottleneck, days in stage, conversion by tier → Salesforce `Opportunity` sync | Pipeline dashboard tab |
+| **Pipeline analytics and forecasting** (v2) | opportunities with stage history → funnel, bottleneck, days in stage, conversion by tier, weighted forecast and forecast vs actual → Salesforce `Opportunity` sync | Pipeline dashboard tab, `forecast_snapshots` |
 | **Data quality and monitoring** | schema validation, dedupe, quote validator, 13 parameterized SQL checks, JSON logs with correlation IDs, retries, integration log | `dq_results`, `integration_log`, CI exit code |
 | **Surfaces** | Streamlit (CPQ Operations · Account Prioritization · Pipeline · Data Quality) and FastAPI (`/health`, `/score-account`, `/evaluate-quote`) | local UI, service endpoints |
 
@@ -48,7 +48,7 @@ make setup        # python3.11 venv + dependencies
 make scenarios    # run the pipeline and print the reference scenarios
 make dashboard    # http://localhost:8501
 make api          # http://127.0.0.1:8000/docs
-make test         # 72 tests, no credentials needed
+make test         # 78 tests, no credentials needed
 ```
 
 Without `make`:
@@ -108,7 +108,9 @@ Each score carries a deterministic `scoring_reason`, for example: *Tier 1 becaus
 
 **Quote-to-cash.** A person approves or rejects a pending quote in Salesforce (or via `python -m src.main decide` as a stand-in). Flow A stamps the approver and time. `sync-approval-outcomes` reads the decision back with a `HUMAN_DECISION` audit row. `erp-handoff` builds a sales-order payload with a monthly billing schedule that sums to the net value, sends it to the mock ERP (in-process, or the HTTP service in `erp/mock_server.py`), reconciles the accepted total, and writes the order id and status back to DuckDB and `Quote__c`.
 
-**Pipeline analytics.** Seeded opportunities with stage history feed a funnel, a bottleneck flag on the step with the lowest conversion, median days in stage, and conversion by the account tier at deal creation. Opportunities sync to the standard Salesforce `Opportunity` object with mapped stages. Design notes: [docs/V2_DESIGN.md](docs/V2_DESIGN.md).
+**Pipeline analytics.** Seeded opportunities with stage history feed a funnel, a bottleneck flag on the step with the lowest conversion, median days in stage, and conversion by the account tier at deal creation. Opportunities sync to the standard Salesforce `Opportunity` object with mapped stages.
+
+**Forecasting.** Stage probabilities live in `config/policy.yaml`. Open opportunities are weighted by close month and tier, a dated snapshot is stored on each run, six months of history are reconstructed from stage transitions, and closed months are compared to the forecast that stood at the start of the month. Design notes: [docs/V2_DESIGN.md](docs/V2_DESIGN.md).
 
 ## Screenshots
 
@@ -131,16 +133,17 @@ src/cpq/               validator, pricing engine, approval rules, audit persiste
 src/scoring/           sub-scores, tiering, explanation, scoring runner
 src/ingestion/         schema validation, raw load, HubSpot mapping
 src/salesforce/        client protocol, mock (Flow A/B emulation), real client, sync, task/approval readback, ERP write-back
+src/forecasting/       weighted forecast, dated snapshots, historical backfill
 src/erp/               sales-order payload, NetSuite-style mock client (in-process or HTTP), handoff and reconciliation
 src/ai/                optional drafter (one Claude call, template fallback)
 src/monitoring/        JSON logging, integration log, DQ runner, alerts
 src/main.py            CLI: init-db · load-raw · validate · score · evaluate · draft · research · sync · sync-task-outcomes
-                       · sync-approval-outcomes · erp-handoff · decide · dq · run-all · scenarios · policy
+                       · sync-approval-outcomes · erp-handoff · forecast · decide · dq · run-all · scenarios · policy
 api/                   FastAPI, three routes
 erp/mock_server.py     standalone HTTP mock of the ERP sales-order API
 dashboard/app.py       Streamlit: CPQ Operations · Account Prioritization · Pipeline · Data Quality
 sfdx/                  deployable metadata: objects, fields, permission set, custom setting, two Flows
-tests/                 72 tests incl. exact reproduction of the scenarios and the quote-to-cash path
+tests/                 78 tests incl. exact reproduction of the scenarios and the quote-to-cash path
 docs/                  technical design, v2 design, data dictionary, Salesforce mapping and setup, scenario tests, talk track
 .github/workflows/     CI: lint, seeded data, tests, scenario run
 ```
@@ -159,7 +162,7 @@ docs/                  technical design, v2 design, data dictionary, Salesforce 
 
 1. ~~NetSuite-style ERP handoff with human approval capture~~ shipped (v2.1)
 2. ~~Opportunities, funnel and bottleneck view~~ shipped (v2.2)
-3. Weighted pipeline forecast and forecast-vs-actual
+3. ~~Weighted pipeline forecast and forecast-vs-actual~~ shipped (v2.3)
 4. Outbound sequence management for Tier 2 accounts
 5. Live Clay webhook and HubSpot API connectors
 6. Bounded AI research loop with read-only tools

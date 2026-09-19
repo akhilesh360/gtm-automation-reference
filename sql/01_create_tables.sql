@@ -213,3 +213,17 @@ CREATE TABLE IF NOT EXISTS opportunity_stage_history (
     changed_at          TIMESTAMP,
     days_in_from_stage  INTEGER
 );
+
+-- v2: forecast snapshots (one row per snapshot date x close month x tier)
+CREATE TABLE IF NOT EXISTS forecast_snapshots (
+    snapshot_id        VARCHAR PRIMARY KEY,
+    snapshot_date      DATE,
+    close_month        DATE,
+    account_tier       VARCHAR,
+    open_opportunities INTEGER,
+    open_pipeline      DECIMAL(14,2),
+    weighted_forecast  DECIMAL(14,2),
+    closed_won_actual  DECIMAL(14,2),
+    policy_version     VARCHAR,
+    correlation_id     VARCHAR
+);

@@ -43,6 +43,8 @@ Views: `v_quote_to_cash`, `v_erp_orders`, `v_human_decisions`. DQ checks: `appro
 | `opportunities` | one row per deal | `stage`, `amount`, `close_date`, `is_closed`, `is_won`, `source_tier` (account tier at creation), `sf_opportunity_id` |
 | `opportunity_stage_history` | one row per stage transition | `from_stage`, `to_stage`, `changed_at`, `days_in_from_stage` |
 
+`forecast_snapshots`: one row per snapshot date × close month × tier with `open_opportunities`, `open_pipeline`, `weighted_forecast`, `closed_won_actual`, `policy_version`. Views (`08_forecast.sql`): `v_stage_probability`, `v_weighted_pipeline`, `v_closed_won_by_month`, `v_forecast_vs_actual`, `v_forecast_summary`.
+
 Views (`07_funnel.sql`): `v_funnel`, `v_bottleneck`, `v_stage_cycle`, `v_conversion_by_tier`, `v_open_pipeline_by_stage`. DQ checks: `opportunities_without_stage_history`, `closed_won_missing_amount`.
 
 ## Operational tables

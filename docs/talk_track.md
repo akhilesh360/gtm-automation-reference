@@ -38,5 +38,8 @@ A person approves in Salesforce; Flow A stamps approver and time. The engine rea
 **Where do deals stall?**
 Every stage transition is recorded with days in stage. The funnel view computes step conversion and flags the lowest step as the bottleneck; in the seeded data that is Proposal to Negotiation. Conversion is broken out by the tier the account had when the deal was created, so the scoring model's value shows up as a win-rate gap between tiers.
 
+**How do you forecast?**
+Stage probabilities sit in the same policy file as the discount thresholds, so finance can see and version them. Open deals are weighted by close month and tier, every run stores a dated snapshot, and closed months are compared with the forecast that stood on the first of that month. On the seeded data Tier 1 over-attains and Tier 3 under-attains, which is exactly the argument for tier-specific probabilities as the next step.
+
 **What's next?**
-Weighted forecasting, sequence management, live Clay and HubSpot connectors, and a bounded Claude research loop.
+Sequence management, live Clay and HubSpot connectors, and a bounded Claude research loop.

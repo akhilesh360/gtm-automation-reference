@@ -132,3 +132,28 @@ New **Pipeline** tab: funnel chart, step-conversion bars with the bottleneck hig
 ### Out of scope
 
 Quote-to-opportunity linkage, stage probabilities for forecasting (item 3), and Salesforce-native reports.
+
+
+## Item 3: Weighted pipeline forecast and forecast vs actual
+
+**Goal.** Turn the opportunity data into a forecast leadership can compare against outcomes, with the assumptions in the same policy file as everything else.
+
+### Method
+
+- `config/policy.yaml` gains `forecast.stage_probabilities` (Prospecting 10%, Discovery 25%, Proposal 50%, Negotiation 75%). Python validates them and passes them to SQL as parameters; no probability is hardcoded in a view.
+- `v_weighted_pipeline`: for open opportunities, `SUM(amount × probability)` by close month and the account tier at creation.
+- `forecast_snapshots`: one row per snapshot date, close month and tier. `snapshot()` stores today's forecast and is idempotent per day. `backfill_history()` reconstructs what the forecast would have said on the first of each of the last six months by replaying `opportunity_stage_history`, which is what makes forecast-vs-actual possible on seeded data.
+- `v_forecast_vs_actual`: for every closed month, the latest snapshot taken before the month ended against what actually closed won, with attainment %.
+- `v_forecast_summary`: open pipeline, weighted forecast, weighted %, closed won in the last three months.
+
+### What the seeded data shows
+
+Tier 1 deals over-attain their weighted forecast and Tier 2 and 3 under-attain, which is the expected signature of static stage probabilities applied across tiers of different quality. Tier-specific probabilities derived from historical win rates are the natural next step.
+
+### Surfaces
+
+`python -m src.main forecast` runs backfill and snapshot; it is also a `run-all` stage after the ERP handoff. The Pipeline dashboard tab gains a Weighted forecast section: summary metrics, stacked forecast by close month and tier, forecast-vs-actual bars on closed months, and an attainment table.
+
+### Out of scope
+
+Tier-specific or learned probabilities, quota and coverage ratios, and forecast categories (commit, best case).

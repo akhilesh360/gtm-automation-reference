@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.3 — Weighted forecast and forecast vs actual
+- Stage probabilities in `config/policy.yaml`, passed to SQL as parameters
+- Weighted pipeline by close month and tier; dated `forecast_snapshots` with six months of history reconstructed from stage transitions
+- Forecast-vs-actual and attainment views; forecast section on the Pipeline dashboard tab
+
 ## v2.2 — Pipeline funnel and bottleneck view
 - Seeded opportunities with stage history correlated to account tier
 - Funnel, bottleneck, days-in-stage, conversion-by-tier and open-pipeline SQL views
