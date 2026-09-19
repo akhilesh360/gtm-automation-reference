@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>GTM Automation</label>
+    <customSettingAccesses><enabled>true</enabled><name>GTM_Settings__c</name></customSettingAccesses>
     <description>CRUD and field access for the GTM Revenue Operations Engine integration user and Flow users.</description>
-    <hasActivationRequired>false</hasActivationRequired>
-    <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>Quote__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
     <fieldPermissions><editable>true</editable><field>Quote__c.Quote_Number__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Quote__c.Account__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Quote__c.Product_Id__c</field><readable>true</readable></fieldPermissions>
@@ -23,12 +21,10 @@
     <fieldPermissions><editable>true</editable><field>Quote__c.Policy_Version__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Quote__c.Approval_Requested_At__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Quote__c.Approved_At__c</field><readable>true</readable></fieldPermissions>
-    <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>Quote_Line__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
     <fieldPermissions><editable>true</editable><field>Quote_Line__c.Product_Id__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Quote_Line__c.Quantity__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Quote_Line__c.Unit_Price__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Quote_Line__c.Line_Total__c</field><readable>true</readable></fieldPermissions>
-    <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>Account_Score__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
     <fieldPermissions><editable>true</editable><field>Account_Score__c.Score_Id__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Account_Score__c.Account__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Account_Score__c.Intent_Score__c</field><readable>true</readable></fieldPermissions>
@@ -41,7 +37,6 @@
     <fieldPermissions><editable>true</editable><field>Account_Score__c.Narrative__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Account_Score__c.Task_Description__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Account_Score__c.Scored_At__c</field><readable>true</readable></fieldPermissions>
-    <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>Approval_Audit__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
     <fieldPermissions><editable>true</editable><field>Approval_Audit__c.Audit_Id__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Approval_Audit__c.Rule_Triggered__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Approval_Audit__c.Requested_Discount__c</field><readable>true</readable></fieldPermissions>
@@ -52,7 +47,6 @@
     <fieldPermissions><editable>true</editable><field>Approval_Audit__c.Approver__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Approval_Audit__c.Policy_Version__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Approval_Audit__c.Correlation_Id__c</field><readable>true</readable></fieldPermissions>
-    <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>Integration_Log__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
     <fieldPermissions><editable>true</editable><field>Integration_Log__c.Log_Id__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Integration_Log__c.Workflow_Name__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Integration_Log__c.Record_Type__c</field><readable>true</readable></fieldPermissions>
@@ -67,5 +61,11 @@
     <fieldPermissions><editable>true</editable><field>Account.Account_Tier__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Account.Priority_Score__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Account.Last_Signal_Date__c</field><readable>true</readable></fieldPermissions>
-    <customSettingAccesses><enabled>true</enabled><name>GTM_Settings__c</name></customSettingAccesses>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>GTM Automation</label>
+    <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>Quote__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
+    <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>Quote_Line__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
+    <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>Account_Score__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
+    <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>Approval_Audit__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
+    <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>Integration_Log__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>
 </PermissionSet>

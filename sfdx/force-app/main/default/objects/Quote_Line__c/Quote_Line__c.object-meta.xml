@@ -4,7 +4,7 @@
     <pluralLabel>Quote Lines</pluralLabel>
     <nameField><label>Name</label><type>Text</type></nameField>
     <deploymentStatus>Deployed</deploymentStatus>
-    <sharingModel>ReadWrite</sharingModel>
+    <sharingModel>ControlledByParent</sharingModel>
     <enableActivities>false</enableActivities>
     <enableHistory>true</enableHistory>
     <enableReports>true</enableReports>

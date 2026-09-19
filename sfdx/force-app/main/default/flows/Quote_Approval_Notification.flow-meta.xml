@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>61.0</apiVersion>
-    <label>Quote Approval Notification</label>
-    <description>Orchestration only. Reads Approval_Status__c and Approval_Route__c written by the Python policy engine. Contains no discount, ACV or payment-term logic. v1 emails the Quote Owner plus the RevOps test mailbox from GTM_Settings__c; role-to-user routing is v2.</description>
-    <processType>AutoLaunchedFlow</processType>
-    <status>Active</status>
-    <interviewLabel>Quote Approval Notification {!$Flow.CurrentDateTime}</interviewLabel>
-    <start>
-        <locationX>50</locationX><locationY>0</locationY>
-        <object>Quote__c</object>
-        <recordTriggerType>CreateAndUpdate</recordTriggerType>
-        <triggerType>RecordAfterSave</triggerType>
-        <filterLogic>and</filterLogic>
-        <filters><field>Approval_Status__c</field><operator>IsChanged</operator><value><booleanValue>true</booleanValue></value></filters>
-        <connector><targetReference>Check_Required_Fields</targetReference></connector>
-    </start>
+    <actionCalls>
+        <name>Email_Approval_Request</name><label>Email Quote Owner + RevOps mailbox</label>
+        <locationX>50</locationX><locationY>450</locationY>
+        <actionName>emailSimple</actionName><actionType>emailSimple</actionType>
+        <inputParameters><name>emailAddresses</name><value><elementReference>Recipient_List</elementReference></value></inputParameters>
+        <inputParameters><name>emailSubject</name><value><elementReference>Subject_Pending</elementReference></value></inputParameters>
+        <inputParameters><name>emailBody</name><value><elementReference>Body_Pending</elementReference></value></inputParameters>
+        <connector><targetReference>Stamp_Requested_At</targetReference></connector>
+    </actionCalls>
+    <actionCalls>
+        <name>Notify_Owner_Incomplete</name><label>Notify Quote Owner: fields incomplete</label>
+        <locationX>300</locationX><locationY>300</locationY>
+        <actionName>emailSimple</actionName><actionType>emailSimple</actionType>
+        <inputParameters><name>emailAddresses</name><value><elementReference>Owner_Email</elementReference></value></inputParameters>
+        <inputParameters><name>emailSubject</name><value><stringValue>Quote is missing required fields</stringValue></value></inputParameters>
+        <inputParameters><name>emailBody</name><value><elementReference>Body_Incomplete</elementReference></value></inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>Notify_Owner_Failed</name><label>Notify Quote Owner: failed validation</label>
+        <locationX>300</locationX><locationY>450</locationY>
+        <actionName>emailSimple</actionName><actionType>emailSimple</actionType>
+        <inputParameters><name>emailAddresses</name><value><elementReference>Owner_Email</elementReference></value></inputParameters>
+        <inputParameters><name>emailSubject</name><value><stringValue>Quote failed validation</stringValue></value></inputParameters>
+        <inputParameters><name>emailBody</name><value><elementReference>Body_Failed</elementReference></value></inputParameters>
+    </actionCalls>
     <decisions>
         <name>Check_Required_Fields</name><label>Required fields present?</label>
         <locationX>50</locationX><locationY>150</locationY>
@@ -54,31 +65,13 @@
             <label>Failed Validation</label>
         </rules>
     </decisions>
-    <actionCalls>
-        <name>Email_Approval_Request</name><label>Email Quote Owner + RevOps mailbox</label>
-        <locationX>50</locationX><locationY>450</locationY>
-        <actionName>emailSimple</actionName><actionType>emailSimple</actionType>
-        <inputParameters><name>emailAddresses</name><value><elementReference>Recipient_List</elementReference></value></inputParameters>
-        <inputParameters><name>emailSubject</name><value><elementReference>Subject_Pending</elementReference></value></inputParameters>
-        <inputParameters><name>emailBody</name><value><elementReference>Body_Pending</elementReference></value></inputParameters>
-        <connector><targetReference>Stamp_Requested_At</targetReference></connector>
-    </actionCalls>
-    <actionCalls>
-        <name>Notify_Owner_Incomplete</name><label>Notify Quote Owner: fields incomplete</label>
-        <locationX>300</locationX><locationY>300</locationY>
-        <actionName>emailSimple</actionName><actionType>emailSimple</actionType>
-        <inputParameters><name>emailAddresses</name><value><elementReference>Owner_Email</elementReference></value></inputParameters>
-        <inputParameters><name>emailSubject</name><value><stringValue>Quote is missing required fields</stringValue></value></inputParameters>
-        <inputParameters><name>emailBody</name><value><elementReference>Body_Incomplete</elementReference></value></inputParameters>
-    </actionCalls>
-    <actionCalls>
-        <name>Notify_Owner_Failed</name><label>Notify Quote Owner: failed validation</label>
-        <locationX>300</locationX><locationY>450</locationY>
-        <actionName>emailSimple</actionName><actionType>emailSimple</actionType>
-        <inputParameters><name>emailAddresses</name><value><elementReference>Owner_Email</elementReference></value></inputParameters>
-        <inputParameters><name>emailSubject</name><value><stringValue>Quote failed validation</stringValue></value></inputParameters>
-        <inputParameters><name>emailBody</name><value><elementReference>Body_Failed</elementReference></value></inputParameters>
-    </actionCalls>
+    <description>Orchestration only. Reads Approval_Status__c and Approval_Route__c written by the Python policy engine. Contains no discount, ACV or payment-term logic. v1 emails the Quote Owner plus the RevOps test mailbox from GTM_Settings__c; role-to-user routing is v2.</description>
+    <formulas><name>Owner_Email</name><dataType>String</dataType><expression>{!$Record.Owner:User.Email}</expression></formulas>
+    <formulas><name>Recipient_List</name><dataType>String</dataType><expression>{!$Record.Owner:User.Email} &amp; "," &amp; {!$Setup.GTM_Settings__c.RevOps_Notification_Email__c}</expression></formulas>
+    <formulas><name>Subject_Pending</name><dataType>String</dataType><expression>"Approval requested: " &amp; {!$Record.Quote_Number__c} &amp; " (" &amp; {!$Record.Approval_Route__c} &amp; ")"</expression></formulas>
+    <interviewLabel>Quote Approval Notification {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Quote Approval Notification</label>
+    <processType>AutoLaunchedFlow</processType>
     <recordUpdates>
         <name>Stamp_Requested_At</name><label>Stamp Approval_Requested_At__c</label>
         <locationX>50</locationX><locationY>600</locationY>
@@ -91,9 +84,16 @@
         <inputAssignments><field>Approved_At__c</field><value><elementReference>$Flow.CurrentDateTime</elementReference></value></inputAssignments>
         <inputReference>$Record</inputReference>
     </recordUpdates>
-    <formulas><name>Owner_Email</name><dataType>String</dataType><expression>{!$Record.Owner:User.Email}</expression></formulas>
-    <formulas><name>Recipient_List</name><dataType>String</dataType><expression>{!$Record.Owner:User.Email} &amp; "," &amp; {!$Setup.GTM_Settings__c.RevOps_Notification_Email__c}</expression></formulas>
-    <formulas><name>Subject_Pending</name><dataType>String</dataType><expression>"Approval requested: " &amp; {!$Record.Quote_Number__c} &amp; " (" &amp; {!$Record.Approval_Route__c} &amp; ")"</expression></formulas>
+    <start>
+        <locationX>50</locationX><locationY>0</locationY>
+        <object>Quote__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+        <filterLogic>and</filterLogic>
+        <filters><field>Approval_Status__c</field><operator>IsChanged</operator><value><booleanValue>true</booleanValue></value></filters>
+        <connector><targetReference>Check_Required_Fields</targetReference></connector>
+    </start>
+    <status>Active</status>
     <textTemplates><name>Body_Pending</name><isViewedAsPlainText>true</isViewedAsPlainText><text>Quote {!$Record.Quote_Number__c} requires approval.
 Route (from policy engine): {!$Record.Approval_Route__c}
 Reasons: {!$Record.Exception_Reason__c}
