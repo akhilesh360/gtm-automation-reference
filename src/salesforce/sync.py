@@ -195,3 +195,25 @@ def write_erp_status(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, corre
                     lambda: sf.update("Quote__c", sf_id, {"ERP_Order_Id__c": order_id, "ERP_Status__c": status, "ERP_Sent_At__c": sent_at}))
         n += 1
     return n
+
+
+# ----------------------------------------------------------------------------- v2: opportunities
+# Our pipeline stages -> the Developer Edition default Opportunity stages
+STAGE_MAP = {"Prospecting": "Prospecting", "Discovery": "Qualification", "Proposal": "Proposal/Price Quote",
+             "Negotiation": "Negotiation/Review", "Closed Won": "Closed Won", "Closed Lost": "Closed Lost"}
+
+
+def upsert_opportunities(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlation_id: str) -> int:
+    rows = con.execute(
+        """SELECT o.opportunity_id, a.sf_account_id, o.name, o.amount, o.stage, o.close_date, o.source_tier
+           FROM opportunities o JOIN accounts a ON a.account_id = o.account_id"""
+    ).fetchall()
+    n = 0
+    for oid, sf_acct, name, amount, stage, close_date, tier in rows:
+        data = {"AccountId": sf_acct, "Name": name[:120], "Amount": amount, "StageName": STAGE_MAP.get(stage, stage),
+                "CloseDate": close_date, "Source_Tier__c": tier}
+        sf_id = _with_retry(con, "upsert_opportunities", "Opportunity", oid, correlation_id,
+                            lambda: sf.upsert("Opportunity", "External_Opportunity_Id__c", oid, data))
+        con.execute("UPDATE opportunities SET sf_opportunity_id = ? WHERE opportunity_id = ?", [sf_id, oid])
+        n += 1
+    return n

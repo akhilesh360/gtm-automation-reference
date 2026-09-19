@@ -48,3 +48,11 @@ WHERE q.approval_status IN ('Auto-Approved', 'Approved')
 
 -- name: erp_orders_not_reconciled
 SELECT order_id AS id FROM erp_orders WHERE status <> 'RECONCILED';
+
+-- name: opportunities_without_stage_history
+SELECT o.opportunity_id AS id FROM opportunities o
+LEFT JOIN opportunity_stage_history h ON h.opportunity_id = o.opportunity_id
+WHERE o.stage <> 'Prospecting' AND h.history_id IS NULL;
+
+-- name: closed_won_missing_amount
+SELECT opportunity_id AS id FROM opportunities WHERE is_won AND (amount IS NULL OR amount <= 0);

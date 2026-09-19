@@ -189,3 +189,27 @@ CREATE TABLE IF NOT EXISTS dq_results (
     sample_ids  VARCHAR,
     ran_at      TIMESTAMP
 );
+
+-- v2: opportunities and stage history
+CREATE TABLE IF NOT EXISTS opportunities (
+    opportunity_id     VARCHAR PRIMARY KEY,
+    account_id         VARCHAR NOT NULL,
+    name               VARCHAR,
+    amount             DECIMAL(14,2),
+    stage              VARCHAR,
+    created_at         DATE,
+    close_date         DATE,
+    is_closed          BOOLEAN,
+    is_won             BOOLEAN,
+    source_tier        VARCHAR,
+    sf_opportunity_id  VARCHAR
+);
+
+CREATE TABLE IF NOT EXISTS opportunity_stage_history (
+    history_id          VARCHAR PRIMARY KEY,
+    opportunity_id      VARCHAR NOT NULL,
+    from_stage          VARCHAR,
+    to_stage            VARCHAR,
+    changed_at          TIMESTAMP,
+    days_in_from_stage  INTEGER
+);

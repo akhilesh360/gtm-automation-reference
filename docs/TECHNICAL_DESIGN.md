@@ -940,7 +940,7 @@ What **not** to claim: that this is Salesforce CPQ or Revenue Cloud. Interview q
 Ordered by value for the target role.
 
 1. **NetSuite mock handoff** — shipped. Human approve/reject captured in Salesforce and read back; sales-order payload with billing schedule sent to a NetSuite-style mock (in-process or HTTP); reconciliation written back to DuckDB and `Quote__c`. See `docs/V2_DESIGN.md`.
-2. Opportunities with stage history; funnel and bottleneck view; conversion by tier.
+2. Opportunities with stage history; funnel and bottleneck view; conversion by tier — shipped, see `docs/V2_DESIGN.md`.
 3. Weighted pipeline forecast and forecast-vs-actual.
 4. Sequence management for Tier 2 outbound.
 5. Live Clay webhook receiver; live HubSpot CRM API pull.

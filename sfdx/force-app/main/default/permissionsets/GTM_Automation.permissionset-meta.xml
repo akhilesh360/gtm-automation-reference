@@ -66,6 +66,8 @@
     <fieldPermissions><editable>true</editable><field>Quote__c.ERP_Order_Id__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Quote__c.ERP_Status__c</field><readable>true</readable></fieldPermissions>
     <fieldPermissions><editable>true</editable><field>Quote__c.ERP_Sent_At__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Opportunity.External_Opportunity_Id__c</field><readable>true</readable></fieldPermissions>
+    <fieldPermissions><editable>true</editable><field>Opportunity.Source_Tier__c</field><readable>true</readable></fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>GTM Automation</label>
     <objectPermissions><allowCreate>true</allowCreate><allowDelete>true</allowDelete><allowEdit>true</allowEdit><allowRead>true</allowRead><modifyAllRecords>false</modifyAllRecords><object>Quote__c</object><viewAllRecords>true</viewAllRecords></objectPermissions>

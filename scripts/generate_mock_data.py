@@ -226,7 +226,67 @@ def generate(seed: int | None = None, n_accounts: int = 200, n_signals: int = 20
            ["quote_id", "account_id", "account_name", "product_id", "monthly_commitment", "quantity", "contract_term_months",
             "discount_percent", "payment_terms", "custom_pricing", "forecasted_units", "custom_overage_rate", "requested_at"], quotes)
 
-    return {"accounts": len(accounts), "enrichment": len(enrich), "intent_signals": len(signals),
+    # ---------------- opportunities with stage history (v2) ----------------
+    # Win rate and cycle time are correlated with the account's tier at creation. A deliberate bottleneck sits at
+    # Proposal -> Negotiation so the funnel view has something to find.
+    OPP_STAGES = ["Prospecting", "Discovery", "Proposal", "Negotiation"]
+    PASS = {  # probability of advancing out of each stage, by source tier
+        "Tier 1": {"Prospecting": 0.95, "Discovery": 0.90, "Proposal": 0.70, "Negotiation": 0.85},
+        "Tier 2": {"Prospecting": 0.88, "Discovery": 0.78, "Proposal": 0.50, "Negotiation": 0.75},
+        "Tier 3": {"Prospecting": 0.75, "Discovery": 0.60, "Proposal": 0.30, "Negotiation": 0.55},
+    }
+    DAYS = {"Prospecting": (3, 12), "Discovery": (5, 18), "Proposal": (10, 35), "Negotiation": (5, 20)}
+    opps: list[list] = []
+    hist: list[list] = []
+    oid = 1
+    hid2 = 1
+    tier_pool = {"Tier 1": [a[0] for a in accounts[:3]] + rng.sample(pool, 12), "Tier 2": rng.sample(pool, 30), "Tier 3": rng.sample(pool, 60)}
+    for tier, members in tier_pool.items():
+        for aid in members:
+            for _ in range(rng.choice([1, 2, 2]) if tier == "Tier 1" else rng.choice([1, 1, 2]) if tier == "Tier 2" else 1):
+                created = now - timedelta(days=rng.randint(20, 180))
+                amount = rng.choice([24000, 36000, 57000, 60000, 96000, 120000, 240000, 450000])
+                if tier == "Tier 3":
+                    amount = rng.choice([12000, 24000, 36000, 48000])
+                t = created
+                stage_idx = 0
+                is_closed = False; is_won = False
+                current = OPP_STAGES[0]
+                while True:
+                    lo, hi = DAYS[current]
+                    days = rng.randint(lo, hi) + (8 if current == "Proposal" and tier == "Tier 3" else 0)
+                    leave = t + timedelta(days=days)
+                    if leave > now:  # still open in this stage
+                        break
+                    advance = rng.random() < PASS[tier][current]
+                    if current == "Negotiation":
+                        nxt = "Closed Won" if advance else "Closed Lost"
+                        hist.append([f"OSH-{hid2:06d}", f"OPP-{oid:05d}", current, nxt, ts(leave), days]); hid2 += 1
+                        current, is_closed, is_won, t = nxt, True, advance, leave
+                        break
+                    if advance:
+                        nxt = OPP_STAGES[stage_idx + 1]
+                        hist.append([f"OSH-{hid2:06d}", f"OPP-{oid:05d}", current, nxt, ts(leave), days]); hid2 += 1
+                        current, stage_idx, t = nxt, stage_idx + 1, leave
+                    else:
+                        hist.append([f"OSH-{hid2:06d}", f"OPP-{oid:05d}", current, "Closed Lost", ts(leave), days]); hid2 += 1
+                        current, is_closed, t = "Closed Lost", True, leave
+                        break
+                close_date = t if is_closed else now + timedelta(days=rng.randint(10, 90))
+                name = f"{[a for a in accounts if a[0] == aid][0][1]} - {rng.choice(['API expansion', 'Platform renewal', 'New workload', 'Enterprise rollout'])}"
+                opps.append([f"OPP-{oid:05d}", aid, name, amount, current, created.strftime("%Y-%m-%d"), close_date.strftime("%Y-%m-%d"),
+                             is_closed, is_won, tier, None])
+                oid += 1
+    # seeded defect: one opportunity without stage history, one closed-won without amount
+    hist = [h for h in hist if h[1] != opps[-1][0]]
+    won = next((o for o in opps if o[8]), None)
+    if won:
+        won[3] = None
+    _write("opportunities.csv", ["opportunity_id", "account_id", "name", "amount", "stage", "created_at", "close_date", "is_closed", "is_won",
+                                 "source_tier", "sf_opportunity_id"], opps)
+    _write("opportunity_stage_history.csv", ["history_id", "opportunity_id", "from_stage", "to_stage", "changed_at", "days_in_from_stage"], hist)
+
+    return {"accounts": len(accounts), "enrichment": len(enrich), "intent_signals": len(signals), "opportunities": len(opps), "stage_history": len(hist),
             "hubspot_events": len(hs), "usage_rows": len(usage), "products": len(PRODUCTS), "quote_requests": len(quotes)}
 
 

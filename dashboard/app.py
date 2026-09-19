@@ -37,16 +37,17 @@ st.caption(f"Deterministic pricing, approvals and account prioritization · poli
 
 # Deep link: ?view=cpq | gtm | dq renders a single section (used for screenshots and sharing); default is tabs.
 _VIEW = st.query_params.get("view")
-if _VIEW in ("cpq", "gtm", "dq"):
+if _VIEW in ("cpq", "gtm", "pipe", "dq"):
     from contextlib import nullcontext
-    _single = {"cpq": "CPQ Operations", "gtm": "Account Prioritization", "dq": "Data Quality"}[_VIEW]
+    _single = {"cpq": "CPQ Operations", "gtm": "Account Prioritization", "pipe": "Pipeline", "dq": "Data Quality"}[_VIEW]
     st.subheader(_single)
     st.markdown("<style>[data-testid='stExpander']{display:none}</style>", unsafe_allow_html=True)
     tab_cpq = nullcontext() if _VIEW == "cpq" else st.expander("CPQ Operations", expanded=False)
     tab_gtm = nullcontext() if _VIEW == "gtm" else st.expander("Account Prioritization", expanded=False)
+    tab_pipe = nullcontext() if _VIEW == "pipe" else st.expander("Pipeline", expanded=False)
     tab_dq = nullcontext() if _VIEW == "dq" else st.expander("Data Quality", expanded=False)
 else:
-    tab_cpq, tab_gtm, tab_dq = st.tabs(["CPQ Operations", "Account Prioritization", "Data Quality"])
+    tab_cpq, tab_gtm, tab_pipe, tab_dq = st.tabs(["CPQ Operations", "Account Prioritization", "Pipeline", "Data Quality"])
 
 # ------------------------------------------------------------------ CPQ
 with tab_cpq:
@@ -135,6 +136,46 @@ with tab_gtm:
 
     st.subheader("Top accounts")
     st.dataframe(q("SELECT * FROM v_top_accounts LIMIT 30"), use_container_width=True, hide_index=True)
+
+# ------------------------------------------------------------------ Pipeline (v2)
+with tab_pipe:
+    funnel = q("SELECT * FROM v_funnel")
+    bott = q("SELECT * FROM v_bottleneck")
+    by_tier = q("SELECT * FROM v_conversion_by_tier")
+    b = bott[bott.bottleneck == True]  # noqa: E712
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Opportunities", int(funnel.opportunities.iloc[0]) if len(funnel) else 0)
+    c2.metric("Closed won", int(funnel[funnel.stage == "Closed Won"].opportunities.iloc[0]) if len(funnel) else 0)
+    c3.metric("Open pipeline", f"${float(by_tier.open_pipeline.sum()):,.0f}" if len(by_tier) else "$0")
+    if len(b):
+        c4.metric("Bottleneck", f"{b.from_stage.iloc[0]} → {b.to_stage.iloc[0]}", delta=f"{float(b.step_conversion_pct.iloc[0]):.0f}% convert", delta_color="inverse")
+
+    left, right = st.columns(2)
+    with left:
+        st.subheader("Stage funnel")
+        fig = px.funnel(funnel, x="opportunities", y="stage", color_discrete_sequence=[PALETTE[0]])
+        st.plotly_chart(fig, use_container_width=True)
+    with right:
+        st.subheader("Step conversion (drop-off by stage)")
+        bott["step"] = bott.from_stage + " → " + bott.to_stage
+        bott["colour"] = bott.bottleneck.map({True: "bottleneck", False: "normal"})
+        fig = px.bar(bott, x="step", y="step_conversion_pct", color="colour",
+                     color_discrete_map={"bottleneck": PALETTE[4], "normal": PALETTE[0]}, text="dropped")
+        fig.update_layout(yaxis_title="% converting to next stage", xaxis_title="", showlegend=False)
+        st.plotly_chart(fig, use_container_width=True)
+
+    left, right = st.columns(2)
+    with left:
+        st.subheader("Conversion by account tier")
+        st.dataframe(by_tier, use_container_width=True, hide_index=True)
+        st.caption("`source_tier` is the account tier when the opportunity was created. Win rate is over closed opportunities.")
+    with right:
+        st.subheader("Median days in stage")
+        cyc = q("SELECT stage, median_days, avg_days, lost_from_here FROM v_stage_cycle")
+        st.plotly_chart(px.bar(cyc, x="stage", y="median_days", color_discrete_sequence=[PALETTE[2]]), use_container_width=True)
+
+    st.subheader("Open pipeline by stage")
+    st.dataframe(q("SELECT stage, opportunities, amount FROM v_open_pipeline_by_stage"), use_container_width=True, hide_index=True)
 
 # ------------------------------------------------------------------ DQ
 with tab_dq:

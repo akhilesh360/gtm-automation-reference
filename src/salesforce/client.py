@@ -122,7 +122,7 @@ class MockSalesforceClient:
 
     # ---- helpers ----
     def _new_id(self, sobject: str) -> str:
-        prefix = {"Account": "001", "Task": "00T", "Quote__c": "a0Q", "Account_Score__c": "a0S",
+        prefix = {"Account": "001", "Opportunity": "006", "Task": "00T", "Quote__c": "a0Q", "Account_Score__c": "a0S",
                   "Approval_Audit__c": "a0A", "Integration_Log__c": "a0L"}.get(sobject, "a0X")
         return prefix + uuid.uuid4().hex[:15].upper()
 

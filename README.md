@@ -35,7 +35,7 @@ pip install -r requirements.txt
 python -m src.main scenarios          # runs the pipeline and prints the three scenarios
 streamlit run dashboard/app.py   # dashboard
 uvicorn api.app:app --reload     # API docs at http://127.0.0.1:8000/docs
-pytest -q                        # 66 tests, no env vars needed
+pytest -q                        # 72 tests, no env vars needed
 ```
 
 No `.env` is required. A real Salesforce client that authenticates with Salesforce credentials or an access token; a mock client supports offline development and testing. To push into a real org, deploy `sfdx/` once (see `docs/salesforce_setup.md`) and run with `SF_ENABLED=true`; by default the real client obtains an access token from the Salesforce CLI login, or set `SF_AUTH=password` to use username, password and security token. Set `AI_ENABLED=true` with an API key for AI-assisted drafting.
@@ -94,12 +94,16 @@ python -m src.main erp-handoff
 
 Salesforce is the system of record for human decisions: the quote sync never overwrites an Approved or Rejected status set there. Design: `docs/V2_DESIGN.md`.
 
+## Pipeline funnel and bottleneck (v2, item 2)
+
+Seeded opportunities with stage history feed a funnel view, a bottleneck flag on the step with the lowest conversion, median days in stage, and conversion by the account tier at deal creation. Opportunities also sync to the standard Salesforce `Opportunity` object with mapped stages. The dashboard has a **Pipeline** tab for it. SQL in `sql/07_funnel.sql`.
+
 ## Repository layout
 
 ```
 config/policy.yaml     single policy authority (thresholds, weights, tiers, SLA)
 data/raw/              seeded CSVs: accounts, Clay-shaped enrichment, HubSpot-shaped engagement, signals, usage, products, quotes
-sql/                   DDL, loads, scoring views, parameterized DQ checks, reporting views (Snowflake-style)
+sql/                   DDL, loads, scoring views, parameterized DQ checks, reporting views, funnel views (Snowflake-style)
 src/cpq/               validator, pricing engine, approval rules, audit persistence
 src/scoring/           sub-scores, tiering, explanation, scoring runner
 src/ingestion/         schema validation, raw load, HubSpot mapping
@@ -110,9 +114,9 @@ src/ai/                optional drafter (one Claude call, template fallback)
 src/monitoring/        JSON logging, integration log, DQ runner, alerts
 src/main.py            CLI: init-db · load-raw · validate · score · evaluate · draft · research · sync · sync-task-outcomes · dq · run-all · scenarios
 api/                   FastAPI, three routes
-dashboard/app.py       Streamlit, three tabs
+dashboard/app.py       Streamlit: CPQ Operations · Account Prioritization · Pipeline · Data Quality
 sfdx/                  deployable metadata: objects, fields, permission set, custom setting, two Flows
-tests/                 66 tests incl. exact reproduction of the scenarios and the quote-to-cash path
+tests/                 72 tests incl. exact reproduction of the scenarios and the quote-to-cash path
 docs/                  technical design, data dictionary, Salesforce mapping and setup, scenario tests, talk track
 ```
 

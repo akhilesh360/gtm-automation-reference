@@ -36,6 +36,15 @@ HubSpot mapping (`src/ingestion/load_hubspot.py`): `email_open`/`email_click` â†
 
 Views: `v_quote_to_cash`, `v_erp_orders`, `v_human_decisions`. DQ checks: `approved_quotes_without_erp_order` (warn), `erp_orders_not_reconciled` (error).
 
+## v2: opportunities
+
+| Table | Grain | Notes |
+|---|---|---|
+| `opportunities` | one row per deal | `stage`, `amount`, `close_date`, `is_closed`, `is_won`, `source_tier` (account tier at creation), `sf_opportunity_id` |
+| `opportunity_stage_history` | one row per stage transition | `from_stage`, `to_stage`, `changed_at`, `days_in_from_stage` |
+
+Views (`07_funnel.sql`): `v_funnel`, `v_bottleneck`, `v_stage_cycle`, `v_conversion_by_tier`, `v_open_pipeline_by_stage`. DQ checks: `opportunities_without_stage_history`, `closed_won_missing_amount`.
+
 ## Operational tables
 
 | Table | Grain | Notes |

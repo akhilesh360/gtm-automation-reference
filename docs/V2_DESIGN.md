@@ -95,3 +95,40 @@ Approve Q-00002 as "Jane Doe" → `HUMAN_DECISION` audit row → sales order `SO
 ### Out of scope for item 1
 
 Real NetSuite credentials, item/customer master sync, invoice and payment status, credit checks. The mock keeps the payload shape realistic so a real adapter is a drop-in replacement of `MockNetSuiteClient`.
+
+
+## Item 2: Opportunities, funnel and bottleneck view
+
+**Goal.** Give leadership a way to see where deals stall, and tie conversion back to the account tier the engine assigned. This backs "real-time reporting to identify conversion bottlenecks" and "conversion by account tier".
+
+### Data
+
+- `opportunities`: one row per deal with `amount`, `stage` (Prospecting, Discovery, Proposal, Negotiation, Closed Won, Closed Lost), `close_date`, `is_closed`, `is_won`, `source_tier` (the account's tier when the deal was created), `sf_opportunity_id`.
+- `opportunity_stage_history`: one row per stage transition with `days_in_from_stage`.
+- Seeded by the generator with win rate and cycle time correlated to tier (Tier 1 ≈ 48%, Tier 2 ≈ 19%, Tier 3 ≈ 8% over closed deals) and a deliberate bottleneck at Proposal → Negotiation. Two seeded defects: one opportunity with no stage history, one closed-won deal with no amount.
+
+### SQL (`sql/07_funnel.sql`)
+
+| View | What it answers |
+|---|---|
+| `v_funnel` | opportunities that reached each stage, step conversion %, dropped count, cumulative % |
+| `v_bottleneck` | the step with the lowest conversion, flagged `bottleneck = true` |
+| `v_stage_cycle` | median and average days in each stage, and how many deals were lost from it |
+| `v_conversion_by_tier` | opportunities, closed, won, win rate, average cycle days, won value and open pipeline per source tier |
+| `v_open_pipeline_by_stage` | open deal count and amount per stage |
+
+### Salesforce
+
+Opportunities sync to the standard `Opportunity` object by `External_Opportunity_Id__c`, with `Source_Tier__c` and a stage map to the Developer Edition defaults (Discovery → Qualification, Proposal → Proposal/Price Quote, Negotiation → Negotiation/Review). Verified: 129 opportunities in the org with mapped stages.
+
+### Dashboard
+
+New **Pipeline** tab: funnel chart, step-conversion bars with the bottleneck highlighted, conversion by tier table, median days in stage, open pipeline by stage.
+
+### Data quality
+
+`opportunities_without_stage_history` (error), `closed_won_missing_amount` (error).
+
+### Out of scope
+
+Quote-to-opportunity linkage, stage probabilities for forecasting (item 3), and Salesforce-native reports.

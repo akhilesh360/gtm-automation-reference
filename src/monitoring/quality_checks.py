@@ -22,6 +22,8 @@ SEVERITY = {
     "failed_integration_runs_24h": "warn",
     "approved_quotes_without_erp_order": "warn",
     "erp_orders_not_reconciled": "error",
+    "opportunities_without_stage_history": "error",
+    "closed_won_missing_amount": "error",
 }
 
 

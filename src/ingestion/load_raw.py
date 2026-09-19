@@ -12,7 +12,7 @@ def load_all(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
     run_sql_file(con, "02_load_raw_data.sql", {"raw_dir": str(settings.raw_dir)})
     hubspot_rows = load_hubspot_events(con, settings.raw_dir / "hubspot_engagement.csv")
     counts = {}
-    for t in ("accounts", "account_enrichment", "intent_signals", "usage_signals", "products", "quote_requests"):
+    for t in ("accounts", "account_enrichment", "intent_signals", "usage_signals", "products", "quote_requests", "opportunities", "opportunity_stage_history"):
         counts[t] = con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
     counts["hubspot_signals"] = hubspot_rows
     return counts

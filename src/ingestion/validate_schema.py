@@ -13,6 +13,8 @@ REQUIRED: dict[str, list[str]] = {
     "hubspot_engagement.csv": ["event_id", "contact_email", "domain", "event_type", "event_timestamp"],
     "usage_signals.csv": ["usage_id", "account_id", "month", "api_calls", "active_users", "mom_growth_pct"],
     "products.csv": ["product_id", "product_name", "pricing_model", "list_price_monthly"],
+    "opportunities.csv": ["opportunity_id", "account_id", "name", "amount", "stage", "created_at", "close_date", "is_closed", "is_won", "source_tier"],
+    "opportunity_stage_history.csv": ["history_id", "opportunity_id", "from_stage", "to_stage", "changed_at", "days_in_from_stage"],
     "quote_requests.csv": ["quote_id", "account_id", "account_name", "product_id", "monthly_commitment", "quantity",
                            "contract_term_months", "discount_percent", "payment_terms", "custom_pricing"],
 }
@@ -48,7 +50,7 @@ def validate_raw_dir(raw_dir: Path) -> list[SchemaIssue]:
     acc = frames.get("accounts.csv")
     if acc is not None:
         ids = set(acc["account_id"])
-        for fname in ("intent_signals.csv", "usage_signals.csv", "quote_requests.csv", "clay_enrichment.csv"):
+        for fname in ("intent_signals.csv", "usage_signals.csv", "quote_requests.csv", "clay_enrichment.csv", "opportunities.csv"):
             df = frames.get(fname)
             if df is not None and "account_id" in df.columns:
                 orphans = set(df["account_id"]) - ids

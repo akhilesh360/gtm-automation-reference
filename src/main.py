@@ -23,7 +23,7 @@ from src.monitoring.quality_checks import has_errors, run_checks
 from src.policy import get_policy, render_approval_matrix
 from src.salesforce.client import get_client
 from src.salesforce.sync import (create_quotes, record_decision, sync_approval_outcomes, sync_task_outcomes,
-                                 upsert_accounts, upsert_scores, write_erp_status)
+                                 upsert_accounts, upsert_opportunities, upsert_scores, write_erp_status)
 from src.erp.handoff import handoff_approved_quotes
 from src.erp.netsuite_mock import get_erp_client
 from src.scoring.run import score_all
@@ -37,6 +37,7 @@ def stage_init_db(con, cid):
     run_sql_file(con, "06_v2_migrations.sql")
     with workflow_run(con, "init_db", cid):
         run_sql_file(con, "05_reporting_views.sql", {"pending_sla_days": get_policy().sla.pending_approval_days})
+        run_sql_file(con, "07_funnel.sql")
     print("DuckDB initialized:", settings.duckdb_file)
 
 
@@ -109,7 +110,8 @@ def stage_sync(con, cid):
         n_acc = upsert_accounts(con, sf, cid)
         n_scores = upsert_scores(con, sf, cid)
         n_quotes = create_quotes(con, sf, cid)
-    print(f"Synced via {sf.name}: {n_acc} accounts, {n_scores} scores, {n_quotes} quotes (+ audit rows)")
+        n_opps = upsert_opportunities(con, sf, cid)
+    print(f"Synced via {sf.name}: {n_acc} accounts, {n_scores} scores, {n_quotes} quotes (+ audit rows), {n_opps} opportunities")
 
 
 def stage_sync_task_outcomes(con, cid):

@@ -35,5 +35,8 @@ Every run has a correlation ID that appears in the JSON log, `integration_log`, 
 **How does an approved quote reach finance?**
 A person approves in Salesforce; Flow A stamps approver and time. The engine reads that back, adds a human-decision audit row, and builds a sales order with a monthly billing schedule that sums to the net value. A NetSuite-style mock accepts it and returns an order id; the engine checks the accepted total against the quote, marks it Reconciled, and writes the order id back to the quote in Salesforce. The mock is in-process by default or an HTTP service, so a real NetSuite adapter is a drop-in replacement.
 
+**Where do deals stall?**
+Every stage transition is recorded with days in stage. The funnel view computes step conversion and flags the lowest step as the bottleneck; in the seeded data that is Proposal to Negotiation. Conversion is broken out by the tier the account had when the deal was created, so the scoring model's value shows up as a win-rate gap between tiers.
+
 **What's next?**
-Opportunities with stage history and a funnel/bottleneck view, weighted forecasting, sequence management, live Clay and HubSpot connectors, and a bounded Claude research loop.
+Weighted forecasting, sequence management, live Clay and HubSpot connectors, and a bounded Claude research loop.
