@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -12,13 +11,13 @@ class Product(BaseModel):
     product_name: str
     pricing_model: str  # "subscription" | "usage"
     list_price_monthly: float
-    included_units: Optional[int] = None
-    overage_price_per_unit: Optional[float] = None
+    included_units: int | None = None
+    overage_price_per_unit: float | None = None
 
 
 class QuoteRequest(BaseModel):
-    quote_id: Optional[str] = None
-    account_id: Optional[str] = None
+    quote_id: str | None = None
+    account_id: str | None = None
     account_name: str
     product_id: str
     monthly_commitment: float
@@ -27,8 +26,8 @@ class QuoteRequest(BaseModel):
     discount_percent: float
     payment_terms: str
     custom_pricing: bool = False
-    forecasted_units: Optional[int] = None
-    custom_overage_rate: Optional[float] = Field(default=None, description="Replaces the product overage rate; implies custom pricing")
+    forecasted_units: int | None = None
+    custom_overage_rate: float | None = Field(default=None, description="Replaces the product overage rate; implies custom pricing")
 
     @property
     def has_custom_pricing(self) -> bool:
@@ -57,7 +56,7 @@ class PricedQuote:
     product: Product
     effective_list_price: float
     economics: QuoteEconomics
-    usage: Optional[UsageEconomics] = None
+    usage: UsageEconomics | None = None
 
     @property
     def discount_percent(self) -> float:
@@ -79,7 +78,7 @@ class PricedQuote:
 @dataclass(frozen=True)
 class AuditRule:
     rule: str
-    approver: Optional[str]
+    approver: str | None
     reason: str
 
 

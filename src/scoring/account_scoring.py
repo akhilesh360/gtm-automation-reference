@@ -1,8 +1,7 @@
 """Deterministic sub-scores and priority score. Weights and window come from policy.yaml."""
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
-from typing import Optional
+from dataclasses import asdict, dataclass
 
 import duckdb
 
@@ -18,10 +17,10 @@ BEST_STAGES = {"Series A", "Series B", "Series C"}
 class ScoreFacts:
     account_id: str
     account_name: str
-    industry: Optional[str]
-    employee_count: Optional[int]
-    funding_stage: Optional[str]
-    account_owner: Optional[str]
+    industry: str | None
+    employee_count: int | None
+    funding_stage: str | None
+    account_owner: str | None
     pricing_page_visits: float
     demo_requests: float
     ml_job_postings: float
@@ -29,12 +28,12 @@ class ScoreFacts:
     oss_interest: float
     website_visits: float
     email_engagements: float
-    mom_growth_pct: Optional[float]
-    active_users: Optional[int]
-    last_signal_at: Optional[str]
-    company_summary: Optional[str] = None
-    personalization_hook: Optional[str] = None
-    tech_stack: Optional[str] = None
+    mom_growth_pct: float | None
+    active_users: int | None
+    last_signal_at: str | None
+    company_summary: str | None = None
+    personalization_hook: str | None = None
+    tech_stack: str | None = None
 
     def as_dict(self) -> dict:
         return asdict(self)

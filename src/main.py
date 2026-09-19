@@ -7,14 +7,14 @@ from __future__ import annotations
 
 import argparse
 import sys
-from datetime import datetime
-from typing import Optional
 
 from src.config import PROJECT_ROOT, settings
 from src.cpq.audit import persist_evaluation
 from src.cpq.evaluate import evaluate_quote
 from src.cpq.models import Product, QuoteRequest
 from src.db import run_sql_file, session
+from src.erp.handoff import handoff_approved_quotes
+from src.erp.netsuite_mock import get_erp_client
 from src.ingestion.load_raw import load_all
 from src.ingestion.validate_schema import validate_raw_dir
 from src.monitoring.alerts import summarize
@@ -22,10 +22,16 @@ from src.monitoring.logger import STATUS_FAILED_VALIDATION, get_logger, new_corr
 from src.monitoring.quality_checks import has_errors, run_checks
 from src.policy import get_policy, render_approval_matrix
 from src.salesforce.client import get_client
-from src.salesforce.sync import (create_quotes, record_decision, sync_approval_outcomes, sync_task_outcomes,
-                                 upsert_accounts, upsert_opportunities, upsert_scores, write_erp_status)
-from src.erp.handoff import handoff_approved_quotes
-from src.erp.netsuite_mock import get_erp_client
+from src.salesforce.sync import (
+    create_quotes,
+    record_decision,
+    sync_approval_outcomes,
+    sync_task_outcomes,
+    upsert_accounts,
+    upsert_opportunities,
+    upsert_scores,
+    write_erp_status,
+)
 from src.scoring.run import score_all
 
 log = get_logger()
@@ -97,7 +103,7 @@ def stage_evaluate(con, cid):
     print("Quotes evaluated:", summary)
 
 
-def stage_draft(con, cid, limit: Optional[int] = None):
+def stage_draft(con, cid, limit: int | None = None):
     from src.ai.run import draft_all
     with workflow_run(con, "draft", cid):
         counts = draft_all(con, limit=limit)
@@ -136,7 +142,7 @@ def stage_erp_handoff(con, cid):
     print(f"ERP status written back to Salesforce quotes: {n}")
 
 
-def stage_decide(con, cid, quote_id: str, decision: str, approver: str, reason: Optional[str]):
+def stage_decide(con, cid, quote_id: str, decision: str, approver: str, reason: str | None):
     sf = get_client()
     sf_id = record_decision(con, sf, quote_id, decision, approver, reason)
     print(f"{quote_id} marked {decision} by {approver} in Salesforce ({sf.name}, {sf_id}). Run sync-approval-outcomes to pull it back.")
@@ -238,22 +244,30 @@ def main(argv=None) -> int:
     for name in ("init-db", "load-raw", "validate", "score", "evaluate", "sync", "sync-task-outcomes", "sync-approval-outcomes",
                  "erp-handoff", "dq", "run-all", "scenarios"):
         sub.add_parser(name)
-    d = sub.add_parser("draft"); d.add_argument("--limit", type=int, default=None)
-    r = sub.add_parser("research"); r.add_argument("--account-id", required=True)
+    d = sub.add_parser("draft")
+    d.add_argument("--limit", type=int, default=None)
+    r = sub.add_parser("research")
+    r.add_argument("--account-id", required=True)
     dc = sub.add_parser("decide", help="stand-in for a person approving/rejecting a pending quote in Salesforce")
-    dc.add_argument("--quote-id", required=True); dc.add_argument("--decision", choices=["Approved", "Rejected"], required=True)
-    dc.add_argument("--approver", required=True); dc.add_argument("--reason", default=None)
-    g = sub.add_parser("generate-data"); g.add_argument("--seed", type=int, default=None)
-    pol = sub.add_parser("policy"); pol.add_argument("--render", action="store_true")
+    dc.add_argument("--quote-id", required=True)
+    dc.add_argument("--decision", choices=["Approved", "Rejected"], required=True)
+    dc.add_argument("--approver", required=True)
+    dc.add_argument("--reason", default=None)
+    g = sub.add_parser("generate-data")
+    g.add_argument("--seed", type=int, default=None)
+    pol = sub.add_parser("policy")
+    pol.add_argument("--render", action="store_true")
     args = p.parse_args(argv)
 
     if args.cmd == "run-all":
         return run_all()
     if args.cmd == "scenarios":
-        run_scenarios(); return 0
+        run_scenarios()
+        return 0
     if args.cmd == "generate-data":
         from scripts.generate_mock_data import generate
-        print(generate(seed=args.seed)); return 0
+        print(generate(seed=args.seed))
+        return 0
     if args.cmd == "policy":
         pol_obj = get_policy()
         if args.render:
@@ -266,24 +280,37 @@ def main(argv=None) -> int:
 
     cid = new_correlation_id()
     with session() as con:
-        if args.cmd == "init-db": stage_init_db(con, cid)
-        elif args.cmd == "validate": stage_validate(con, cid)
-        elif args.cmd == "load-raw": stage_load_raw(con, cid)
-        elif args.cmd == "score": stage_score(con, cid)
-        elif args.cmd == "evaluate": stage_evaluate(con, cid)
-        elif args.cmd == "draft": stage_draft(con, cid, limit=args.limit)
+        if args.cmd == "init-db":
+            stage_init_db(con, cid)
+        elif args.cmd == "validate":
+            stage_validate(con, cid)
+        elif args.cmd == "load-raw":
+            stage_load_raw(con, cid)
+        elif args.cmd == "score":
+            stage_score(con, cid)
+        elif args.cmd == "evaluate":
+            stage_evaluate(con, cid)
+        elif args.cmd == "draft":
+            stage_draft(con, cid, limit=args.limit)
         elif args.cmd == "research":
             from src.ai.run import research_one
             res = research_one(con, args.account_id)
             if res is None:
-                print("account not found or not scored yet:", args.account_id); return 1
+                print("account not found or not scored yet:", args.account_id)
+                return 1
             print(f"[{res.source}] narrative:\n{res.draft.narrative}\n\ntask description:\n{res.draft.task_description}\n\noutbound draft:\n{res.draft.outbound_draft}")
-        elif args.cmd == "sync": stage_sync(con, cid)
-        elif args.cmd == "sync-task-outcomes": stage_sync_task_outcomes(con, cid)
-        elif args.cmd == "sync-approval-outcomes": stage_sync_approval_outcomes(con, cid)
-        elif args.cmd == "erp-handoff": stage_erp_handoff(con, cid)
-        elif args.cmd == "decide": stage_decide(con, cid, args.quote_id, args.decision, args.approver, args.reason)
-        elif args.cmd == "dq": return 0 if stage_dq(con, cid) else 1
+        elif args.cmd == "sync":
+            stage_sync(con, cid)
+        elif args.cmd == "sync-task-outcomes":
+            stage_sync_task_outcomes(con, cid)
+        elif args.cmd == "sync-approval-outcomes":
+            stage_sync_approval_outcomes(con, cid)
+        elif args.cmd == "erp-handoff":
+            stage_erp_handoff(con, cid)
+        elif args.cmd == "decide":
+            stage_decide(con, cid, args.quote_id, args.decision, args.approver, args.reason)
+        elif args.cmd == "dq":
+            return 0 if stage_dq(con, cid) else 1
     return 0
 
 

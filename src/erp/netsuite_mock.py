@@ -38,10 +38,10 @@ def validate_payload(payload: dict[str, Any]) -> None:
     net = round(float(payload["totals"]["net"]), 2)
     if net <= 0:
         raise ErpError("totals.net must be positive")
-    sched = round(sum(float(l["amount"]) for l in payload["billing_schedule"]), 2)
+    sched = round(sum(float(line["amount"]) for line in payload["billing_schedule"]), 2)
     if abs(sched - net) > 0.01:
         raise ErpError(f"billing schedule sums to {sched}, expected {net}")
-    lines = round(sum(float(l["amount"]) for l in payload["lines"]), 2)
+    lines = round(sum(float(line["amount"]) for line in payload["lines"]), 2)
     if abs(lines - net) > 0.01:
         raise ErpError(f"line amounts sum to {lines}, expected {net}")
 

@@ -143,7 +143,7 @@ with tab_pipe:
     bott = q("SELECT * FROM v_bottleneck")
     by_tier = q("SELECT * FROM v_conversion_by_tier")
     b = bott[bott.bottleneck == True]  # noqa: E712
-    c1, c2, c3, c4 = st.columns(4)
+    c1, c2, c3, c4 = st.columns([1, 1, 1.2, 1.8])
     c1.metric("Opportunities", int(funnel.opportunities.iloc[0]) if len(funnel) else 0)
     c2.metric("Closed won", int(funnel[funnel.stage == "Closed Won"].opportunities.iloc[0]) if len(funnel) else 0)
     c3.metric("Open pipeline", f"${float(by_tier.open_pipeline.sum()):,.0f}" if len(by_tier) else "$0")
@@ -160,7 +160,8 @@ with tab_pipe:
         bott["step"] = bott.from_stage + " → " + bott.to_stage
         bott["colour"] = bott.bottleneck.map({True: "bottleneck", False: "normal"})
         fig = px.bar(bott, x="step", y="step_conversion_pct", color="colour",
-                     color_discrete_map={"bottleneck": PALETTE[4], "normal": PALETTE[0]}, text="dropped")
+                     color_discrete_map={"bottleneck": PALETTE[4], "normal": PALETTE[0]}, text="dropped",
+                     category_orders={"step": list(bott.step)})
         fig.update_layout(yaxis_title="% converting to next stage", xaxis_title="", showlegend=False)
         st.plotly_chart(fig, use_container_width=True)
 

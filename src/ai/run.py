@@ -1,17 +1,15 @@
 """Draft stage: fill narrative / task_description / outbound_draft for Tier 1 accounts (template for the rest)."""
 from __future__ import annotations
 
-from typing import Optional
-
 import duckdb
 
-from src.ai.drafter import DraftFacts, draft, template_draft, DraftResult
+from src.ai.drafter import DraftFacts, DraftResult, draft, template_draft
 from src.monitoring.logger import get_logger
 
 log = get_logger()
 
 
-def _facts_for(con: duckdb.DuckDBPyConnection, account_id: str) -> Optional[DraftFacts]:
+def _facts_for(con: duckdb.DuckDBPyConnection, account_id: str) -> DraftFacts | None:
     r = con.execute(
         """SELECT a.account_id, a.account_name, a.account_owner, s.account_tier, s.priority_score, s.intent_score, s.usage_score,
                   s.engagement_score, s.firmographic_fit_score, s.scoring_reason, a.industry,
@@ -46,7 +44,7 @@ def _store(con: duckdb.DuckDBPyConnection, account_id: str, res: DraftResult) ->
                 [res.draft.task_description, account_id])
 
 
-def draft_all(con: duckdb.DuckDBPyConnection, limit: Optional[int] = None) -> dict[str, int]:
+def draft_all(con: duckdb.DuckDBPyConnection, limit: int | None = None) -> dict[str, int]:
     rows = con.execute("SELECT account_id, account_tier FROM account_scores ORDER BY priority_score DESC").fetchall()
     counts = {"claude": 0, "template": 0}
     ai_calls = 0
@@ -65,7 +63,7 @@ def draft_all(con: duckdb.DuckDBPyConnection, limit: Optional[int] = None) -> di
     return counts
 
 
-def research_one(con: duckdb.DuckDBPyConnection, account_id: str) -> Optional[DraftResult]:
+def research_one(con: duckdb.DuckDBPyConnection, account_id: str) -> DraftResult | None:
     facts = _facts_for(con, account_id)
     if facts is None:
         return None

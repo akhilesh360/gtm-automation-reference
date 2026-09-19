@@ -10,7 +10,6 @@ from __future__ import annotations
 import csv
 import random
 from datetime import datetime, timedelta
-from pathlib import Path
 
 from src.config import PROJECT_ROOT, settings
 
@@ -44,7 +43,9 @@ def _write(name: str, header: list[str], rows: list[list]) -> None:
 def generate(seed: int | None = None, n_accounts: int = 200, n_signals: int = 2000, n_quotes: int = 50) -> dict[str, int]:
     rng = random.Random(seed if seed is not None else settings.random_seed)
     now = datetime.now().replace(minute=0, second=0, microsecond=0)
-    ts = lambda d: d.strftime("%Y-%m-%d %H:%M:%S")
+
+    def ts(d):
+        return d.strftime("%Y-%m-%d %H:%M:%S")
 
     # ---------------- accounts ----------------
     accounts: list[list] = []
@@ -202,7 +203,6 @@ def generate(seed: int | None = None, n_accounts: int = 200, n_signals: int = 20
     quotes: list[list] = []
     quotes.append(["Q-00001", "ACC-00001", "Alpha AI", "PRD-API-STARTER", 5000, 1, 12, 5, "Net 30", False, 4_000_000, None, ts(now - timedelta(days=1))])
     quotes.append(["Q-00002", "ACC-00002", "EnterpriseGen", "PRD-ENT-PLATFORM", 50000, 1, 12, 25, "Net 60", False, 45_000_000, 0.0000010, ts(now - timedelta(days=1))])
-    prod_by_id = {p[0]: p for p in PRODUCTS}
     qi = 3
     while len(quotes) < n_quotes:
         a = rng.choice(accounts[3:])
@@ -220,7 +220,10 @@ def generate(seed: int | None = None, n_accounts: int = 200, n_signals: int = 20
         qi += 1
     # seeded validation defects
     quotes[47][7] = 120                    # invalid discount
-    quotes[48][4] = 7000; quotes[48][9] = False; quotes[48][3] = "PRD-API-BASE"; quotes[48][11] = None  # commitment mismatch, not custom
+    quotes[48][4] = 7000  # commitment mismatch, not custom
+    quotes[48][9] = False
+    quotes[48][3] = "PRD-API-BASE"
+    quotes[48][11] = None
     quotes[49][8] = "Net 45"               # payment terms not allowed
     _write("quote_requests.csv",
            ["quote_id", "account_id", "account_name", "product_id", "monthly_commitment", "quantity", "contract_term_months",
@@ -250,7 +253,8 @@ def generate(seed: int | None = None, n_accounts: int = 200, n_signals: int = 20
                     amount = rng.choice([12000, 24000, 36000, 48000])
                 t = created
                 stage_idx = 0
-                is_closed = False; is_won = False
+                is_closed = False
+                is_won = False
                 current = OPP_STAGES[0]
                 while True:
                     lo, hi = DAYS[current]
@@ -261,15 +265,18 @@ def generate(seed: int | None = None, n_accounts: int = 200, n_signals: int = 20
                     advance = rng.random() < PASS[tier][current]
                     if current == "Negotiation":
                         nxt = "Closed Won" if advance else "Closed Lost"
-                        hist.append([f"OSH-{hid2:06d}", f"OPP-{oid:05d}", current, nxt, ts(leave), days]); hid2 += 1
+                        hist.append([f"OSH-{hid2:06d}", f"OPP-{oid:05d}", current, nxt, ts(leave), days])
+                        hid2 += 1
                         current, is_closed, is_won, t = nxt, True, advance, leave
                         break
                     if advance:
                         nxt = OPP_STAGES[stage_idx + 1]
-                        hist.append([f"OSH-{hid2:06d}", f"OPP-{oid:05d}", current, nxt, ts(leave), days]); hid2 += 1
+                        hist.append([f"OSH-{hid2:06d}", f"OPP-{oid:05d}", current, nxt, ts(leave), days])
+                        hid2 += 1
                         current, stage_idx, t = nxt, stage_idx + 1, leave
                     else:
-                        hist.append([f"OSH-{hid2:06d}", f"OPP-{oid:05d}", current, "Closed Lost", ts(leave), days]); hid2 += 1
+                        hist.append([f"OSH-{hid2:06d}", f"OPP-{oid:05d}", current, "Closed Lost", ts(leave), days])
+                        hid2 += 1
                         current, is_closed, t = "Closed Lost", True, leave
                         break
                 close_date = t if is_closed else now + timedelta(days=rng.randint(10, 90))

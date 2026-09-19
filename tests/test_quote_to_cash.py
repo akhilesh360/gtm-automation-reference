@@ -30,7 +30,6 @@ def test_pending_quotes_are_never_sent(pipeline_db):
 
 
 def test_human_approval_flows_to_erp(pipeline_db, tmp_path):
-    from src.config import settings
     con = _db(pipeline_db)
     sf = MockSalesforceClient()  # same store the pipeline used
     erp = MockNetSuiteClient()
@@ -59,7 +58,8 @@ def test_decide_rejects_non_pending(pipeline_db):
 
 def test_rejected_quote_gets_audit_row_and_no_order(pipeline_db):
     con = _db(pipeline_db)
-    sf = MockSalesforceClient(); erp = MockNetSuiteClient()
+    sf = MockSalesforceClient()
+    erp = MockNetSuiteClient()
     qid = con.execute("SELECT quote_id FROM quotes WHERE approval_status = 'Pending Approval' AND quote_id <> 'Q-00002' LIMIT 1").fetchone()[0]
     record_decision(con, sf, qid, "Rejected", "Finance Lead", reason="Margin below floor")
     sync_approval_outcomes(con, sf, "run-t")

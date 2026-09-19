@@ -21,7 +21,7 @@ def create_sales_order(payload: dict) -> dict:
     try:
         return _store.create_sales_order(payload)
     except ErpError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+        raise HTTPException(status_code=422, detail=str(e)) from e
 
 
 @app.get("/sales-orders/{sales_order_id}")

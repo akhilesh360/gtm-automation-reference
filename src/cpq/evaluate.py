@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 from src.cpq.approval_rules import RULE_FAILED, determine_approval_route
 from src.cpq.models import ApprovalDecision, AuditRule, PricedQuote, Product, QuoteRequest, ValidationError
@@ -14,17 +13,17 @@ from src.policy import Policy
 @dataclass
 class QuoteEvaluation:
     request: QuoteRequest
-    product: Optional[Product]
-    priced: Optional[PricedQuote]
+    product: Product | None
+    priced: PricedQuote | None
     decision: ApprovalDecision
-    validation_error: Optional[str] = None
+    validation_error: str | None = None
 
     @property
     def status(self) -> str:
         return self.decision.status
 
 
-def evaluate_quote(request: QuoteRequest, product: Optional[Product], policy: Policy) -> QuoteEvaluation:
+def evaluate_quote(request: QuoteRequest, product: Product | None, policy: Policy) -> QuoteEvaluation:
     try:
         validate_quote(request, product, policy)
     except ValidationError as e:

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1220" height="660" viewBox="0 0 1220 660" font-family="Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1220" height="790" viewBox="0 0 1220 790" font-family="Helvetica, Arial, sans-serif">
 <defs>
 <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#444"/></marker>
 <marker id="ad" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#7c3aed"/></marker>
@@ -8,7 +8,7 @@
 .ar{stroke:#444;stroke-width:1.4;fill:none;marker-end:url(#a)} .ard{stroke:#7c3aed;stroke-width:1.4;fill:none;stroke-dasharray:5 4;marker-end:url(#ad)}
 .g{fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 </style></defs>
-<rect width="1220" height="660" fill="#fff"/>
+<rect width="1220" height="790" fill="#fff"/>
 
 <!-- Sources -->
 <rect x="30" y="30" width="300" height="150" class="grp"/>
@@ -56,17 +56,32 @@
 <!-- Users / apps -->
 <g transform="translate(40,440)"><circle cx="20" cy="14" r="9" fill="none" stroke="#222" stroke-width="2.2"/><circle cx="44" cy="14" r="9" fill="none" stroke="#222" stroke-width="2.2"/><path d="M2 48c0-12 8-20 18-20s18 8 18 20 M26 48c0-12 8-20 18-20s18 8 18 20" fill="none" stroke="#222" stroke-width="2.2"/></g>
 <text x="72" y="515" class="lb" font-size="14">RevOps &amp; sales</text>
-<rect x="170" y="435" width="56" height="56" rx="8" fill="#fff" stroke="#cfd4da" stroke-width="1"/><image x="180" y="445" width="36" height="36" href="data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkY0QjRCIiByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+U3RyZWFtbGl0PC90aXRsZT48cGF0aCBkPSJNMTYuNjczIDExLjMybDYuODYyLTMuNjE4Yy4yMzMtLjEzNi41NTQuMTIuNDQyLjM4N0wyMC40NjMgMTcuMXptLTguNTU2LS4yMjlsMy40NzMtNS4xODdjLjIwMy0uMzI4LjU3OC0uMzE2Ljc5My0uMDI4bDcuODg2IDExLjc1em0tMy4zNzUgNy4yNWMtLjI4IDAtLjgzNS0uMjg0LS45OTMtLjcxNmwtMy43Mi05LjQ2Yy0uMTE4LS4zMzEuMTM5LS42MTQuNDgtLjQ2NGwxOS40NzQgMTAuMzA2Yy0uMTQ5LjE0Ny0uNDUzLjMzNy0uNzIuMzM0eiIvPjwvc3ZnPg==" preserveAspectRatio="xMidYMid meet"/><text x="198" y="510" class="lb">Streamlit dashboard</text><text x="198" y="524" class="lb">3 tabs</text>
+<rect x="170" y="435" width="56" height="56" rx="8" fill="#fff" stroke="#cfd4da" stroke-width="1"/><image x="180" y="445" width="36" height="36" href="data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkY0QjRCIiByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+U3RyZWFtbGl0PC90aXRsZT48cGF0aCBkPSJNMTYuNjczIDExLjMybDYuODYyLTMuNjE4Yy4yMzMtLjEzNi41NTQuMTIuNDQyLjM4N0wyMC40NjMgMTcuMXptLTguNTU2LS4yMjlsMy40NzMtNS4xODdjLjIwMy0uMzI4LjU3OC0uMzE2Ljc5My0uMDI4bDcuODg2IDExLjc1em0tMy4zNzUgNy4yNWMtLjI4IDAtLjgzNS0uMjg0LS45OTMtLjcxNmwtMy43Mi05LjQ2Yy0uMTE4LS4zMzEuMTM5LS42MTQuNDgtLjQ2NGwxOS40NzQgMTAuMzA2Yy0uMTQ5LjE0Ny0uNDUzLjMzNy0uNzIuMzM0eiIvPjwvc3ZnPg==" preserveAspectRatio="xMidYMid meet"/><text x="198" y="510" class="lb">Streamlit dashboard</text><text x="198" y="524" class="lb">4 tabs</text>
 <rect x="310" y="435" width="56" height="56" rx="8" fill="#fff" stroke="#cfd4da" stroke-width="1"/><image x="320" y="445" width="36" height="36" href="data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDA5Njg4IiByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+RmFzdEFQSTwvdGl0bGU+PHBhdGggZD0iTTEyIC4wMzg3QzUuMzcyOS4wMzg0LjAwMDMgNS4zOTMxIDAgMTEuOTk4OGMtLjAwMSA2LjYwNjYgNS4zNzIgMTEuOTYyOCAxMiAxMS45NjI1IDYuNjI4LjAwMDMgMTIuMDAxLTUuMzU1OSAxMi0xMS45NjI1LS4wMDAzLTYuNjA1Ny01LjM3MjktMTEuOTYwNC0xMi0xMS45Nm0tLjgyOSA1LjQxNTNoNy41NWwtNy41ODA1IDUuMzI4NGg1LjE4MjhMNS4yNzkgMTguNTQzNnEyLjk0NjYtNi41NDQ0IDUuODkyLTEzLjA4OTYiLz48L3N2Zz4=" preserveAspectRatio="xMidYMid meet"/><text x="338" y="510" class="lb">FastAPI</text><text x="338" y="524" class="lb">/health, /score-account,</text><text x="338" y="538" class="lb">/evaluate-quote</text>
 <path d="M120,462 L166,462" class="ar"/>
 <path d="M360,313 L340,313 L340,420 L338,420 L338,433" class="ar"/><path d="M340,420 L198,420 L198,433" class="ar"/>
 <text x="344" y="380" class="al">Read</text>
 
 <!-- legend -->
-<line x1="560" y1="450" x2="610" y2="450" class="ar"/><text x="620" y="454" class="al">Always runs locally, no credentials</text>
-<line x1="560" y1="478" x2="610" y2="478" class="ard"/><text x="620" y="482" class="al">Optional, enabled by env var</text>
-<text x="560" y="516" class="al" font-size="12" fill="#555">Python decides pricing, route, status and audit from config/policy.yaml. Flow only executes CRM actions.</text>
-<text x="560" y="534" class="al" font-size="12" fill="#555">SF_ENABLED=true → real org via simple-salesforce; SFDX package deploys objects and Flows</text>
-<text x="560" y="552" class="al" font-size="12" fill="#555">AI_ENABLED=true → one Claude call drafts narrative, task description, outbound draft; else template</text>
-<text x="560" y="570" class="al" font-size="12" fill="#555">v2: NetSuite mock handoff, opportunities and funnel, forecast, sequences, live Clay and HubSpot</text>
+<line x1="40" y1="600" x2="90" y2="600" class="ar"/><text x="100" y="604" class="al">Always runs locally, no credentials</text>
+<line x1="40" y1="624" x2="90" y2="624" class="ard"/><text x="100" y="628" class="al">Optional, enabled by env var</text>
+<text x="40" y="654" class="al" font-size="11" fill="#555">Python decides pricing, route, status and audit</text>
+<text x="40" y="668" class="al" font-size="11" fill="#555">from config/policy.yaml. Flow only executes CRM actions.</text>
+<text x="40" y="686" class="al" font-size="11" fill="#555">SF_ENABLED=true → real org via simple-salesforce</text>
+<text x="40" y="700" class="al" font-size="11" fill="#555">AI_ENABLED=true → Claude drafts prose; else templates</text>
+<text x="40" y="714" class="al" font-size="11" fill="#555">ERP_URL → HTTP mock ERP; else in-process mock</text>
+
+<!-- v2 -->
+<rect x="400" y="600" width="790" height="170" class="grpd"/>
+<text x="412" y="622" class="gt">v2 additions (shipped): quote-to-cash and pipeline analytics</text>
+<g transform="translate(430,655)"><rect width="56" height="56" rx="8" fill="#1a9a5a"/><path class="g" d="M16 12h24v32H16z M22 22h12 M22 30h12 M34 36l3 3 6-6"/></g>
+<text x="458" y="730" class="lb">Human approve / reject</text><text x="458" y="744" class="lb">in Salesforce, read back</text>
+<g transform="translate(600,655)"><rect width="56" height="56" rx="8" fill="#5f6b7a"/><path class="g" d="M14 18h28v22H14z M14 26h28 M22 40v4 M34 40v4 M20 14h16"/></g>
+<text x="628" y="730" class="lb">NetSuite-style mock ERP</text><text x="628" y="744" class="lb">sales order + reconciliation</text>
+<g transform="translate(770,655)"><rect width="56" height="56" rx="8" fill="#1a9a5a"/><path class="g" d="M10 16h36l-6 10H16z M16 28h24l-5 8H21z M22 38h12l-3 6h-6z"/></g>
+<text x="798" y="730" class="lb">Opportunities, funnel,</text><text x="798" y="744" class="lb">bottleneck by tier</text>
+<g transform="translate(940,655)"><rect width="56" height="56" rx="8" fill="#00a1e0"/><path class="g" d="M14 42V26 M24 42V18 M34 42V30 M44 42V14 M10 44h38"/></g>
+<text x="968" y="730" class="lb">Opportunity + Quote fields</text><text x="968" y="744" class="lb">synced to the org</text>
+<path d="M486,683 L596,683" class="ar"/><path d="M656,683 L766,683" class="ard"/><path d="M826,683 L936,683" class="ard"/>
+<path d="M595,390 L595,598" class="ar"/><text x="603" y="480" class="al">approved quotes,</text><text x="603" y="496" class="al">opportunities</text>
 </svg>

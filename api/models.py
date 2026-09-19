@@ -1,8 +1,6 @@
 """Public API contract."""
 from __future__ import annotations
 
-from typing import Optional
-
 from pydantic import BaseModel, Field
 
 
@@ -15,17 +13,17 @@ class HealthResponse(BaseModel):
 
 
 class ScoreAccountRequest(BaseModel):
-    account_id: Optional[str] = Field(default=None, description="Score a stored account by id, or pass inline sub-scores")
-    account_name: Optional[str] = None
-    intent_score: Optional[float] = Field(default=None, ge=0, le=100)
-    usage_score: Optional[float] = Field(default=None, ge=0, le=100)
-    engagement_score: Optional[float] = Field(default=None, ge=0, le=100)
-    firmographic_fit_score: Optional[float] = Field(default=None, ge=0, le=100)
+    account_id: str | None = Field(default=None, description="Score a stored account by id, or pass inline sub-scores")
+    account_name: str | None = None
+    intent_score: float | None = Field(default=None, ge=0, le=100)
+    usage_score: float | None = Field(default=None, ge=0, le=100)
+    engagement_score: float | None = Field(default=None, ge=0, le=100)
+    firmographic_fit_score: float | None = Field(default=None, ge=0, le=100)
 
 
 class ScoreAccountResponse(BaseModel):
-    account_id: Optional[str]
-    account_name: Optional[str]
+    account_id: str | None
+    account_name: str | None
     sub_scores: dict[str, float]
     priority_score: float
     account_tier: str
@@ -43,8 +41,8 @@ class EvaluateQuoteRequest(BaseModel):
     discount_percent: float
     payment_terms: str
     custom_pricing: bool = False
-    forecasted_units: Optional[int] = None
-    custom_overage_rate: Optional[float] = None
+    forecasted_units: int | None = None
+    custom_overage_rate: float | None = None
 
 
 class ApprovalOut(BaseModel):
@@ -55,14 +53,14 @@ class ApprovalOut(BaseModel):
 
 class AuditRowOut(BaseModel):
     rule_triggered: str
-    required_approver: Optional[str]
+    required_approver: str | None
     decision_reason: str
 
 
 class EvaluateQuoteResponse(BaseModel):
-    economics: Optional[dict[str, float]]
-    usage: Optional[dict[str, float]]
+    economics: dict[str, float] | None
+    usage: dict[str, float] | None
     approval: ApprovalOut
     audit_rows: list[AuditRowOut]
-    validation_error: Optional[str] = None
+    validation_error: str | None = None
     policy_version: str

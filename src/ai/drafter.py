@@ -5,14 +5,14 @@ The model never decides anything: scores, tier and scoring_reason are inputs. An
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, asdict
-from typing import Optional
+from dataclasses import asdict, dataclass
 
-from pydantic import BaseModel, ValidationError as PydanticValidationError
+from pydantic import BaseModel
+from pydantic import ValidationError as PydanticValidationError
 
+from src.ai.prompts import SYSTEM_PROMPT, user_prompt
 from src.config import settings
 from src.monitoring.logger import get_logger
-from src.ai.prompts import SYSTEM_PROMPT, user_prompt
 
 log = get_logger()
 
@@ -21,7 +21,7 @@ log = get_logger()
 class DraftFacts:
     account_id: str
     account_name: str
-    account_owner: Optional[str]
+    account_owner: str | None
     account_tier: str
     priority_score: float
     intent_score: float
@@ -29,18 +29,18 @@ class DraftFacts:
     engagement_score: float
     firmographic_fit_score: float
     scoring_reason: str
-    industry: Optional[str] = None
-    employee_count: Optional[int] = None
-    funding_stage: Optional[str] = None
-    mom_growth_pct: Optional[float] = None
+    industry: str | None = None
+    employee_count: int | None = None
+    funding_stage: str | None = None
+    mom_growth_pct: float | None = None
     pricing_page_visits: float = 0
     demo_requests: float = 0
     ml_job_postings: float = 0
     email_engagements: float = 0
-    company_summary: Optional[str] = None
-    personalization_hook: Optional[str] = None
-    tech_stack: Optional[str] = None
-    open_quotes: Optional[list[dict]] = None
+    company_summary: str | None = None
+    personalization_hook: str | None = None
+    tech_stack: str | None = None
+    open_quotes: list[dict] | None = None
 
     def as_json(self) -> str:
         return json.dumps(asdict(self), default=str, sort_keys=True)

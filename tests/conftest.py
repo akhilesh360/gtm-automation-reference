@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 import pytest
 
@@ -8,7 +7,6 @@ os.environ["SF_ENABLED"] = "false"
 os.environ["AI_ENABLED"] = "false"
 os.environ["ANTHROPIC_API_KEY"] = ""
 
-from src.config import PROJECT_ROOT  # noqa: E402
 from src.policy import get_policy  # noqa: E402
 
 

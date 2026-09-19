@@ -9,7 +9,13 @@ import duckdb
 
 from src.erp.netsuite_mock import ErpClient, ErpError
 from src.erp.payload import build_sales_order
-from src.monitoring.logger import STATUS_FAILED_API, STATUS_FAILED_VALIDATION, STATUS_RECONCILED, get_logger, write_integration_log
+from src.monitoring.logger import (
+    STATUS_FAILED_API,
+    STATUS_FAILED_VALIDATION,
+    STATUS_RECONCILED,
+    get_logger,
+    write_integration_log,
+)
 from src.policy import get_policy
 
 log = get_logger()

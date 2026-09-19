@@ -103,7 +103,8 @@ class MockSalesforceClient:
                 cond = cond.strip()
                 im = re.match(r"(\w+)\s+IN\s*\(([^)]*)\)", cond, re.I)
                 if im:
-                    k = im.group(1); vals = {v.strip().strip("'") for v in im.group(2).split(",")}
+                    k = im.group(1)
+                    vals = {v.strip().strip("'") for v in im.group(2).split(",")}
                     rows = [r for r in rows if str(r.get(k)) in vals]
                     continue
                 cm = re.match(r"(\w+)\s*(=|!=)\s*'([^']*)'", cond)

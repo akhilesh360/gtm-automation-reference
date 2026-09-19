@@ -2,12 +2,14 @@
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Callable
+from functools import partial
+from typing import Any
 
 import duckdb
 
-from src.monitoring.logger import (STATUS_FAILED_API, STATUS_RETRYING, STATUS_SUCCESS, get_logger, write_integration_log)
+from src.monitoring.logger import STATUS_FAILED_API, STATUS_RETRYING, STATUS_SUCCESS, get_logger, write_integration_log
 from src.policy import get_policy
 from src.salesforce.client import SalesforceClient
 
@@ -41,7 +43,7 @@ def upsert_accounts(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correl
         if sf.name == "mock":
             data["OwnerId"] = owner  # the mock keeps the owner name; a real org needs a User Id, so the integration user owns records
         sf_id = _with_retry(con, "upsert_accounts", "Account", aid, correlation_id,
-                            lambda: sf.upsert("Account", "External_Account_Id__c", aid, data))
+                            partial(sf.upsert, "Account", "External_Account_Id__c", aid, data))
         con.execute("UPDATE accounts SET sf_account_id = ? WHERE account_id = ?", [sf_id, aid])
         n += 1
     return n
@@ -55,12 +57,12 @@ def upsert_scores(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlat
     ).fetchall()
     n = 0
     for r in rows:
-        score_id, account_id, sf_acct = r[0], r[1], r[2]
+        score_id, sf_acct = r[0], r[2]
         data = {"Account__c": sf_acct, "Intent_Score__c": r[3], "Engagement_Score__c": r[4], "Firmographic_Fit_Score__c": r[5],
                 "Usage_Score__c": r[6], "Priority_Score__c": r[7], "Account_Tier__c": r[8], "Scoring_Reason__c": r[9],
                 "Narrative__c": r[10], "Task_Description__c": r[11], "Scored_At__c": r[12]}
         _with_retry(con, "upsert_scores", "Account_Score__c", score_id, correlation_id,
-                    lambda: sf.upsert("Account_Score__c", "Score_Id__c", score_id, data))
+                    partial(sf.upsert, "Account_Score__c", "Score_Id__c", score_id, data))
         n += 1
     return n
 
@@ -93,7 +95,7 @@ def create_quotes(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlat
                 data["Approver__c"] = r[17]
                 data["Rejection_Reason__c"] = r[18]
         sf_id = _with_retry(con, "create_quotes", "Quote__c", quote_id, correlation_id,
-                            lambda: sf.upsert("Quote__c", "Quote_Number__c", quote_id, data))
+                            partial(sf.upsert, "Quote__c", "Quote_Number__c", quote_id, data))
         con.execute("UPDATE quotes SET sf_quote_id = ? WHERE quote_id = ?", [sf_id, quote_id])
         audits = con.execute(
             "SELECT audit_id, rule_triggered, requested_discount, required_approver, decision, decision_reason, decision_timestamp, policy_version "
@@ -103,7 +105,7 @@ def create_quotes(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlat
                      "Decision__c": a[4], "Decision_Reason__c": a[5], "Decision_Timestamp__c": a[6], "Policy_Version__c": a[7],
                      "Correlation_Id__c": correlation_id}
             _with_retry(con, "create_quotes", "Approval_Audit__c", a[0], correlation_id,
-                        lambda: sf.upsert("Approval_Audit__c", "Audit_Id__c", a[0], adata))
+                        partial(sf.upsert, "Approval_Audit__c", "Audit_Id__c", a[0], adata))
         n += 1
     return n
 
@@ -117,7 +119,7 @@ def sync_task_outcomes(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, cor
         "SELECT t.task_id, t.account_id, a.sf_account_id FROM sales_tasks t JOIN accounts a ON a.account_id = t.account_id "
         "WHERE t.priority = 'High'").fetchall()
     n = 0
-    for task_id, account_id, sf_acct in rows:
+    for task_id, _account_id, sf_acct in rows:
         if not sf_acct:
             continue
         found = sf.query(f"SELECT Id, Status FROM Task WHERE WhatId = '{sf_acct}' AND Priority = 'High'")
@@ -192,7 +194,7 @@ def write_erp_status(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, corre
     n = 0
     for qid, sf_id, order_id, status, sent_at in rows:
         _with_retry(con, "write_erp_status", "Quote__c", qid, correlation_id,
-                    lambda: sf.update("Quote__c", sf_id, {"ERP_Order_Id__c": order_id, "ERP_Status__c": status, "ERP_Sent_At__c": sent_at}))
+                    partial(sf.update, "Quote__c", sf_id, {"ERP_Order_Id__c": order_id, "ERP_Status__c": status, "ERP_Sent_At__c": sent_at}))
         n += 1
     return n
 
@@ -213,7 +215,7 @@ def upsert_opportunities(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, c
         data = {"AccountId": sf_acct, "Name": name[:120], "Amount": amount, "StageName": STAGE_MAP.get(stage, stage),
                 "CloseDate": close_date, "Source_Tier__c": tier}
         sf_id = _with_retry(con, "upsert_opportunities", "Opportunity", oid, correlation_id,
-                            lambda: sf.upsert("Opportunity", "External_Opportunity_Id__c", oid, data))
+                            partial(sf.upsert, "Opportunity", "External_Opportunity_Id__c", oid, data))
         con.execute("UPDATE opportunities SET sf_opportunity_id = ? WHERE opportunity_id = ?", [sf_id, oid])
         n += 1
     return n

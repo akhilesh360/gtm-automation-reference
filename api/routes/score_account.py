@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException
 from api.models import ScoreAccountRequest, ScoreAccountResponse
 from src.db import session
 from src.policy import get_policy
-from src.scoring.account_scoring import ScoreFacts, SubScores, fetch_facts, priority_score, sub_scores
+from src.scoring.account_scoring import SubScores, fetch_facts, priority_score, sub_scores
 from src.scoring.explain_score import explain
 from src.scoring.tiering import assign_tier, tier_action
 

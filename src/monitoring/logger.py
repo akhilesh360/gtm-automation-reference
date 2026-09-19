@@ -5,9 +5,10 @@ import json
 import logging
 import sys
 import uuid
+from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import datetime
-from typing import Any, Iterator, Optional
+from typing import Any
 
 import duckdb
 
@@ -58,8 +59,8 @@ def new_correlation_id() -> str:
 
 
 def write_integration_log(con: duckdb.DuckDBPyConnection, workflow: str, status: str, correlation_id: str,
-                          record_type: Optional[str] = None, record_id: Optional[str] = None,
-                          started_at: Optional[datetime] = None, error: Optional[str] = None, retry_count: int = 0) -> str:
+                          record_type: str | None = None, record_id: str | None = None,
+                          started_at: datetime | None = None, error: str | None = None, retry_count: int = 0) -> str:
     log_id = f"LOG-{uuid.uuid4().hex[:10].upper()}"
     now = datetime.now()
     con.execute(
@@ -72,7 +73,7 @@ def write_integration_log(con: duckdb.DuckDBPyConnection, workflow: str, status:
 
 @contextmanager
 def workflow_run(con: duckdb.DuckDBPyConnection, workflow: str, correlation_id: str,
-                 record_type: Optional[str] = None, record_id: Optional[str] = None) -> Iterator[dict]:
+                 record_type: str | None = None, record_id: str | None = None) -> Iterator[dict]:
     """Writes STARTED, then SUCCESS or FAILED_* to integration_log around a block of work."""
     log = get_logger()
     started = datetime.now()

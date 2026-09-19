@@ -56,7 +56,7 @@ class Policy(BaseModel):
     scoring: ScoringPolicy
 
     @model_validator(mode="after")
-    def _invariants(self) -> "Policy":
+    def _invariants(self) -> Policy:
         if self.discount.standard_limit >= self.discount.manager_limit:
             raise ValueError("discount.standard_limit must be below discount.manager_limit")
         if not set(self.payment_terms.standard) <= set(self.payment_terms.allowed):
@@ -74,7 +74,7 @@ class Policy(BaseModel):
 
 def load_policy(path: Path | None = None) -> Policy:
     path = path or settings.policy_file
-    with open(path, "r", encoding="utf-8") as fh:
+    with open(path, encoding="utf-8") as fh:
         raw = yaml.safe_load(fh)
     return Policy.model_validate(raw)
 
