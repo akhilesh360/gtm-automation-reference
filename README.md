@@ -36,7 +36,7 @@ uvicorn api.app:app --reload     # API docs at http://127.0.0.1:8000/docs
 pytest -q                        # 54 tests, no env vars needed
 ```
 
-No `.env` is required. Copy `.env.example` to `.env` only to enable Salesforce (`SF_ENABLED=true`) or AI drafting (`AI_ENABLED=true`).
+No `.env` is required. To push into a real Salesforce org, deploy `sfdx/` once (see `docs/salesforce_setup.md`), log the Salesforce CLI in with `sf org login web -a gtm-dev`, and run with `SF_ENABLED=true`; the engine reuses the CLI session, so no password is stored. Set `AI_ENABLED=true` with an API key for AI-assisted drafting.
 
 ## The three test scenarios
 

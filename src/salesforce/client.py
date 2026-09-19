@@ -110,25 +110,53 @@ class MockSalesforceClient:
         })
 
 
+def _json_safe(data: dict[str, Any]) -> dict[str, Any]:
+    """DuckDB hands back Decimal and datetime values; the REST API wants plain JSON types."""
+    from datetime import date, datetime
+    from decimal import Decimal
+    out: dict[str, Any] = {}
+    for k, v in data.items():
+        if isinstance(v, Decimal):
+            out[k] = float(v)
+        elif isinstance(v, datetime):
+            out[k] = v.strftime("%Y-%m-%dT%H:%M:%S.000Z")   # Salesforce DateTime format
+        elif isinstance(v, date):
+            out[k] = v.isoformat()
+        else:
+            out[k] = v
+    return out
+
+
 class RealSalesforceClient:
     name = "salesforce"
 
     def __init__(self):
         from simple_salesforce import Salesforce  # imported lazily so the mock path has no dependency
 
-        self.sf = Salesforce(username=settings.sf_username, password=settings.sf_password,
-                             security_token=settings.sf_security_token, domain=settings.sf_domain)
+        if settings.sf_auth == "cli":
+            # Reuse the session the Salesforce CLI already holds (sf org login web -a <alias>). No password in .env.
+            import json
+            import subprocess
+            display = subprocess.run(["sf", "org", "display", "-o", settings.sf_alias, "--json"], capture_output=True, text=True, check=True)
+            instance = json.loads(display.stdout)["result"]["instanceUrl"].replace("https://", "")
+            token = subprocess.run(["sf", "org", "auth", "show-access-token", "-o", settings.sf_alias, "--json"],
+                                   capture_output=True, text=True, check=True)
+            session_id = json.loads(token.stdout)["result"]["accessToken"]
+            self.sf = Salesforce(instance=instance, session_id=session_id)
+        else:
+            self.sf = Salesforce(username=settings.sf_username, password=settings.sf_password,
+                                 security_token=settings.sf_security_token, domain=settings.sf_domain)
 
     def upsert(self, sobject: str, external_id_field: str, external_id: str, data: dict[str, Any]) -> str:
         obj = getattr(self.sf, sobject)
-        res = obj.upsert(f"{external_id_field}/{external_id}", {k: v for k, v in data.items() if k != external_id_field})
+        res = obj.upsert(f"{external_id_field}/{external_id}", _json_safe({k: v for k, v in data.items() if k != external_id_field}))
         if isinstance(res, dict) and res.get("id"):
             return res["id"]
         rows = self.sf.query(f"SELECT Id FROM {sobject} WHERE {external_id_field} = '{external_id}'")["records"]
         return rows[0]["Id"] if rows else ""
 
     def create(self, sobject: str, data: dict[str, Any]) -> str:
-        return getattr(self.sf, sobject).create(data)["id"]
+        return getattr(self.sf, sobject).create(_json_safe(data))["id"]
 
     def query(self, soql: str) -> list[dict[str, Any]]:
         return [{k: v for k, v in r.items() if k != "attributes"} for r in self.sf.query_all(soql)["records"]]

@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     sf_password: str = ""
     sf_security_token: str = ""
     sf_domain: str = "login"
+    sf_auth: str = "cli"          # "cli" = reuse the Salesforce CLI session (no password); "password" = username/password/token
+    sf_alias: str = "gtm-dev"     # CLI org alias used when sf_auth = "cli"
 
     ai_enabled: bool = False
     anthropic_api_key: str = ""

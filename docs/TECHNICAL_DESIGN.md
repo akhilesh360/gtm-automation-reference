@@ -306,7 +306,7 @@ sequenceDiagram
 |---|---|---|---|
 | Local run (default) | false | false | Mock SF client writes to `data/processed/mock_salesforce.json`; template narratives |
 | Local + AI | false | true | Same, plus Claude drafts for Tier 1 accounts |
-| Integrated | true | false/true | Real org via `simple-salesforce`; Flows fire in org |
+| Integrated | true | false/true | Real org via `simple-salesforce`, authenticated by reusing the Salesforce CLI session (`SF_AUTH=cli`, default) or username/password/token (`SF_AUTH=password`); Flows fire in org. Verified end to end against a Developer Edition org |
 
 Clay and HubSpot are CSV files in every v1 mode.
 
@@ -756,7 +756,7 @@ class SalesforceClient(Protocol):
     def query(self, soql) -> list[dict]: ...
 
 class MockSalesforceClient:   # default; persists to data/processed/mock_salesforce.json
-class RealSalesforceClient:   # simple_salesforce wrapper; SF_ENABLED=true
+class RealSalesforceClient:   # simple_salesforce wrapper; SF_ENABLED=true; SF_AUTH=cli reuses `sf org auth show-access-token`
 def get_client() -> SalesforceClient
 ```
 
@@ -797,7 +797,7 @@ flowchart TD
     ST -- Failed Validation --> T3[Notify quote owner]
 ```
 
-Entry condition: `Approval_Status__c` changed. No discount, ACV or payment-term logic exists in this Flow.
+Entry condition: `ISNEW() || ISCHANGED({!$Record.Approval_Status__c})`, so it fires on creation by the sync and on later status changes, but not on an unchanged re-sync. No discount, ACV or payment-term logic exists in this Flow.
 
 Recipients: `Approval_Route__c` is a text label such as `RevOps, Finance, VP Sales`, which a Flow cannot email directly. In v1, role routing is displayed on the quote and emailed to the Quote Owner plus a configured RevOps test mailbox (`RevOps_Notification_Email__c` on a `GTM_Settings__c` custom setting). Production role-to-user or role-to-queue mapping is deferred to v2. The Flow does not send email to "RevOps", "Finance" or "VP Sales" as recipients.
 

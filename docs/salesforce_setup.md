@@ -19,21 +19,28 @@ Setup → Custom Settings → GTM Settings → Manage → New (organization defa
 
 ## 3. Point the Python engine at the org
 
-Copy `.env.example` to `.env` and set:
+The default auth mode reuses the session the Salesforce CLI already holds, so no password or security token is stored anywhere:
+
+```bash
+SF_ENABLED=true python -m src.main run-all
+```
+
+That works as long as `sf org login web -a gtm-dev` has been run once on the machine. To use a different alias, set `SF_ALIAS`. To use username/password/token instead (for example on a server without the CLI), copy `.env.example` to `.env` and set:
 
 ```
 SF_ENABLED=true
+SF_AUTH=password
 SF_USERNAME=you@example.com
 SF_PASSWORD=...
 SF_SECURITY_TOKEN=...
 SF_DOMAIN=login
 ```
 
-Then:
+Notes from a verified run against a Developer Edition org:
 
-```bash
-python -m src.main run-all
-```
+- Account records are owned by the integration user. The `account_owner` names in the CSV are kept locally and used by the mock only, because Salesforce `OwnerId` must be a User Id.
+- Quotes that failed validation with a payment term outside the allowed picklist are synced with a blank `Payment_Terms__c`; the bad value stays in `Exception_Reason__c`.
+- Flow A fires on new quotes and on status changes (`ISNEW() || ISCHANGED(Approval_Status__c)`). Re-syncing an unchanged quote does not re-send email.
 
 `sync-salesforce` upserts Accounts, Account Scores, Quotes and Approval Audits by external ID. `sync-task-outcomes` reads back the Tasks that Flow B created.
 

@@ -89,8 +89,7 @@
         <object>Quote__c</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
-        <filterLogic>and</filterLogic>
-        <filters><field>Approval_Status__c</field><operator>IsChanged</operator><value><booleanValue>true</booleanValue></value></filters>
+        <filterFormula>ISNEW() || ISCHANGED({!$Record.Approval_Status__c})</filterFormula>
         <connector><targetReference>Check_Required_Fields</targetReference></connector>
     </start>
     <status>Active</status>

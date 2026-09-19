@@ -8,6 +8,7 @@ from typing import Any, Callable
 import duckdb
 
 from src.monitoring.logger import (STATUS_FAILED_API, STATUS_RETRYING, STATUS_SUCCESS, get_logger, write_integration_log)
+from src.policy import get_policy
 from src.salesforce.client import SalesforceClient
 
 MAX_RETRIES = 3
@@ -36,7 +37,9 @@ def upsert_accounts(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correl
     rows = con.execute("SELECT account_id, account_name, domain, industry, employee_count, account_owner FROM accounts").fetchall()
     n = 0
     for aid, name, domain, industry, emp, owner in rows:
-        data = {"Name": name, "Website": domain, "Industry": industry, "NumberOfEmployees": emp, "OwnerId": owner}
+        data = {"Name": name, "Website": domain, "Industry": industry, "NumberOfEmployees": emp}
+        if sf.name == "mock":
+            data["OwnerId"] = owner  # the mock keeps the owner name; a real org needs a User Id, so the integration user owns records
         sf_id = _with_retry(con, "upsert_accounts", "Account", aid, correlation_id,
                             lambda: sf.upsert("Account", "External_Account_Id__c", aid, data))
         con.execute("UPDATE accounts SET sf_account_id = ? WHERE account_id = ?", [sf_id, aid])
@@ -55,7 +58,7 @@ def upsert_scores(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlat
         score_id, account_id, sf_acct = r[0], r[1], r[2]
         data = {"Account__c": sf_acct, "Intent_Score__c": r[3], "Engagement_Score__c": r[4], "Firmographic_Fit_Score__c": r[5],
                 "Usage_Score__c": r[6], "Priority_Score__c": r[7], "Account_Tier__c": r[8], "Scoring_Reason__c": r[9],
-                "Narrative__c": r[10], "Task_Description__c": r[11], "Scored_At__c": str(r[12])}
+                "Narrative__c": r[10], "Task_Description__c": r[11], "Scored_At__c": r[12]}
         _with_retry(con, "upsert_scores", "Account_Score__c", score_id, correlation_id,
                     lambda: sf.upsert("Account_Score__c", "Score_Id__c", score_id, data))
         n += 1
@@ -74,7 +77,10 @@ def create_quotes(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlat
         quote_id = r[0]
         data = {"Account__c": r[1], "Product_Id__c": r[2], "Monthly_Commitment__c": r[3], "List_Price__c": r[4], "Quantity__c": r[5],
                 "Contract_Term_Months__c": r[6], "Discount_Percent__c": r[7], "Discount_Amount__c": r[8], "Net_Price__c": r[9],
-                "Annual_Contract_Value__c": r[10], "Payment_Terms__c": r[11], "Custom_Pricing__c": bool(r[12]),
+                "Annual_Contract_Value__c": r[10],
+                # restricted picklist in the org: a validation-failed quote may carry a bad value, keep it in Exception_Reason__c only
+                "Payment_Terms__c": r[11] if r[11] in get_policy().payment_terms.allowed else None,
+                "Custom_Pricing__c": bool(r[12]),
                 "Approval_Status__c": r[13], "Approval_Route__c": r[14], "Exception_Reason__c": r[15], "Policy_Version__c": r[16]}
         sf_id = _with_retry(con, "create_quotes", "Quote__c", quote_id, correlation_id,
                             lambda: sf.upsert("Quote__c", "Quote_Number__c", quote_id, data))
@@ -84,7 +90,7 @@ def create_quotes(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlat
             "FROM approval_audit WHERE quote_id = ?", [quote_id]).fetchall()
         for a in audits:
             adata = {"Quote__c": sf_id, "Rule_Triggered__c": a[1], "Requested_Discount__c": a[2], "Required_Approver__c": a[3],
-                     "Decision__c": a[4], "Decision_Reason__c": a[5], "Decision_Timestamp__c": str(a[6]), "Policy_Version__c": a[7],
+                     "Decision__c": a[4], "Decision_Reason__c": a[5], "Decision_Timestamp__c": a[6], "Policy_Version__c": a[7],
                      "Correlation_Id__c": correlation_id}
             _with_retry(con, "create_quotes", "Approval_Audit__c", a[0], correlation_id,
                         lambda: sf.upsert("Approval_Audit__c", "Audit_Id__c", a[0], adata))
@@ -123,6 +129,6 @@ def mirror_integration_log(con: duckdb.DuckDBPyConnection, sf: SalesforceClient,
     for r in rows:
         sf.upsert("Integration_Log__c", "Log_Id__c", r[0], {
             "Workflow_Name__c": r[1], "Record_Type__c": r[2], "Record_Id__c": r[3], "Status__c": r[4],
-            "Started_At__c": str(r[5]), "Completed_At__c": str(r[6]) if r[6] else None, "Error_Message__c": r[7],
+            "Started_At__c": r[5], "Completed_At__c": r[6], "Error_Message__c": r[7],
             "Retry_Count__c": r[8], "Correlation_Id__c": correlation_id})
     return len(rows)
