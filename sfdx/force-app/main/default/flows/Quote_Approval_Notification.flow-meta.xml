@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <label>Quote Approval Notification</label>
+    <description>Orchestration only. Reads Approval_Status__c and Approval_Route__c written by the Python policy engine. Contains no discount, ACV or payment-term logic. v1 emails the Quote Owner plus the RevOps test mailbox from GTM_Settings__c; role-to-user routing is v2.</description>
+    <processType>AutoLaunchedFlow</processType>
+    <status>Active</status>
+    <interviewLabel>Quote Approval Notification {!$Flow.CurrentDateTime}</interviewLabel>
+    <start>
+        <locationX>50</locationX><locationY>0</locationY>
+        <object>Quote__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+        <filterLogic>and</filterLogic>
+        <filters><field>Approval_Status__c</field><operator>IsChanged</operator><value><booleanValue>true</booleanValue></value></filters>
+        <connector><targetReference>Check_Required_Fields</targetReference></connector>
+    </start>
+    <decisions>
+        <name>Check_Required_Fields</name><label>Required fields present?</label>
+        <locationX>50</locationX><locationY>150</locationY>
+        <defaultConnector><targetReference>Notify_Owner_Incomplete</targetReference></defaultConnector>
+        <defaultConnectorLabel>Incomplete</defaultConnectorLabel>
+        <rules>
+            <name>Complete</name><conditionLogic>and</conditionLogic>
+            <conditions><leftValueReference>$Record.Monthly_Commitment__c</leftValueReference><operator>IsNull</operator><rightValue><booleanValue>false</booleanValue></rightValue></conditions>
+            <conditions><leftValueReference>$Record.Contract_Term_Months__c</leftValueReference><operator>IsNull</operator><rightValue><booleanValue>false</booleanValue></rightValue></conditions>
+            <conditions><leftValueReference>$Record.Discount_Percent__c</leftValueReference><operator>IsNull</operator><rightValue><booleanValue>false</booleanValue></rightValue></conditions>
+            <conditions><leftValueReference>$Record.Payment_Terms__c</leftValueReference><operator>IsNull</operator><rightValue><booleanValue>false</booleanValue></rightValue></conditions>
+            <conditions><leftValueReference>$Record.Approval_Status__c</leftValueReference><operator>IsNull</operator><rightValue><booleanValue>false</booleanValue></rightValue></conditions>
+            <connector><targetReference>Route_By_Status</targetReference></connector>
+            <label>Complete</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Route_By_Status</name><label>Approval status</label>
+        <locationX>50</locationX><locationY>300</locationY>
+        <defaultConnectorLabel>Other</defaultConnectorLabel>
+        <rules>
+            <name>Pending</name><conditionLogic>and</conditionLogic>
+            <conditions><leftValueReference>$Record.Approval_Status__c</leftValueReference><operator>EqualTo</operator><rightValue><stringValue>Pending Approval</stringValue></rightValue></conditions>
+            <connector><targetReference>Email_Approval_Request</targetReference></connector>
+            <label>Pending Approval</label>
+        </rules>
+        <rules>
+            <name>Auto_Approved</name><conditionLogic>and</conditionLogic>
+            <conditions><leftValueReference>$Record.Approval_Status__c</leftValueReference><operator>EqualTo</operator><rightValue><stringValue>Auto-Approved</stringValue></rightValue></conditions>
+            <connector><targetReference>Stamp_Approved_At</targetReference></connector>
+            <label>Auto-Approved</label>
+        </rules>
+        <rules>
+            <name>Failed</name><conditionLogic>and</conditionLogic>
+            <conditions><leftValueReference>$Record.Approval_Status__c</leftValueReference><operator>EqualTo</operator><rightValue><stringValue>Failed Validation</stringValue></rightValue></conditions>
+            <connector><targetReference>Notify_Owner_Failed</targetReference></connector>
+            <label>Failed Validation</label>
+        </rules>
+    </decisions>
+    <actionCalls>
+        <name>Email_Approval_Request</name><label>Email Quote Owner + RevOps mailbox</label>
+        <locationX>50</locationX><locationY>450</locationY>
+        <actionName>emailSimple</actionName><actionType>emailSimple</actionType>
+        <inputParameters><name>emailAddresses</name><value><elementReference>Recipient_List</elementReference></value></inputParameters>
+        <inputParameters><name>emailSubject</name><value><elementReference>Subject_Pending</elementReference></value></inputParameters>
+        <inputParameters><name>emailBody</name><value><elementReference>Body_Pending</elementReference></value></inputParameters>
+        <connector><targetReference>Stamp_Requested_At</targetReference></connector>
+    </actionCalls>
+    <actionCalls>
+        <name>Notify_Owner_Incomplete</name><label>Notify Quote Owner: fields incomplete</label>
+        <locationX>300</locationX><locationY>300</locationY>
+        <actionName>emailSimple</actionName><actionType>emailSimple</actionType>
+        <inputParameters><name>emailAddresses</name><value><elementReference>Owner_Email</elementReference></value></inputParameters>
+        <inputParameters><name>emailSubject</name><value><stringValue>Quote is missing required fields</stringValue></value></inputParameters>
+        <inputParameters><name>emailBody</name><value><elementReference>Body_Incomplete</elementReference></value></inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>Notify_Owner_Failed</name><label>Notify Quote Owner: failed validation</label>
+        <locationX>300</locationX><locationY>450</locationY>
+        <actionName>emailSimple</actionName><actionType>emailSimple</actionType>
+        <inputParameters><name>emailAddresses</name><value><elementReference>Owner_Email</elementReference></value></inputParameters>
+        <inputParameters><name>emailSubject</name><value><stringValue>Quote failed validation</stringValue></value></inputParameters>
+        <inputParameters><name>emailBody</name><value><elementReference>Body_Failed</elementReference></value></inputParameters>
+    </actionCalls>
+    <recordUpdates>
+        <name>Stamp_Requested_At</name><label>Stamp Approval_Requested_At__c</label>
+        <locationX>50</locationX><locationY>600</locationY>
+        <inputAssignments><field>Approval_Requested_At__c</field><value><elementReference>$Flow.CurrentDateTime</elementReference></value></inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Stamp_Approved_At</name><label>Stamp Approved_At__c</label>
+        <locationX>550</locationX><locationY>450</locationY>
+        <inputAssignments><field>Approved_At__c</field><value><elementReference>$Flow.CurrentDateTime</elementReference></value></inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <formulas><name>Owner_Email</name><dataType>String</dataType><expression>{!$Record.Owner:User.Email}</expression></formulas>
+    <formulas><name>Recipient_List</name><dataType>String</dataType><expression>{!$Record.Owner:User.Email} &amp; "," &amp; {!$Setup.GTM_Settings__c.RevOps_Notification_Email__c}</expression></formulas>
+    <formulas><name>Subject_Pending</name><dataType>String</dataType><expression>"Approval requested: " &amp; {!$Record.Quote_Number__c} &amp; " (" &amp; {!$Record.Approval_Route__c} &amp; ")"</expression></formulas>
+    <textTemplates><name>Body_Pending</name><isViewedAsPlainText>true</isViewedAsPlainText><text>Quote {!$Record.Quote_Number__c} requires approval.
+Route (from policy engine): {!$Record.Approval_Route__c}
+Reasons: {!$Record.Exception_Reason__c}
+Discount: {!$Record.Discount_Percent__c}%  ACV: {!$Record.Annual_Contract_Value__c}  Terms: {!$Record.Payment_Terms__c}
+Policy version: {!$Record.Policy_Version__c}
+v1: role routing is displayed here; role-to-user/queue mapping is deferred to v2.</text></textTemplates>
+    <textTemplates><name>Body_Incomplete</name><isViewedAsPlainText>true</isViewedAsPlainText><text>Quote {!$Record.Quote_Number__c} was saved without all required fields (commitment, term, discount, payment terms, approval status). Check the integration log.</text></textTemplates>
+    <textTemplates><name>Body_Failed</name><isViewedAsPlainText>true</isViewedAsPlainText><text>Quote {!$Record.Quote_Number__c} failed validation in the policy engine: {!$Record.Exception_Reason__c}</text></textTemplates>
+</Flow>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>61.0</apiVersion>
+    <label>Tier 1 Task Creation</label>
+    <description>Owns Salesforce Task creation and duplicate prevention for Tier 1 accounts. Reads the tier assigned by the Python engine; does not compare scores to thresholds.</description>
+    <processType>AutoLaunchedFlow</processType>
+    <status>Active</status>
+    <interviewLabel>Tier 1 Task Creation {!$Flow.CurrentDateTime}</interviewLabel>
+    <start>
+        <locationX>50</locationX><locationY>0</locationY>
+        <object>Account_Score__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+        <connector><targetReference>Is_Tier_1</targetReference></connector>
+    </start>
+    <decisions>
+        <name>Is_Tier_1</name><label>Tier 1?</label>
+        <locationX>50</locationX><locationY>150</locationY>
+        <defaultConnector><targetReference>Update_Account</targetReference></defaultConnector>
+        <defaultConnectorLabel>Not Tier 1</defaultConnectorLabel>
+        <rules>
+            <name>Tier_1</name><conditionLogic>and</conditionLogic>
+            <conditions><leftValueReference>$Record.Account_Tier__c</leftValueReference><operator>EqualTo</operator><rightValue><stringValue>Tier 1</stringValue></rightValue></conditions>
+            <connector><targetReference>Get_Open_High_Tasks</targetReference></connector>
+            <label>Tier 1</label>
+        </rules>
+    </decisions>
+    <recordLookups>
+        <name>Get_Open_High_Tasks</name><label>Get open High-priority Tasks on this Account</label>
+        <locationX>50</locationX><locationY>300</locationY>
+        <object>Task</object>
+        <filterLogic>and</filterLogic>
+        <filters><field>WhatId</field><operator>EqualTo</operator><value><elementReference>$Record.Account__c</elementReference></value></filters>
+        <filters><field>Priority</field><operator>EqualTo</operator><value><stringValue>High</stringValue></value></filters>
+        <filters><field>Status</field><operator>NotEqualTo</operator><value><stringValue>Completed</stringValue></value></filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <connector><targetReference>Task_Exists</targetReference></connector>
+    </recordLookups>
+    <decisions>
+        <name>Task_Exists</name><label>Open task already exists?</label>
+        <locationX>50</locationX><locationY>450</locationY>
+        <defaultConnector><targetReference>Create_Task</targetReference></defaultConnector>
+        <defaultConnectorLabel>No open task</defaultConnectorLabel>
+        <rules>
+            <name>Exists</name><conditionLogic>and</conditionLogic>
+            <conditions><leftValueReference>Get_Open_High_Tasks</leftValueReference><operator>IsNull</operator><rightValue><booleanValue>false</booleanValue></rightValue></conditions>
+            <connector><targetReference>Update_Account</targetReference></connector>
+            <label>Exists</label>
+        </rules>
+    </decisions>
+    <recordCreates>
+        <name>Create_Task</name><label>Create Task for Account Owner</label>
+        <locationX>50</locationX><locationY>600</locationY>
+        <object>Task</object>
+        <inputAssignments><field>WhatId</field><value><elementReference>$Record.Account__c</elementReference></value></inputAssignments>
+        <inputAssignments><field>OwnerId</field><value><elementReference>$Record.Account__r.OwnerId</elementReference></value></inputAssignments>
+        <inputAssignments><field>Subject</field><value><stringValue>High-priority account follow-up</stringValue></value></inputAssignments>
+        <inputAssignments><field>Description</field><value><elementReference>$Record.Task_Description__c</elementReference></value></inputAssignments>
+        <inputAssignments><field>Priority</field><value><stringValue>High</stringValue></value></inputAssignments>
+        <inputAssignments><field>Status</field><value><stringValue>Not Started</stringValue></value></inputAssignments>
+        <connector><targetReference>Update_Account</targetReference></connector>
+    </recordCreates>
+    <recordUpdates>
+        <name>Update_Account</name><label>Update Account tier, score, last signal date</label>
+        <locationX>50</locationX><locationY>750</locationY>
+        <object>Account</object>
+        <filterLogic>and</filterLogic>
+        <filters><field>Id</field><operator>EqualTo</operator><value><elementReference>$Record.Account__c</elementReference></value></filters>
+        <inputAssignments><field>Account_Tier__c</field><value><elementReference>$Record.Account_Tier__c</elementReference></value></inputAssignments>
+        <inputAssignments><field>Priority_Score__c</field><value><elementReference>$Record.Priority_Score__c</elementReference></value></inputAssignments>
+        <inputAssignments><field>Last_Signal_Date__c</field><value><elementReference>$Flow.CurrentDate</elementReference></value></inputAssignments>
+    </recordUpdates>
+</Flow>

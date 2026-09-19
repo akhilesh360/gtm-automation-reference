@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Quote (CPQ-style)</label>
+    <pluralLabel>Quotes (CPQ-style)</pluralLabel>
+    <nameField><label>Name</label><type>Text</type></nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <enableActivities>false</enableActivities>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <description>CPQ-style quote written by the Python policy engine. Decision fields are authoritative; Flows do not recompute them.</description>
+</CustomObject>

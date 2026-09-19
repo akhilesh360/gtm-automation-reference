@@ -1,0 +1,30 @@
+# Commercial policy and scoring policy. This file is the ONLY place thresholds are defined.
+# Python loads it; SQL receives values as parameters; Salesforce Flows contain no thresholds.
+version: "2026.09"
+
+discount:
+  standard_limit: 10        # <= 10% needs no approval
+  manager_limit: 20         # 10 < d <= 20 -> Sales Manager; > 20 -> RevOps + Finance
+
+acv:
+  vp_threshold: 100000      # ACV >= threshold -> VP Sales
+
+payment_terms:
+  allowed: ["Net 30", "Net 60", "Net 90", "Annual Prepaid"]
+  standard: ["Net 30", "Annual Prepaid"]
+
+approver_order: ["Sales Manager", "RevOps", "Finance", "VP Sales"]
+
+sla:
+  pending_approval_days: 2
+
+scoring:
+  weights:
+    intent: 0.40
+    usage: 0.30
+    engagement: 0.20
+    firmographic: 0.10
+  tiers:
+    tier_1: 80
+    tier_2: 60
+  window_days: 90

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Approval Audit</label>
+    <pluralLabel>Approval Audits</pluralLabel>
+    <nameField><label>Name</label><type>Text</type></nameField>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
+    <enableActivities>false</enableActivities>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <description>One row per policy rule evaluated on a quote, including STANDARD_POLICY for auto-approvals.</description>
+</CustomObject>
