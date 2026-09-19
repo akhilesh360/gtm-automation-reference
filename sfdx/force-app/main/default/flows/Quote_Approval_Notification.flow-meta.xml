@@ -11,6 +11,14 @@
         <connector><targetReference>Stamp_Requested_At</targetReference></connector>
     </actionCalls>
     <actionCalls>
+        <name>Notify_Owner_Rejected</name><label>Notify Quote Owner: rejected</label>
+        <locationX>800</locationX><locationY>450</locationY>
+        <actionName>emailSimple</actionName><actionType>emailSimple</actionType>
+        <inputParameters><name>emailAddresses</name><value><elementReference>Owner_Email</elementReference></value></inputParameters>
+        <inputParameters><name>emailSubject</name><value><elementReference>Subject_Rejected</elementReference></value></inputParameters>
+        <inputParameters><name>emailBody</name><value><elementReference>Body_Rejected</elementReference></value></inputParameters>
+    </actionCalls>
+    <actionCalls>
         <name>Notify_Owner_Incomplete</name><label>Notify Quote Owner: fields incomplete</label>
         <locationX>300</locationX><locationY>300</locationY>
         <actionName>emailSimple</actionName><actionType>emailSimple</actionType>
@@ -59,6 +67,18 @@
             <label>Auto-Approved</label>
         </rules>
         <rules>
+            <name>Approved</name><conditionLogic>and</conditionLogic>
+            <conditions><leftValueReference>$Record.Approval_Status__c</leftValueReference><operator>EqualTo</operator><rightValue><stringValue>Approved</stringValue></rightValue></conditions>
+            <connector><targetReference>Stamp_Human_Approval</targetReference></connector>
+            <label>Approved</label>
+        </rules>
+        <rules>
+            <name>Rejected</name><conditionLogic>and</conditionLogic>
+            <conditions><leftValueReference>$Record.Approval_Status__c</leftValueReference><operator>EqualTo</operator><rightValue><stringValue>Rejected</stringValue></rightValue></conditions>
+            <connector><targetReference>Notify_Owner_Rejected</targetReference></connector>
+            <label>Rejected</label>
+        </rules>
+        <rules>
             <name>Failed</name><conditionLogic>and</conditionLogic>
             <conditions><leftValueReference>$Record.Approval_Status__c</leftValueReference><operator>EqualTo</operator><rightValue><stringValue>Failed Validation</stringValue></rightValue></conditions>
             <connector><targetReference>Notify_Owner_Failed</targetReference></connector>
@@ -68,6 +88,8 @@
     <description>Orchestration only. Reads Approval_Status__c and Approval_Route__c written by the Python policy engine. Contains no discount, ACV or payment-term logic. v1 emails the Quote Owner plus the RevOps test mailbox from GTM_Settings__c; role-to-user routing is v2.</description>
     <formulas><name>Owner_Email</name><dataType>String</dataType><expression>{!$Record.Owner:User.Email}</expression></formulas>
     <formulas><name>Recipient_List</name><dataType>String</dataType><expression>{!$Record.Owner:User.Email} &amp; "," &amp; {!$Setup.GTM_Settings__c.RevOps_Notification_Email__c}</expression></formulas>
+    <formulas><name>Approver_Name</name><dataType>String</dataType><expression>IF(ISBLANK({!$Record.Approver__c}), {!$Record.LastModifiedBy.Name}, {!$Record.Approver__c})</expression></formulas>
+    <formulas><name>Subject_Rejected</name><dataType>String</dataType><expression>"Quote rejected: " &amp; {!$Record.Quote_Number__c}</expression></formulas>
     <formulas><name>Subject_Pending</name><dataType>String</dataType><expression>"Approval requested: " &amp; {!$Record.Quote_Number__c} &amp; " (" &amp; {!$Record.Approval_Route__c} &amp; ")"</expression></formulas>
     <interviewLabel>Quote Approval Notification {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Quote Approval Notification</label>
@@ -76,6 +98,13 @@
         <name>Stamp_Requested_At</name><label>Stamp Approval_Requested_At__c</label>
         <locationX>50</locationX><locationY>600</locationY>
         <inputAssignments><field>Approval_Requested_At__c</field><value><elementReference>$Flow.CurrentDateTime</elementReference></value></inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Stamp_Human_Approval</name><label>Stamp Approved_At__c and Approver__c</label>
+        <locationX>800</locationX><locationY>300</locationY>
+        <inputAssignments><field>Approved_At__c</field><value><elementReference>$Flow.CurrentDateTime</elementReference></value></inputAssignments>
+        <inputAssignments><field>Approver__c</field><value><elementReference>Approver_Name</elementReference></value></inputAssignments>
         <inputReference>$Record</inputReference>
     </recordUpdates>
     <recordUpdates>
@@ -99,6 +128,8 @@ Reasons: {!$Record.Exception_Reason__c}
 Discount: {!$Record.Discount_Percent__c}%  ACV: {!$Record.Annual_Contract_Value__c}  Terms: {!$Record.Payment_Terms__c}
 Policy version: {!$Record.Policy_Version__c}
 v1: role routing is displayed here; role-to-user/queue mapping is deferred to v2.</text></textTemplates>
+    <textTemplates><name>Body_Rejected</name><isViewedAsPlainText>true</isViewedAsPlainText><text>Quote {!$Record.Quote_Number__c} was rejected by {!$Record.Approver__c}.
+Reason: {!$Record.Rejection_Reason__c}</text></textTemplates>
     <textTemplates><name>Body_Incomplete</name><isViewedAsPlainText>true</isViewedAsPlainText><text>Quote {!$Record.Quote_Number__c} was saved without all required fields (commitment, term, discount, payment terms, approval status). Check the integration log.</text></textTemplates>
     <textTemplates><name>Body_Failed</name><isViewedAsPlainText>true</isViewedAsPlainText><text>Quote {!$Record.Quote_Number__c} failed validation in the policy engine: {!$Record.Exception_Reason__c}</text></textTemplates>
 </Flow>

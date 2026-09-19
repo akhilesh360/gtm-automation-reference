@@ -46,6 +46,12 @@ Signals from Clay (2 open ML roles), HubSpot (meeting booked, 5 email engagement
 
 > "Python owns decisioning; Salesforce Flow owns CRM-native task creation and duplicate prevention."
 
+## 4b. Scenario 4 — human approval and ERP handoff (v2, 1.5 min)
+
+`python -m src.main scenarios` now ends with Scenario 4: Jane Doe approves Q-00002, the engine reads the decision back as a `HUMAN_DECISION` audit row, the mock NetSuite accepts a sales order for $450,000 with a 12-line monthly billing schedule, and the quote shows `Reconciled`. Alpha AI (auto-approved) was handed off with no human step; pending and rejected quotes never reach the ERP.
+
+> "Salesforce is the system of record for the human decision, the policy engine is the system of record for the pricing, and the ERP receives a payload that reconciles to the cent."
+
 ## 5. Data quality and observability (1.5 min)
 
 The `dq` section of the output shows the seeded defects being caught: duplicate domains, missing owners, an invalid discount, stale pending quotes, accounts with signals but no enrichment. `tier1_without_open_task` is 0 because outcome sync runs before the checks.

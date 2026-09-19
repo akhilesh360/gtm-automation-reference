@@ -22,7 +22,10 @@ from src.monitoring.logger import STATUS_FAILED_VALIDATION, get_logger, new_corr
 from src.monitoring.quality_checks import has_errors, run_checks
 from src.policy import get_policy, render_approval_matrix
 from src.salesforce.client import get_client
-from src.salesforce.sync import create_quotes, sync_task_outcomes, upsert_accounts, upsert_scores
+from src.salesforce.sync import (create_quotes, record_decision, sync_approval_outcomes, sync_task_outcomes,
+                                 upsert_accounts, upsert_scores, write_erp_status)
+from src.erp.handoff import handoff_approved_quotes
+from src.erp.netsuite_mock import get_erp_client
 from src.scoring.run import score_all
 
 log = get_logger()
@@ -31,6 +34,7 @@ log = get_logger()
 # ---------------------------------------------------------------- stages
 def stage_init_db(con, cid):
     run_sql_file(con, "01_create_tables.sql")  # DDL first: integration_log must exist before anything is logged
+    run_sql_file(con, "06_v2_migrations.sql")
     with workflow_run(con, "init_db", cid):
         run_sql_file(con, "05_reporting_views.sql", {"pending_sla_days": get_policy().sla.pending_approval_days})
     print("DuckDB initialized:", settings.duckdb_file)
@@ -114,6 +118,28 @@ def stage_sync_task_outcomes(con, cid):
     print(f"Task outcomes read back: {n} task(s) now linked to Salesforce Task Ids")
 
 
+def stage_sync_approval_outcomes(con, cid):
+    sf = get_client()
+    n = sync_approval_outcomes(con, sf, cid)
+    print(f"Human decisions read back from Salesforce: {n}")
+
+
+def stage_erp_handoff(con, cid):
+    erp = get_erp_client()
+    with workflow_run(con, "erp_handoff", cid):
+        counts = handoff_approved_quotes(con, erp, cid)
+    print(f"ERP handoff via {erp.name}: {counts}")
+    sf = get_client()
+    n = write_erp_status(con, sf, cid)
+    print(f"ERP status written back to Salesforce quotes: {n}")
+
+
+def stage_decide(con, cid, quote_id: str, decision: str, approver: str, reason: Optional[str]):
+    sf = get_client()
+    sf_id = record_decision(con, sf, quote_id, decision, approver, reason)
+    print(f"{quote_id} marked {decision} by {approver} in Salesforce ({sf.name}, {sf_id}). Run sync-approval-outcomes to pull it back.")
+
+
 def stage_dq(con, cid) -> bool:
     policy = get_policy()
     with workflow_run(con, "dq_checks", cid):
@@ -138,6 +164,8 @@ def run_all(reset_mock: bool = True) -> int:
     print("correlation_id:", cid)
     if reset_mock and not settings.sf_enabled and settings.mock_sf_file.exists():
         settings.mock_sf_file.unlink()
+    if reset_mock and not settings.erp_url and settings.mock_erp_file.exists():
+        settings.mock_erp_file.unlink()
     with session() as con:
         stage_init_db(con, cid)
         stage_validate(con, cid)
@@ -147,6 +175,8 @@ def run_all(reset_mock: bool = True) -> int:
         stage_draft(con, cid)
         stage_sync(con, cid)
         stage_sync_task_outcomes(con, cid)
+        stage_sync_approval_outcomes(con, cid)
+        stage_erp_handoff(con, cid)
         ok = stage_dq(con, cid)
         stage_report(con)
     return 0 if ok else 1
@@ -168,6 +198,25 @@ def run_scenarios():
         print(f"  task description ({r[8]}): {r[7]}")
         t = con.execute("SELECT task_id, status, sf_task_id FROM sales_tasks WHERE account_id = 'ACC-00003' AND priority = 'High'").fetchall()
         print(f"  sales_tasks: {t}")
+    # ---- v2 scenario 4: human approval + ERP handoff ----
+    cid = new_correlation_id()
+    with session() as con:
+        print("\n=== Scenario 4: EnterpriseGen approved by a human, handed off to the ERP ===")
+        try:
+            stage_decide(con, cid, "Q-00002", "Approved", "Jane Doe", None)
+        except ValueError as e:
+            print(f"  (already decided: {e})")
+        stage_sync_approval_outcomes(con, cid)
+        stage_erp_handoff(con, cid)
+        for qid in ("Q-00001", "Q-00002"):
+            r = con.execute("SELECT approval_status, approver, erp_order_id, erp_status FROM quotes WHERE quote_id = ?", [qid]).fetchone()
+            print(f"  {qid}: {r[0]:16s} approver={r[1] or '-':10s} erp_order={r[2]} erp_status={r[3]}")
+        o = con.execute("SELECT sales_order_id, status, accepted_total, json_array_length(json_extract(payload_json, '$.billing_schedule')) "
+                        "FROM erp_orders WHERE quote_id = 'Q-00002'").fetchone()
+        if o:
+            print(f"  sales order {o[0]}: {o[1]}, accepted ${float(o[2]):,.2f}, {o[3]} billing lines")
+        for a in con.execute("SELECT rule_triggered, approver, decision_reason FROM approval_audit WHERE quote_id = 'Q-00002' AND rule_triggered = 'HUMAN_DECISION'").fetchall():
+            print(f"    audit: {a[0]:16s} {a[1]:10s} {a[2]}")
 
 
 def _print_quote(con, quote_id):
@@ -184,10 +233,14 @@ def _print_quote(con, quote_id):
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="gtm", description="GTM Revenue Operations Engine")
     sub = p.add_subparsers(dest="cmd", required=True)
-    for name in ("init-db", "load-raw", "validate", "score", "evaluate", "sync", "sync-task-outcomes", "dq", "run-all", "scenarios"):
+    for name in ("init-db", "load-raw", "validate", "score", "evaluate", "sync", "sync-task-outcomes", "sync-approval-outcomes",
+                 "erp-handoff", "dq", "run-all", "scenarios"):
         sub.add_parser(name)
     d = sub.add_parser("draft"); d.add_argument("--limit", type=int, default=None)
     r = sub.add_parser("research"); r.add_argument("--account-id", required=True)
+    dc = sub.add_parser("decide", help="stand-in for a person approving/rejecting a pending quote in Salesforce")
+    dc.add_argument("--quote-id", required=True); dc.add_argument("--decision", choices=["Approved", "Rejected"], required=True)
+    dc.add_argument("--approver", required=True); dc.add_argument("--reason", default=None)
     g = sub.add_parser("generate-data"); g.add_argument("--seed", type=int, default=None)
     pol = sub.add_parser("policy"); pol.add_argument("--render", action="store_true")
     args = p.parse_args(argv)
@@ -225,6 +278,9 @@ def main(argv=None) -> int:
             print(f"[{res.source}] narrative:\n{res.draft.narrative}\n\ntask description:\n{res.draft.task_description}\n\noutbound draft:\n{res.draft.outbound_draft}")
         elif args.cmd == "sync": stage_sync(con, cid)
         elif args.cmd == "sync-task-outcomes": stage_sync_task_outcomes(con, cid)
+        elif args.cmd == "sync-approval-outcomes": stage_sync_approval_outcomes(con, cid)
+        elif args.cmd == "erp-handoff": stage_erp_handoff(con, cid)
+        elif args.cmd == "decide": stage_decide(con, cid, args.quote_id, args.decision, args.approver, args.reason)
         elif args.cmd == "dq": return 0 if stage_dq(con, cid) else 1
     return 0
 

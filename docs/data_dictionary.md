@@ -26,6 +26,16 @@ HubSpot mapping (`src/ingestion/load_hubspot.py`): `email_open`/`email_click` â†
 | `account_scores` | one row per account per scoring run | `src/scoring/run.py`, drafts by `src/ai/run.py` | Sub-scores, `priority_score`, `account_tier`, deterministic `scoring_reason` (never overwritten), `narrative`, `task_description`, `outbound_draft`, `draft_source` (`template` / `claude`). |
 | `sales_tasks` | one row per planned or created task | `src/scoring/run.py`, updated by `sync_task_outcomes` | `status`: `planned` (Python wrote it) â†’ `open` / `completed` once the Flow-created Salesforce Task is read back. `sf_task_id` NULL until then. Python never creates a Salesforce Task. |
 
+## v2: quote-to-cash
+
+| Table | Grain | Notes |
+|---|---|---|
+| `quotes` (new columns) | | `approver`, `decision_at`, `rejection_reason` from the human decision in Salesforce; `erp_order_id`, `erp_status` (Not Sent / Sent / Reconciled / Failed), `erp_sent_at` |
+| `erp_orders` | one row per sales order sent | `sales_order_id` from the ERP, `status` (SENT / RECONCILED / FAILED_RECONCILIATION / FAILED_VALIDATION), full `payload_json`, `accepted_total`, `error_message` |
+| `approval_audit` (new rule) | | `HUMAN_DECISION` rows carry `approver`; policy rows never do |
+
+Views: `v_quote_to_cash`, `v_erp_orders`, `v_human_decisions`. DQ checks: `approved_quotes_without_erp_order` (warn), `erp_orders_not_reconciled` (error).
+
 ## Operational tables
 
 | Table | Grain | Notes |

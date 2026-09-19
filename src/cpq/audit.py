@@ -17,10 +17,17 @@ def persist_evaluation(con: duckdb.DuckDBPyConnection, ev: QuoteEvaluation, poli
     quote_id = req.quote_id or f"Q-{uuid.uuid4().hex[:8].upper()}"
     created_at = requested_at or now
     p = ev.priced
-    con.execute("DELETE FROM approval_audit WHERE quote_id = ?", [quote_id])
+    # Preserve a human decision / ERP state from an earlier run: re-evaluating the same request must not undo them.
+    prior = con.execute("SELECT approval_status, approver, decision_at, rejection_reason, erp_order_id, erp_status, erp_sent_at "
+                        "FROM quotes WHERE quote_id = ?", [quote_id]).fetchone()
+    con.execute("DELETE FROM approval_audit WHERE quote_id = ? AND rule_triggered <> 'HUMAN_DECISION'", [quote_id])
     con.execute("DELETE FROM quotes WHERE quote_id = ?", [quote_id])
     con.execute(
-        """INSERT INTO quotes VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+        """INSERT INTO quotes (quote_id, account_id, account_name, product_id, monthly_commitment, quantity, contract_term_months,
+               discount_percent, payment_terms, custom_pricing, forecasted_units, custom_overage_rate, overage_units, monthly_overage,
+               effective_list_price, gross_contract_value, discount_amount, net_contract_value, annual_contract_value,
+               approval_status, approval_route, exception_reason, policy_version, sf_quote_id, created_at, evaluated_at, correlation_id)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
         [
             quote_id, req.account_id, req.account_name, req.product_id, req.monthly_commitment, req.quantity,
             req.contract_term_months, req.discount_percent, req.payment_terms, req.has_custom_pricing,
@@ -36,6 +43,13 @@ def persist_evaluation(con: duckdb.DuckDBPyConnection, ev: QuoteEvaluation, poli
             None, created_at, now, correlation_id,
         ],
     )
+    if prior and prior[0] in ("Approved", "Rejected") and ev.decision.status == "Pending Approval":
+        con.execute("UPDATE quotes SET approval_status = ?, approver = ?, decision_at = ?, rejection_reason = ?, "
+                    "erp_order_id = ?, erp_status = ?, erp_sent_at = ? WHERE quote_id = ?",
+                    [prior[0], prior[1], prior[2], prior[3], prior[4], prior[5], prior[6], quote_id])
+    elif prior and prior[4]:
+        con.execute("UPDATE quotes SET erp_order_id = ?, erp_status = ?, erp_sent_at = ? WHERE quote_id = ?",
+                    [prior[4], prior[5], prior[6], quote_id])
     for i, rule in enumerate(ev.decision.rules, start=1):
         con.execute(
             "INSERT INTO approval_audit VALUES (?,?,?,?,?,?,?,?,?,?,?)",

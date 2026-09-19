@@ -63,6 +63,10 @@ It contains no discount, ACV or payment-term logic. In v1, role routing is displ
 
 It reads the tier Python assigned; it does not compare the score to a threshold.
 
+## v2 additions
+
+`Quote__c` gains `Approver__c`, `Rejection_Reason__c`, `ERP_Order_Id__c`, `ERP_Status__c`, `ERP_Sent_At__c`. Flow A has two more branches: `Approved` stamps `Approved_At__c` and `Approver__c` (from the editing user when blank); `Rejected` emails the Quote Owner with the reason. To approve a quote, a user edits `Approval_Status__c` on the record; `python -m src.main sync-approval-outcomes` pulls the decision into DuckDB and `erp-handoff` sends approved quotes to the ERP and writes the order id and status back. The quote sync never overwrites an `Approved`/`Rejected` status set in Salesforce.
+
 ## Local mode
 
 With `SF_ENABLED=false`, `MockSalesforceClient` persists to `data/processed/mock_salesforce.json` and emulates Flow B (one Task per Tier 1 Account, deduped on open High-priority Tasks), so the scenario run behaves the same way without an org.

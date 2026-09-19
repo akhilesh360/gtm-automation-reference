@@ -75,9 +75,27 @@ with tab_cpq:
     fig.add_vline(x=policy.discount.manager_limit, line_dash="dash", annotation_text="manager limit")
     st.plotly_chart(fig, use_container_width=True)
 
+    st.subheader("Quote-to-cash (v2)")
+    q2c = q("SELECT * FROM v_quote_to_cash").iloc[0]
+    k1, k2, k3, k4, k5 = st.columns(5)
+    k1.metric("Approved (policy + human)", int(q2c.approved_quotes))
+    k2.metric("Human approved", int(q2c.human_approved))
+    k3.metric("Rejected", int(q2c.rejected))
+    k4.metric("Reconciled with ERP", int(q2c.reconciled), delta=f"{int(q2c.failed_reconciliation)} failed", delta_color="inverse")
+    k5.metric("Reconciled value", f"${float(q2c.reconciled_value):,.0f}")
+    left2, right2 = st.columns(2)
+    with left2:
+        st.caption("Sales orders handed to the ERP (mock NetSuite)")
+        st.dataframe(q("SELECT quote_id, account_name, sales_order_id, status, accepted_total, net_contract_value, sent_at FROM v_erp_orders LIMIT 25"),
+                     use_container_width=True, hide_index=True)
+    with right2:
+        st.caption("Human decisions recorded in Salesforce")
+        st.dataframe(q("SELECT quote_id, account_name, approval_status, approver, decision_at, rejection_reason FROM v_human_decisions LIMIT 25"),
+                     use_container_width=True, hide_index=True)
+
     st.subheader("Recent quote decisions")
     st.dataframe(q("SELECT quote_id, account_name, product_id, monthly_commitment, contract_term_months, discount_percent, payment_terms, "
-                   "annual_contract_value, approval_status, approval_route, exception_reason FROM quotes ORDER BY created_at DESC LIMIT 50"),
+                   "annual_contract_value, approval_status, approver, approval_route, erp_status, exception_reason FROM quotes ORDER BY created_at DESC LIMIT 50"),
                  use_container_width=True, hide_index=True)
 
 # ------------------------------------------------------------------ GTM

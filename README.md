@@ -35,7 +35,7 @@ pip install -r requirements.txt
 python -m src.main scenarios          # runs the pipeline and prints the three scenarios
 streamlit run dashboard/app.py   # dashboard
 uvicorn api.app:app --reload     # API docs at http://127.0.0.1:8000/docs
-pytest -q                        # 54 tests, no env vars needed
+pytest -q                        # 66 tests, no env vars needed
 ```
 
 No `.env` is required. A real Salesforce client that authenticates with Salesforce credentials or an access token; a mock client supports offline development and testing. To push into a real org, deploy `sfdx/` once (see `docs/salesforce_setup.md`) and run with `SF_ENABLED=true`; by default the real client obtains an access token from the Salesforce CLI login, or set `SF_AUTH=password` to use username, password and security token. Set `AI_ENABLED=true` with an API key for AI-assisted drafting.
@@ -82,6 +82,18 @@ Tier 1 ≥ 80 · Tier 2 ≥ 60 · Tier 3 otherwise
 
 Each score carries a deterministic `scoring_reason`, for example: *Tier 1 because product usage grew 40% month-over-month, the account visited pricing pages 3 times, requested a demo, is hiring for 2 ML roles, and firmographic fit is high.* With `AI_ENABLED=true`, one Claude call per Tier 1 account drafts a narrative, a task description and an outbound email from those facts. It never changes a number.
 
+## Quote-to-cash (v2, item 1)
+
+Approved quotes are handed to a NetSuite-style ERP and reconciled. A person approves or rejects a pending quote in Salesforce (or via the `decide` command as a stand-in), Flow A stamps the approver and timestamp, the engine reads the decision back with a `HUMAN_DECISION` audit row, builds a sales-order payload with a monthly billing schedule, sends it to the mock ERP (in-process by default, or over HTTP with `ERP_URL`), and writes the order id and `Reconciled` status back to DuckDB and `Quote__c`.
+
+```bash
+python -m src.main decide --quote-id Q-00002 --decision Approved --approver "Jane Doe"
+python -m src.main sync-approval-outcomes
+python -m src.main erp-handoff
+```
+
+Salesforce is the system of record for human decisions: the quote sync never overwrites an Approved or Rejected status set there. Design: `docs/V2_DESIGN.md`.
+
 ## Repository layout
 
 ```
@@ -91,14 +103,16 @@ sql/                   DDL, loads, scoring views, parameterized DQ checks, repor
 src/cpq/               validator, pricing engine, approval rules, audit persistence
 src/scoring/           sub-scores, tiering, explanation, scoring runner
 src/ingestion/         schema validation, raw load, HubSpot mapping
-src/salesforce/        client protocol, mock (with Flow B emulation), real client, sync + task-outcome readback
+src/salesforce/        client protocol, mock (Flow A/B emulation), real client, sync, task and approval readback, ERP write-back
+src/erp/               sales-order payload, NetSuite-style mock client (in-process or HTTP), handoff + reconciliation
+erp/mock_server.py     standalone HTTP mock of the ERP sales-order API
 src/ai/                optional drafter (one Claude call, template fallback)
 src/monitoring/        JSON logging, integration log, DQ runner, alerts
 src/main.py            CLI: init-db · load-raw · validate · score · evaluate · draft · research · sync · sync-task-outcomes · dq · run-all · scenarios
 api/                   FastAPI, three routes
 dashboard/app.py       Streamlit, three tabs
 sfdx/                  deployable metadata: objects, fields, permission set, custom setting, two Flows
-tests/                 54 tests incl. exact reproduction of the three scenarios
+tests/                 66 tests incl. exact reproduction of the scenarios and the quote-to-cash path
 docs/                  technical design, data dictionary, Salesforce mapping and setup, scenario tests, talk track
 ```
 

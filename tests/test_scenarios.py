@@ -22,8 +22,10 @@ def test_scenario_2_enterprisegen_routes_with_five_audit_rows(pipeline_db):
                     "approval_status, approval_route FROM quotes WHERE quote_id = 'Q-00002'").fetchone()
     assert q[0] == 0 and float(q[1]) == 0
     assert [float(x) for x in q[2:6]] == [600000, 150000, 450000, 450000]
-    assert q[6] == "Pending Approval" and q[7] == "RevOps, Finance, VP Sales"
-    rules = [r[0] for r in con.execute("SELECT rule_triggered FROM approval_audit WHERE quote_id = 'Q-00002' ORDER BY audit_id").fetchall()]
+    # policy decision is Pending Approval; test_quote_to_cash may already have applied the human approval (v2)
+    assert q[6] in ("Pending Approval", "Approved") and q[7] == "RevOps, Finance, VP Sales"
+    rules = [r[0] for r in con.execute("SELECT rule_triggered FROM approval_audit WHERE quote_id = 'Q-00002' "
+                                        "AND rule_triggered <> 'HUMAN_DECISION' ORDER BY audit_id").fetchall()]
     assert rules == ["DISCOUNT_GT_20", "DISCOUNT_GT_20", "ACV_GTE_100K", "NONSTANDARD_TERMS", "CUSTOM_PRICING"]
 
 

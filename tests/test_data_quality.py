@@ -8,7 +8,7 @@ def test_checks_run_on_empty_db_and_report_zero(policy):
     con = duckdb.connect(":memory:")
     run_sql_file(con, "01_create_tables.sql")
     run_id, results = run_checks(con, policy)
-    assert run_id.startswith("DQ-") and len(results) == 9
+    assert run_id.startswith("DQ-") and len(results) == 11
     assert all(r.row_count == 0 for r in results) and not has_errors(results)
 
 

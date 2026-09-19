@@ -69,9 +69,14 @@ def create_quotes(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlat
     rows = con.execute(
         """SELECT q.quote_id, a.sf_account_id, q.product_id, q.monthly_commitment, q.effective_list_price, q.quantity,
                   q.contract_term_months, q.discount_percent, q.discount_amount, q.net_contract_value, q.annual_contract_value,
-                  q.payment_terms, q.custom_pricing, q.approval_status, q.approval_route, q.exception_reason, q.policy_version
+                  q.payment_terms, q.custom_pricing, q.approval_status, q.approval_route, q.exception_reason, q.policy_version,
+                  q.approver, q.rejection_reason
            FROM quotes q JOIN accounts a ON a.account_id = q.account_id"""
     ).fetchall()
+    # Salesforce is the system of record for HUMAN decisions. Never overwrite an Approved/Rejected status that a person set there,
+    # even if DuckDB has not read it back yet (sync-approval-outcomes runs after this stage).
+    human_decided = {r["Quote_Number__c"] for r in
+                     sf.query("SELECT Quote_Number__c FROM Quote__c WHERE Approval_Status__c IN ('Approved', 'Rejected')")}
     n = 0
     for r in rows:
         quote_id = r[0]
@@ -81,7 +86,12 @@ def create_quotes(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlat
                 # restricted picklist in the org: a validation-failed quote may carry a bad value, keep it in Exception_Reason__c only
                 "Payment_Terms__c": r[11] if r[11] in get_policy().payment_terms.allowed else None,
                 "Custom_Pricing__c": bool(r[12]),
-                "Approval_Status__c": r[13], "Approval_Route__c": r[14], "Exception_Reason__c": r[15], "Policy_Version__c": r[16]}
+                "Approval_Route__c": r[14], "Exception_Reason__c": r[15], "Policy_Version__c": r[16]}
+        if quote_id not in human_decided:
+            data["Approval_Status__c"] = r[13]
+            if r[13] in ("Approved", "Rejected"):  # a decision DuckDB already holds (e.g. read back earlier) travels with its approver
+                data["Approver__c"] = r[17]
+                data["Rejection_Reason__c"] = r[18]
         sf_id = _with_retry(con, "create_quotes", "Quote__c", quote_id, correlation_id,
                             lambda: sf.upsert("Quote__c", "Quote_Number__c", quote_id, data))
         con.execute("UPDATE quotes SET sf_quote_id = ? WHERE quote_id = ?", [sf_id, quote_id])
@@ -132,3 +142,56 @@ def mirror_integration_log(con: duckdb.DuckDBPyConnection, sf: SalesforceClient,
             "Started_At__c": r[5], "Completed_At__c": r[6], "Error_Message__c": r[7],
             "Retry_Count__c": r[8], "Correlation_Id__c": correlation_id})
     return len(rows)
+
+
+# ----------------------------------------------------------------------------- v2: human decisions + ERP write-back
+def record_decision(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, quote_id: str, decision: str,
+                    approver: str, reason: str | None = None) -> str:
+    """Stand-in for a person editing the quote in Salesforce. Writes ONLY to Salesforce; DuckDB learns it via sync_approval_outcomes."""
+    if decision not in ("Approved", "Rejected"):
+        raise ValueError("decision must be Approved or Rejected")
+    rows = sf.query(f"SELECT Id, Approval_Status__c FROM Quote__c WHERE Quote_Number__c = '{quote_id}'")
+    if not rows:
+        raise KeyError(f"{quote_id} has not been synced to Salesforce yet")
+    if rows[0]["Approval_Status__c"] != "Pending Approval":
+        raise ValueError(f"{quote_id} is {rows[0]['Approval_Status__c']}; only Pending Approval quotes can be decided")
+    data = {"Approval_Status__c": decision, "Approver__c": approver, "Rejection_Reason__c": reason if decision == "Rejected" else None,
+            "_actor": approver}
+    sf.update("Quote__c", rows[0]["Id"], data)
+    return rows[0]["Id"]
+
+
+def sync_approval_outcomes(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlation_id: str) -> int:
+    """Read human Approved/Rejected decisions from Salesforce into DuckDB, with one HUMAN_DECISION audit row each."""
+    rows = sf.query("SELECT Id, Quote_Number__c, Approval_Status__c, Approver__c, Rejection_Reason__c, Approved_At__c, "
+                    "LastModifiedDate, LastModifiedBy.Name FROM Quote__c WHERE Approval_Status__c IN ('Approved', 'Rejected')")
+    n = 0
+    for r in rows:
+        qid = r["Quote_Number__c"]
+        local = con.execute("SELECT approval_status FROM quotes WHERE quote_id = ?", [qid]).fetchone()
+        if not local or local[0] == r["Approval_Status__c"]:
+            continue
+        approver = r.get("Approver__c") or r.get("LastModifiedBy.Name") or "Salesforce user"
+        decided_at = datetime.now()
+        con.execute("UPDATE quotes SET approval_status = ?, approver = ?, decision_at = ?, rejection_reason = ? WHERE quote_id = ?",
+                    [r["Approval_Status__c"], approver, decided_at, r.get("Rejection_Reason__c"), qid])
+        con.execute("DELETE FROM approval_audit WHERE quote_id = ? AND rule_triggered = 'HUMAN_DECISION'", [qid])
+        disc = con.execute("SELECT discount_percent, policy_version FROM quotes WHERE quote_id = ?", [qid]).fetchone()
+        con.execute("INSERT INTO approval_audit VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                    [f"{qid}-H01", qid, "HUMAN_DECISION", disc[0], None, r["Approval_Status__c"],
+                     (r.get("Rejection_Reason__c") or f"{r['Approval_Status__c']} by {approver} in Salesforce"),
+                     decided_at, approver, disc[1], correlation_id])
+        n += 1
+    write_integration_log(con, "sync_approval_outcomes", STATUS_SUCCESS, correlation_id, "Quote__c", None)
+    return n
+
+
+def write_erp_status(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlation_id: str) -> int:
+    rows = con.execute("SELECT quote_id, sf_quote_id, erp_order_id, erp_status, erp_sent_at FROM quotes "
+                       "WHERE sf_quote_id IS NOT NULL AND erp_status IS NOT NULL AND erp_status <> 'Not Sent'").fetchall()
+    n = 0
+    for qid, sf_id, order_id, status, sent_at in rows:
+        _with_retry(con, "write_erp_status", "Quote__c", qid, correlation_id,
+                    lambda: sf.update("Quote__c", sf_id, {"ERP_Order_Id__c": order_id, "ERP_Status__c": status, "ERP_Sent_At__c": sent_at}))
+        n += 1
+    return n

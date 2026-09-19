@@ -32,5 +32,8 @@ Schema validation before load, dedupe on load, a quote validator that rejects ba
 **How would you trace a failure?**
 Every run has a correlation ID that appears in the JSON log, `integration_log`, and `Integration_Log__c`. Sync calls retry three times with backoff and record `RETRYING` then `FAILED_API`.
 
+**How does an approved quote reach finance?**
+A person approves in Salesforce; Flow A stamps approver and time. The engine reads that back, adds a human-decision audit row, and builds a sales order with a monthly billing schedule that sums to the net value. A NetSuite-style mock accepts it and returns an order id; the engine checks the accepted total against the quote, marks it Reconciled, and writes the order id back to the quote in Salesforce. The mock is in-process by default or an HTTP service, so a real NetSuite adapter is a drop-in replacement.
+
 **What's next?**
-A NetSuite mock handoff on approved quotes (sales order payload, reconciliation status), opportunities with stage history and a funnel/bottleneck view, weighted forecasting, sequence management, live Clay and HubSpot connectors, and a bounded Claude research loop.
+Opportunities with stage history and a funnel/bottleneck view, weighted forecasting, sequence management, live Clay and HubSpot connectors, and a bounded Claude research loop.

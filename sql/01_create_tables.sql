@@ -99,7 +99,27 @@ CREATE TABLE IF NOT EXISTS quotes (
     sf_quote_id            VARCHAR,
     created_at             TIMESTAMP,
     evaluated_at           TIMESTAMP,
-    correlation_id         VARCHAR
+    correlation_id         VARCHAR,
+    -- v2: human decision + ERP handoff
+    approver               VARCHAR,
+    decision_at            TIMESTAMP,
+    rejection_reason       VARCHAR,
+    erp_order_id           VARCHAR,
+    erp_status             VARCHAR DEFAULT 'Not Sent',
+    erp_sent_at            TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS erp_orders (
+    order_id         VARCHAR PRIMARY KEY,
+    quote_id         VARCHAR NOT NULL,
+    sales_order_id   VARCHAR,
+    status           VARCHAR NOT NULL,
+    payload_json     VARCHAR,
+    accepted_total   DECIMAL(14,2),
+    sent_at          TIMESTAMP,
+    reconciled_at    TIMESTAMP,
+    error_message    VARCHAR,
+    correlation_id   VARCHAR
 );
 
 CREATE TABLE IF NOT EXISTS approval_audit (

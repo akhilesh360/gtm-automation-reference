@@ -24,6 +24,7 @@ def pipeline_db(tmp_path_factory):
     tmp = tmp_path_factory.mktemp("db")
     config.settings.duckdb_path = str(tmp / "test.duckdb")
     config.settings.mock_sf_path = str(tmp / "mock_salesforce.json")
+    config.settings.mock_erp_path = str(tmp / "mock_netsuite.json")
     from src.main import run_all
     run_all()
     yield config.settings.duckdb_file

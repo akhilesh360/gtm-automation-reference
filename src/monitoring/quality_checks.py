@@ -20,6 +20,8 @@ SEVERITY = {
     "scores_without_account": "error",
     "signals_without_enrichment": "warn",
     "failed_integration_runs_24h": "warn",
+    "approved_quotes_without_erp_order": "warn",
+    "erp_orders_not_reconciled": "error",
 }
 
 

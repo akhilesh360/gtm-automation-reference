@@ -38,3 +38,13 @@ WHERE e.enrichment_id IS NULL;
 SELECT log_id AS id FROM integration_log
 WHERE status IN ('FAILED_VALIDATION', 'FAILED_API')
   AND started_at >= CURRENT_TIMESTAMP - INTERVAL 24 HOUR;
+
+-- name: approved_quotes_without_erp_order
+SELECT q.quote_id AS id FROM quotes q
+LEFT JOIN erp_orders o ON o.quote_id = q.quote_id
+WHERE q.approval_status IN ('Auto-Approved', 'Approved')
+  AND o.order_id IS NULL
+  AND COALESCE(q.decision_at, q.evaluated_at) < CURRENT_TIMESTAMP - INTERVAL 1 DAY;
+
+-- name: erp_orders_not_reconciled
+SELECT order_id AS id FROM erp_orders WHERE status <> 'RECONCILED';

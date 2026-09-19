@@ -21,6 +21,7 @@ class SalesforceClient(Protocol):
 
     def upsert(self, sobject: str, external_id_field: str, external_id: str, data: dict[str, Any]) -> str: ...
     def create(self, sobject: str, data: dict[str, Any]) -> str: ...
+    def update(self, sobject: str, record_id: str, data: dict[str, Any]) -> None: ...
     def query(self, soql: str) -> list[dict[str, Any]]: ...
 
 
@@ -67,6 +68,29 @@ class MockSalesforceClient:
         self._save()
         return rid
 
+    def update(self, sobject: str, record_id: str, data: dict[str, Any]) -> None:
+        tbl = self.table(sobject)
+        if record_id not in tbl:
+            raise KeyError(f"{sobject} {record_id} not found")
+        rec = tbl[record_id]
+        before = rec.get("Approval_Status__c")
+        rec.update(data)
+        rec["LastModifiedDate"] = datetime.now().isoformat(timespec="seconds")
+        rec["LastModifiedBy"] = {"Name": data.pop("_actor", None) or rec.get("LastModifiedBy", {}).get("Name") or "Integration User"} if isinstance(rec.get("LastModifiedBy"), dict) or True else None
+        if sobject == "Quote__c" and rec.get("Approval_Status__c") != before:
+            self._emulate_flow_a(rec)
+        self._save()
+
+    def _emulate_flow_a(self, quote: dict[str, Any]) -> None:
+        """Flow A: stamp timestamps and approver on status change (notification email is not emulated)."""
+        now = datetime.now().isoformat(timespec="seconds")
+        status = quote.get("Approval_Status__c")
+        if status == "Approved":
+            quote["Approved_At__c"] = now
+            quote["Approver__c"] = quote.get("Approver__c") or quote.get("LastModifiedBy", {}).get("Name")
+        elif status == "Pending Approval":
+            quote["Approval_Requested_At__c"] = now
+
     def query(self, soql: str) -> list[dict[str, Any]]:
         """Supports the small SOQL subset the sync modules use: SELECT ... FROM X [WHERE a = 'v' [AND ...]]."""
         m = re.match(r"SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.+))?$", soql.strip(), re.I | re.S)
@@ -76,12 +100,25 @@ class MockSalesforceClient:
         rows = list(self.table(m.group(2)).values())
         if m.group(3):
             for cond in re.split(r"\s+AND\s+", m.group(3), flags=re.I):
-                cm = re.match(r"(\w+)\s*(=|!=)\s*'([^']*)'", cond.strip())
+                cond = cond.strip()
+                im = re.match(r"(\w+)\s+IN\s*\(([^)]*)\)", cond, re.I)
+                if im:
+                    k = im.group(1); vals = {v.strip().strip("'") for v in im.group(2).split(",")}
+                    rows = [r for r in rows if str(r.get(k)) in vals]
+                    continue
+                cm = re.match(r"(\w+)\s*(=|!=)\s*'([^']*)'", cond)
                 if not cm:
                     raise ValueError(f"Mock SOQL cannot parse condition: {cond}")
                 k, op, v = cm.groups()
                 rows = [r for r in rows if (str(r.get(k)) == v) == (op == "=")]
-        return [{f: r.get(f) for f in fields} for r in rows]
+
+        def pick(r, f):
+            if "." in f:
+                head, tail = f.split(".", 1)
+                val = r.get(head)
+                return val.get(tail) if isinstance(val, dict) else None
+            return r.get(f)
+        return [{f: pick(r, f) for f in fields} for r in rows]
 
     # ---- helpers ----
     def _new_id(self, sobject: str) -> str:
@@ -157,6 +194,10 @@ class RealSalesforceClient:
 
     def create(self, sobject: str, data: dict[str, Any]) -> str:
         return getattr(self.sf, sobject).create(_json_safe(data))["id"]
+
+    def update(self, sobject: str, record_id: str, data: dict[str, Any]) -> None:
+        data = {k: v for k, v in data.items() if not k.startswith("_")}
+        getattr(self.sf, sobject).update(record_id, _json_safe(data))
 
     def query(self, soql: str) -> list[dict[str, Any]]:
         return [{k: v for k, v in r.items() if k != "attributes"} for r in self.sf.query_all(soql)["records"]]

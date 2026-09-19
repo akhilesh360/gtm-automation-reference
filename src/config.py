@@ -13,6 +13,8 @@ class Settings(BaseSettings):
 
     duckdb_path: str = "data/gtm.duckdb"
     mock_sf_path: str = "data/processed/mock_salesforce.json"
+    mock_erp_path: str = "data/processed/mock_netsuite.json"
+    erp_url: str = ""             # e.g. http://127.0.0.1:8100 (erp/mock_server.py); empty = in-process mock
     random_seed: int = 42
     log_level: str = "INFO"
 
@@ -48,6 +50,11 @@ class Settings(BaseSettings):
     @property
     def policy_file(self) -> Path:
         return PROJECT_ROOT / "config" / "policy.yaml"
+
+    @property
+    def mock_erp_file(self) -> Path:
+        p = Path(self.mock_erp_path)
+        return p if p.is_absolute() else PROJECT_ROOT / p
 
     @property
     def log_file(self) -> Path:

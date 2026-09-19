@@ -61,3 +61,25 @@ SELECT check_name, severity, row_count, sample_ids, ran_at
 FROM dq_results
 WHERE run_id = (SELECT run_id FROM dq_results ORDER BY ran_at DESC LIMIT 1)
 ORDER BY severity, check_name;
+
+-- v2: quote-to-cash
+CREATE OR REPLACE VIEW v_quote_to_cash AS
+SELECT
+    SUM(CASE WHEN approval_status IN ('Auto-Approved', 'Approved') THEN 1 ELSE 0 END) AS approved_quotes,
+    SUM(CASE WHEN approval_status = 'Approved' THEN 1 ELSE 0 END)                    AS human_approved,
+    SUM(CASE WHEN approval_status = 'Rejected' THEN 1 ELSE 0 END)                    AS rejected,
+    SUM(CASE WHEN erp_status = 'Sent' THEN 1 ELSE 0 END)                             AS sent_to_erp,
+    SUM(CASE WHEN erp_status = 'Reconciled' THEN 1 ELSE 0 END)                       AS reconciled,
+    SUM(CASE WHEN erp_status = 'Failed' THEN 1 ELSE 0 END)                           AS failed_reconciliation,
+    COALESCE(SUM(CASE WHEN erp_status = 'Reconciled' THEN net_contract_value END), 0) AS reconciled_value
+FROM quotes;
+
+CREATE OR REPLACE VIEW v_erp_orders AS
+SELECT o.order_id, o.quote_id, q.account_name, o.sales_order_id, o.status, o.accepted_total, q.net_contract_value,
+       o.sent_at, o.reconciled_at, o.error_message
+FROM erp_orders o JOIN quotes q ON q.quote_id = o.quote_id
+ORDER BY o.sent_at DESC;
+
+CREATE OR REPLACE VIEW v_human_decisions AS
+SELECT quote_id, account_name, approval_status, approver, decision_at, rejection_reason, approval_route
+FROM quotes WHERE approver IS NOT NULL ORDER BY decision_at DESC;
