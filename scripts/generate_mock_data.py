@@ -1,4 +1,4 @@
-"""Seeded mock-data generator. Produces data/raw/*.csv with three explicitly seeded demo scenarios.
+"""Seeded mock-data generator. Produces data/raw/*.csv with three explicitly seeded test scenarios.
 
 Scenario accounts:
   ACC-00001 Alpha AI        -> Q-00001 Starter plan, 5% discount, Net 30  -> Auto-Approved

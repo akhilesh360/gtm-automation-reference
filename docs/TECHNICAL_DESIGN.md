@@ -19,7 +19,7 @@ The project uses deterministic Python and SQL logic for commercial policy and ac
 9. [LLD: Salesforce integration layer, SFDX metadata, Flows](#9-lld-salesforce-integration-layer-sfdx-metadata-flows)
 10. [LLD: optional AI-assisted drafting](#10-lld-optional-ai-assisted-drafting)
 11. [LLD: API, dashboard, data quality, monitoring](#11-lld-api-dashboard-data-quality-monitoring)
-12. [Demo scenarios](#12-demo-scenarios)
+12. [Test scenarios](#12-scenario run-scenarios)
 13. [Resume and role alignment](#13-resume-and-role-alignment)
 14. [v2 roadmap](#14-v2-roadmap)
 15. [Build plan, testing, open questions](#15-build-plan-testing-open-questions)
@@ -107,7 +107,7 @@ Ownership statement: *"Python owns decisioning; Salesforce Flow owns CRM-native 
 
 - Deterministic, explainable business rules. AI never decides; it only drafts prose from decisions already made.
 - **One policy authority.** Commercial policy lives in `config/policy.yaml`, loaded by Python. Salesforce Flow executes CRM actions after the decision is written back; it never re-evaluates policy.
-- Every external dependency (Salesforce, Claude) is optional and env-var gated. The full demo runs offline.
+- Every external dependency (Salesforce, Claude) is optional and env-var gated. The full local run runs offline.
 - Every automation run is traceable end-to-end by `correlation_id`.
 
 ---
@@ -116,12 +116,12 @@ Ownership statement: *"Python owns decisioning; Salesforce Flow owns CRM-native 
 
 | Topic | Decision | Reason |
 |---|---|---|
-| Location | Local git repo `~/gtm-automation-reference`; publish to GitHub later | Resume-ready README, diagram, demo script, screenshot placeholders |
+| Location | Local git repo `~/gtm-automation-reference`; publish to GitHub later | Resume-ready README, diagram, scenario tests, screenshot placeholders |
 | Warehouse | DuckDB file `data/gtm.duckdb`; SQL Snowflake-compatible where practical | Zero setup; ports to Snowflake |
 | Containers | No `docker-compose` | Nothing needs it |
 | Policy authority | `config/policy.yaml` is the only place thresholds are defined. Python loads it. SQL checks receive thresholds as parameters from Python. Flows contain no thresholds | Prevents policy drift between Python, SQL and Salesforce |
 | Salesforce role | Python = policy decision engine. Salesforce Flow = CRM action and orchestration layer only | Single source of truth for approvals |
-| Salesforce | Optional. `SF_ENABLED=true` swaps `MockSalesforceClient` for `simple-salesforce` | Demo works offline; real org one env change away |
+| Salesforce | Optional. `SF_ENABLED=true` swaps `MockSalesforceClient` for `simple-salesforce` | Scenario run works offline; real org one env change away |
 | SFDX package | Ships in v1 because Module 1's sync step needs the custom objects to exist: objects, fields, permission set, two orchestration-only Flows, setup doc. Deploying it is optional | Reviewer suggested moving deployment to v2; kept minimal because sync depends on it |
 | API | FastAPI: `GET /health` (operational), `POST /score-account`, `POST /evaluate-quote`. Nothing else in v1 | Two business endpoints plus health |
 | Research | Runs via CLI only: `python -m src.main research --account-id ACC-00001` | No extra API surface |
@@ -130,7 +130,7 @@ Ownership statement: *"Python owns decisioning; Salesforce Flow owns CRM-native 
 | AI layer | One optional Claude call per Tier 1 account (`AI_ENABLED=true`) that drafts a narrative, a task description and a short outbound draft from deterministic facts. No tool loop. Template fallback always available | Credible, small, relevant to resume |
 | Audit trail | Every quote decision writes at least one audit row, including auto-approvals (`STANDARD_POLICY`) | Complete decision trail |
 | Dashboard | Streamlit, three tabs, reads DuckDB only | Runs without an org |
-| Mock data | ~200 accounts, ~2,000 signals, 50 quote requests, `RANDOM_SEED=42`, three seeded demo records | Reproducible |
+| Mock data | ~200 accounts, ~2,000 signals, 50 quote requests, `RANDOM_SEED=42`, three seeded test records | Reproducible |
 | Scenario 1 | Alpha AI at $5,000/month → ACV $57,000, under the $100,000 VP threshold | Stays auto-approved |
 | Scenario 3 | Firmographic fit = 80 → priority exactly 87.0 | Arithmetic is consistent |
 | Tooling | Python 3.11, `requirements.txt`, `pytest`, no Poetry | Simple |
@@ -243,7 +243,7 @@ Each stage writes an `integration_log` row (`STARTED → SUCCESS | FAILED_*`) sh
 | Completed | completed |
 | No Salesforce Task found | planned |
 
-CLI commands: `init-db`, `load-raw`, `validate`, `score`, `evaluate`, `draft`, `research --account-id`, `sync`, `sync-task-outcomes`, `dq`, `run-all`, `demo`.
+CLI commands: `init-db`, `load-raw`, `validate`, `score`, `evaluate`, `draft`, `research --account-id`, `sync`, `sync-task-outcomes`, `dq`, `run-all`, `scenario run`.
 
 ### 4.2 CPQ-style approval flow: Python decides, Salesforce executes
 
@@ -304,7 +304,7 @@ sequenceDiagram
 
 | Mode | `SF_ENABLED` | `AI_ENABLED` | Behavior |
 |---|---|---|---|
-| Local demo (default) | false | false | Mock SF client writes to `data/processed/mock_salesforce.json`; template narratives |
+| Local run (default) | false | false | Mock SF client writes to `data/processed/mock_salesforce.json`; template narratives |
 | Local + AI | false | true | Same, plus Claude drafts for Tier 1 accounts |
 | Integrated | true | false/true | Real org via `simple-salesforce`; Flows fire in org |
 
@@ -366,11 +366,11 @@ gtm-automation-reference/
 │   ├── test_policy.py, test_pricing_engine.py, test_approval_rules.py, test_quote_validator.py
 │   ├── test_account_scoring.py, test_tiering.py, test_explain_score.py
 │   ├── test_data_quality.py, test_api.py, test_mock_salesforce.py, test_drafter.py
-│   └── test_demo_scenarios.py
+│   └── test_scenarios.py
 └── docs/
     ├── TECHNICAL_DESIGN.md, architecture.svg/.png, logos/
     ├── data_dictionary.md, approval_matrix.md, salesforce_mapping.md, salesforce_setup.md
-    ├── demo_script.md, talk_track.md
+    ├── scenario_tests.md, talk_track.md
     └── screenshots/
 ```
 
@@ -717,7 +717,7 @@ Talk track: *"I centralized commercial-policy decisions in a versioned Python co
 
 | Sub-score | Inputs | Formula |
 |---|---|---|
-| intent | pricing_page_visit, demo_request, job_posting_ml_engineer, funding_event, open_source_model_interest | demo 40, pricing 15/visit (cap 45), job posting 10, funding 15, OSS 10 |
+| intent | pricing_page_visit, demo_request, job_posting_ml_engineer, funding_event, open_source_model_interest | scenario run 40, pricing 15/visit (cap 45), job posting 10, funding 15, OSS 10 |
 | engagement | website_visit, email_engagement (incl. HubSpot-sourced) | website 2/visit (cap 50) + email 10/event (cap 50) |
 | usage | latest `mom_growth_pct`, active_users | `min(growth,50)×1.6` (cap 80) + `min(active_users/10,20)` |
 | firmographic | industry, employee_count, funding_stage (from accounts + Clay enrichment) | industry 40 (AI/ML/SaaS/Fintech), size band 30 (50–2,000 best), stage 30 (Series A–C best) |
@@ -760,7 +760,7 @@ class RealSalesforceClient:   # simple_salesforce wrapper; SF_ENABLED=true
 def get_client() -> SalesforceClient
 ```
 
-Identical semantics so tests use the mock and production code is unchanged. The mock also **emulates Flow B**: on an `Account_Score__c` upsert with `Account_Tier__c = Tier 1` it creates a Task (Subject "High-priority account follow-up", Description = `Task_Description__c`) unless an open High-priority Task already exists for that Account. This keeps the local demo faithful to the org without Python ever creating a Task itself.
+Identical semantics so tests use the mock and production code is unchanged. The mock also **emulates Flow B**: on an `Account_Score__c` upsert with `Account_Tier__c = Tier 1` it creates a Task (Subject "High-priority account follow-up", Description = `Task_Description__c`) unless an open High-priority Task already exists for that Account. This keeps the local run faithful to the org without Python ever creating a Task itself.
 
 ### 9.2 Sync operations
 
@@ -886,9 +886,9 @@ JSON lines to `logs/gtm_automation.log` and stdout: `ts, level, workflow, record
 
 ---
 
-## 12. Demo scenarios
+## 12. Test scenarios
 
-Seeded in `scripts/generate_mock_data.py`; asserted in `tests/test_demo_scenarios.py`; walked in `docs/demo_script.md`.
+Seeded in `scripts/generate_mock_data.py`; asserted in `tests/test_scenarios.py`; walked in `docs/scenario_tests.md`.
 
 | # | Customer | Inputs | Expected |
 |---|---|---|---|
@@ -908,7 +908,7 @@ Scenario 2 usage detail (the custom overage rate creates the RevOps exception ev
 
 Scenario 3 sub-scores are asserted exactly; the generator seeds signals that produce them.
 
-Demo flow (`python -m src.main demo`, then `streamlit run dashboard/app.py`):
+Scenario flow (`python -m src.main scenarios`, then `streamlit run dashboard/app.py`):
 
 1. Alpha AI quote: Starter plan → 5% discount → auto-approved → one audit row.
 2. EnterpriseGen quote: enterprise pricing → 25% discount + Net 60 + custom overage → RevOps + Finance + VP Sales routing → five auditable policy exceptions.
@@ -962,7 +962,7 @@ The archived v1.1 design (`docs/TECHNICAL_DESIGN_v1.1_archive.md`) holds the det
 7. Module 3: logging, integration log, parameterized DQ checks, alerts + tests
 8. FastAPI (3 routes) + tests
 9. Module 4: Streamlit dashboard (3 tabs)
-10. README, docs (data dictionary, generated approval matrix, mapping, setup, demo script, talk track), screenshot placeholders
+10. README, docs (data dictionary, generated approval matrix, mapping, setup, scenario tests, talk track), screenshot placeholders
 11. `run-all` end-to-end, first commit
 
 ### 15.2 Testing strategy
@@ -971,7 +971,7 @@ The archived v1.1 design (`docs/TECHNICAL_DESIGN_v1.1_archive.md`) holds the det
 |---|---|
 | Policy | yaml loads, invariants enforced, bad file rejected |
 | Unit | pricing math, usage overage, approval boundaries (exactly 10, 20, 100,000), tier boundaries (60, 80), validator rejections, STANDARD_POLICY audit row |
-| Scenario | the three demo records reproduce expected outputs exactly |
+| Scenario | the three test records reproduce expected outputs exactly |
 | Integration | mock SF upsert semantics; mock Flow B emulation creates exactly one Task per Tier 1 account across repeated syncs; DQ checks against seeded defects; drafter fallback when AI off or client raises |
 | API | TestClient for all three routes |
 | Data | schema validation of generated CSVs |
@@ -982,4 +982,4 @@ The archived v1.1 design (`docs/TECHNICAL_DESIGN_v1.1_archive.md`) holds the det
 
 - Human approval decisions (`Approved` / `Rejected` by a person) are out of v1; `approver` stays NULL. v2 reads approval outcomes back from Salesforce the same way `sync-task-outcomes` reads Task Ids.
 - Flow A notification channel is email to the Quote Owner and a configured RevOps test mailbox; role-to-user/queue mapping and Slack are v2.
-- SFDX package is in v1 because sync needs the objects. If you prefer, it can ship as v1 metadata without a deploy step in the demo script.
+- SFDX package is in v1 because sync needs the objects. If you prefer, it can ship as v1 metadata without a deploy step in the scenario tests.

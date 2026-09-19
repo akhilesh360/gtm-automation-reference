@@ -1,6 +1,6 @@
 # Salesforce setup (optional)
 
-The full demo runs offline. Follow this only to push records into a real Developer Org.
+The full local run runs offline. Follow this only to push records into a real Developer Org.
 
 ## 1. Deploy the metadata
 
@@ -58,4 +58,4 @@ It reads the tier Python assigned; it does not compare the score to a threshold.
 
 ## Local mode
 
-With `SF_ENABLED=false`, `MockSalesforceClient` persists to `data/processed/mock_salesforce.json` and emulates Flow B (one Task per Tier 1 Account, deduped on open High-priority Tasks), so the demo behaves the same way without an org.
+With `SF_ENABLED=false`, `MockSalesforceClient` persists to `data/processed/mock_salesforce.json` and emulates Flow B (one Task per Tier 1 Account, deduped on open High-priority Tasks), so the scenario run behaves the same way without an org.

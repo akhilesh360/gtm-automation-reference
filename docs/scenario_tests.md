@@ -1,24 +1,24 @@
-# Demo script (about 8 minutes)
+# Scenario tests (about 8 minutes)
 
 ## Setup (once)
 
 ```bash
 python3.11 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-python -m src.main demo
+python -m src.main scenarios
 ```
 
 No `.env` is needed. Salesforce and the AI drafter are off; everything runs against DuckDB and the mock Salesforce client.
 
 ## 1. The policy is one file (30s)
 
-Open `config/policy.yaml`. Every threshold the demo uses lives here: discount limits, the $100K VP threshold, standard payment terms, approver order, the pending-approval SLA, scoring weights and tier cutoffs. `docs/approval_matrix.md` is generated from it.
+Open `config/policy.yaml`. Every threshold the scenario run uses lives here: discount limits, the $100K VP threshold, standard payment terms, approver order, the pending-approval SLA, scoring weights and tier cutoffs. `docs/approval_matrix.md` is generated from it.
 
 > "I centralized commercial-policy decisions in a versioned config to avoid policy drift. Salesforce Flow handles workflow execution and CRM actions after the decision is written back."
 
 ## 2. Scenario 1 — Alpha AI, standard quote (1 min)
 
-From the `demo` output: Starter API Commitment, $5,000/month, 12 months, 5%, Net 30.
+From the `scenario run` output: Starter API Commitment, $5,000/month, 12 months, 5%, Net 30.
 
 - Gross $60,000 → discount $3,000 → net $57,000 → ACV $57,000
 - **Auto-Approved**, exactly one audit row `STANDARD_POLICY` with no approver

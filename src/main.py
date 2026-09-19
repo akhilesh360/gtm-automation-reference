@@ -1,7 +1,7 @@
 """CLI entry point.
 
   python -m src.main init-db | load-raw | validate | score | evaluate | draft | research --account-id ID
-                     | sync | sync-task-outcomes | dq | run-all | demo | policy --render
+                     | sync | sync-task-outcomes | dq | run-all | scenario run | policy --render
 """
 from __future__ import annotations
 
@@ -152,7 +152,7 @@ def run_all(reset_mock: bool = True) -> int:
     return 0 if ok else 1
 
 
-def demo():
+def run_scenarios():
     """Run the pipeline, then print the three scenarios."""
     run_all()
     with session() as con:
@@ -184,7 +184,7 @@ def _print_quote(con, quote_id):
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="gtm", description="GTM Revenue Operations Engine")
     sub = p.add_subparsers(dest="cmd", required=True)
-    for name in ("init-db", "load-raw", "validate", "score", "evaluate", "sync", "sync-task-outcomes", "dq", "run-all", "demo"):
+    for name in ("init-db", "load-raw", "validate", "score", "evaluate", "sync", "sync-task-outcomes", "dq", "run-all", "scenarios"):
         sub.add_parser(name)
     d = sub.add_parser("draft"); d.add_argument("--limit", type=int, default=None)
     r = sub.add_parser("research"); r.add_argument("--account-id", required=True)
@@ -194,8 +194,8 @@ def main(argv=None) -> int:
 
     if args.cmd == "run-all":
         return run_all()
-    if args.cmd == "demo":
-        demo(); return 0
+    if args.cmd == "scenarios":
+        run_scenarios(); return 0
     if args.cmd == "generate-data":
         from scripts.generate_mock_data import generate
         print(generate(seed=args.seed)); return 0

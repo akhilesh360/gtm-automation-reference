@@ -30,7 +30,7 @@ This is a CPQ-style reference implementation using Salesforce custom objects. It
 ```bash
 python3.11 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-python -m src.main demo          # runs the pipeline and prints the three scenarios
+python -m src.main scenarios          # runs the pipeline and prints the three scenarios
 streamlit run dashboard/app.py   # dashboard
 uvicorn api.app:app --reload     # API docs at http://127.0.0.1:8000/docs
 pytest -q                        # 54 tests, no env vars needed
@@ -38,7 +38,7 @@ pytest -q                        # 54 tests, no env vars needed
 
 No `.env` is required. Copy `.env.example` to `.env` only to enable Salesforce (`SF_ENABLED=true`) or AI drafting (`AI_ENABLED=true`).
 
-## The three demo scenarios
+## The three test scenarios
 
 | Scenario | Input | Result |
 |---|---|---|
@@ -46,7 +46,7 @@ No `.env` is required. Copy `.env.example` to `.env` only to enable Salesforce (
 | **EnterpriseGen** | Enterprise Platform, $50,000/mo × 12, 25% discount, Net 60, custom overage rate | ACV $450,000 → **Pending Approval**, route RevOps + Finance + VP Sales, five audit rows |
 | **FastScale AI** | Clay hiring signals, HubSpot meeting + emails, 3 pricing visits, 40% MoM usage growth | priority **87.0** → Tier 1 → one Salesforce Task created by Flow B, deduped on re-run |
 
-`python -m src.main demo` prints all three. `docs/demo_script.md` is the walkthrough.
+`python -m src.main scenarios` prints all three. `docs/scenario_tests.md` is the walkthrough.
 
 ## How a quote is decided
 

@@ -1,4 +1,4 @@
-"""The three demo scenarios must reproduce the design doc exactly, end to end, with no env vars set."""
+"""The three test scenarios must reproduce the design doc exactly, end to end, with no env vars set."""
 import duckdb
 
 

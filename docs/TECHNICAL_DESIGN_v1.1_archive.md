@@ -23,7 +23,7 @@
 9. [LLD: Salesforce integration layer, SFDX metadata, Flows](#9-lld-salesforce-integration-layer-sfdx-metadata-flows)
 10. [LLD: Claude narrative layer (optional)](#10-lld-claude-narrative-layer-optional)
 11. [LLD: API, dashboard, data quality, monitoring](#11-lld-api-dashboard-data-quality-monitoring)
-12. [Demo scenarios](#12-demo-scenarios)
+12. [Test scenarios](#12-scenario run-scenarios)
 13. [Build plan, testing, open questions](#13-build-plan-testing-open-questions)
 
 ---
@@ -53,15 +53,15 @@ A personal reference implementation of a Salesforce-centered GTM automation engi
 
 | Topic | Decision | Reason |
 |---|---|---|
-| Location | Local git repo `~/gtm-automation-reference`; publish to GitHub later | Resume-ready README, diagram, demo script, screenshot placeholders included |
+| Location | Local git repo `~/gtm-automation-reference`; publish to GitHub later | Resume-ready README, diagram, scenario tests, screenshot placeholders included |
 | Warehouse | DuckDB file `data/gtm.duckdb`; SQL Snowflake-compatible where practical | Zero setup; ports to Snowflake with minimal edits |
 | Containers | No `docker-compose` | Nothing needs it |
-| Salesforce | Optional integration layer. `SF_ENABLED=true` swaps `MockSalesforceClient` for `simple-salesforce` | Full demo offline; real org one env change away |
+| Salesforce | Optional integration layer. `SF_ENABLED=true` swaps `MockSalesforceClient` for `simple-salesforce` | Full scenario run offline; real org one env change away |
 | SF metadata | Deployable SFDX source in `sfdx/`: custom objects/fields, permission set, two record-triggered Flows, setup docs | One-command deploy to a Developer Org |
 | Dashboard | Streamlit, reads DuckDB only | Runs without an org |
 | API | FastAPI, exactly two endpoints: `POST /score-account`, `POST /evaluate-quote` | Service story, minimal surface |
 | AI layer | Deterministic core. Optional Claude (`AI_ENABLED=true`) writes the prioritization narrative and drafts the task description; deterministic template otherwise | Trustworthy numbers, better prose |
-| Mock data | ~200 accounts, ~2,000 signals, 50 quote requests, `RANDOM_SEED=42`, three demo records seeded explicitly | Reproducible demo |
+| Mock data | ~200 accounts, ~2,000 signals, 50 quote requests, `RANDOM_SEED=42`, three test records seeded explicitly | Reproducible scenario run |
 | Scenario 1 fix | Alpha AI commitment $10,000 → **$5,000**/month. ACV = $57,000, under the $100,000 VP threshold | Keeps the approval matrix as written |
 | Tooling | Python 3.11, `requirements.txt`, `pytest`, no Poetry | Simple |
 | HubSpot source | HubSpot is the marketing signal source (email engagement, form fills, page views). Local mode reads a HubSpot-shaped CSV export; `HUBSPOT_ENABLED=true` pulls from the HubSpot CRM API with a private-app token | Makes "Salesforce + HubSpot + Snowflake" literally true |
@@ -273,7 +273,7 @@ sequenceDiagram
 
 | Mode | `SF_ENABLED` | `AI_ENABLED` | `CLAY_ENABLED` | `HUBSPOT_ENABLED` | Behavior |
 |---|---|---|---|---|---|
-| Local demo (default) | false | false | false | false | Mock SF client writes to `data/processed/mock_salesforce.json`; template narratives and briefs; Clay and HubSpot CSV exports |
+| Local run (default) | false | false | false | false | Mock SF client writes to `data/processed/mock_salesforce.json`; template narratives and briefs; Clay and HubSpot CSV exports |
 | Local + AI | false | true | false | false | Same, plus Claude research briefs, outbound drafts and narratives |
 | Integrated | true | false/true | false/true | false/true | Real org via `simple-salesforce`; Flows fire in org; Clay pushes to the webhook; HubSpot pulled via API |
 
@@ -303,7 +303,7 @@ gtm-automation-reference/
 │   └── 07_funnel.sql            stage conversion, drop-off, cycle time by tier
 ├── src/
 │   ├── config.py                settings + policy constants (single source of truth)
-│   ├── main.py                  CLI: init-db | load-raw | score | evaluate | sync | dq | run-all | demo
+│   ├── main.py                  CLI: init-db | load-raw | score | evaluate | sync | dq | run-all | scenario run
 │   ├── db.py                    DuckDB connection + SQL runner
 │   ├── ingestion/               load_accounts.py, load_signals.py, validate_schema.py,
 │   │                            enrich.py (Clay adapter), hubspot.py (HubSpot adapter), load_opportunities.py
@@ -335,7 +335,7 @@ gtm-automation-reference/
 ├── tests/
 │   ├── test_pricing_engine.py, test_approval_rules.py, test_quote_validator.py
 │   ├── test_account_scoring.py, test_tiering.py, test_explain_score.py
-│   ├── test_data_quality.py, test_api.py, test_mock_salesforce.py, test_demo_scenarios.py
+│   ├── test_data_quality.py, test_api.py, test_mock_salesforce.py, test_scenarios.py
 │   ├── test_sequences.py, test_forecast.py, test_research_agent.py (template path + mocked Claude)
 └── docs/
     ├── TECHNICAL_DESIGN.md      (this file)
@@ -344,7 +344,7 @@ gtm-automation-reference/
     ├── approval_matrix.md
     ├── salesforce_mapping.md
     ├── salesforce_setup.md
-    ├── demo_script.md
+    ├── scenario_tests.md
     └── screenshots/             placeholders
 ```
 
@@ -684,7 +684,7 @@ Approver order is deterministic (Sales Manager → RevOps → Finance → VP Sal
 
 | Sub-score | Inputs | Formula |
 |---|---|---|
-| intent | pricing_page_visit, demo_request, job_posting_ml_engineer, funding_event, open_source_model_interest | weighted counts: demo 40, pricing 15/visit (cap 45), job posting 10, funding 15, OSS interest 10 |
+| intent | pricing_page_visit, demo_request, job_posting_ml_engineer, funding_event, open_source_model_interest | weighted counts: scenario run 40, pricing 15/visit (cap 45), job posting 10, funding 15, OSS interest 10 |
 | engagement | website_visit, email_engagement | website 2/visit (cap 50) + email 10/engagement (cap 50) |
 | usage | latest `mom_growth_pct`, active_users | growth: `min(growth_pct, 50) * 1.6` (cap 80) + users: `min(active_users/10, 20)` |
 | firmographic | industry, employee_count, funding_stage | industry match 40 (AI/ML/SaaS/Fintech), size band 30 (50–2,000 best), stage 30 (Series A–C best) |
@@ -898,9 +898,9 @@ Runner writes `dq_results` table and prints a summary; exit code 1 if any `error
 
 ---
 
-## 12. Demo scenarios
+## 12. Test scenarios
 
-Seeded explicitly in `scripts/generate_mock_data.py`; asserted in `tests/test_demo_scenarios.py`; walked through in `docs/demo_script.md`.
+Seeded explicitly in `scripts/generate_mock_data.py`; asserted in `tests/test_scenarios.py`; walked through in `docs/scenario_tests.md`.
 
 | # | Customer | Inputs | Expected |
 |---|---|---|---|
@@ -911,7 +911,7 @@ Seeded explicitly in `scripts/generate_mock_data.py`; asserted in `tests/test_de
 
 Scenario 3 arithmetic: 0.4·90 + 0.3·90 + 0.2·80 + 0.1·84 = 36 + 27 + 16 + 8.4 = 87.4 → seeds are tuned so the computed sub-scores land at exactly 87.0 (test asserts `== 87.0`).
 
-Demo command: `python -m src.main demo` prints all three results, then `streamlit run dashboard/app.py`.
+Scenario command: `python -m src.main scenarios` prints all three results, then `streamlit run dashboard/app.py`.
 
 ---
 
@@ -941,7 +941,7 @@ Demo command: `python -m src.main demo` prints all three results, then `streamli
 8. FastAPI + tests
 9. Streamlit dashboard
 10. SFDX metadata + Flows + setup docs
-11. README, docs, demo script, screenshot placeholders
+11. README, docs, scenario tests, screenshot placeholders
 12. `run-all` end-to-end, first commit
 
 ### 13.2 Testing strategy
@@ -949,7 +949,7 @@ Demo command: `python -m src.main demo` prints all three results, then `streamli
 | Layer | Tests |
 |---|---|
 | Unit | pricing math, usage overage, approval matrix boundaries (10, 20, 100K exact), tier boundaries (60, 80), validator rejections |
-| Scenario | the three demo records reproduce expected outputs byte-for-byte |
+| Scenario | the three test records reproduce expected outputs byte-for-byte |
 | Integration | mock SF client upsert/dedupe semantics; DQ checks against seeded defects |
 | API | httpx TestClient for both endpoints + health |
 | Data | schema validation of generated CSVs |
