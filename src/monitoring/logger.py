@@ -46,6 +46,7 @@ def get_logger(name: str = "gtm") -> logging.Logger:
     fh.setFormatter(JsonFormatter())
     sh = logging.StreamHandler(sys.stderr)
     sh.setFormatter(JsonFormatter())
+    sh.setLevel(logging.WARNING)  # console shows only warnings/errors; the full JSON stream goes to the log file
     log.addHandler(fh)
     log.addHandler(sh)
     log.propagate = False
