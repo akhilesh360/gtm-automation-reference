@@ -6,7 +6,7 @@ Deterministic Python and SQL make every commercial-policy and scoring decision. 
 
 ![Architecture](docs/architecture.png)
 
-> This is a CPQ-style reference implementation using Salesforce custom objects. It demonstrates commercial-policy and quote-governance patterns. It is not a replacement for native Salesforce Revenue Cloud or Salesforce CPQ.
+This is a CPQ-style reference implementation using Salesforce custom objects. It demonstrates commercial-policy and quote-governance patterns.
 
 ## What it does
 
@@ -18,6 +18,12 @@ Deterministic Python and SQL make every commercial-policy and scoring decision. 
 | **Dashboard and API** | Streamlit (CPQ Operations · Account Prioritization · Data Quality) and FastAPI (`/health`, `/score-account`, `/evaluate-quote`) | local UI, service endpoints |
 
 **Ownership model:** Python owns decisioning; Salesforce Flow owns CRM-native task creation and duplicate prevention. Commercial policy lives in one versioned file, `config/policy.yaml`. Flows contain no thresholds.
+
+## Screenshots
+
+| CPQ Operations | Account Prioritization | Data Quality |
+|---|---|---|
+| ![CPQ](docs/screenshots/cpq_operations.png) | ![GTM](docs/screenshots/account_prioritization.png) | ![DQ](docs/screenshots/data_quality.png) |
 
 ## Quick start
 
@@ -96,24 +102,9 @@ docs/                  technical design, data dictionary, Salesforce mapping and
 
 ## Documentation
 
-- [Technical design](docs/TECHNICAL_DESIGN.md) — architecture, HLD, LLD, decisions, v2 roadmap
+- [Technical design](docs/TECHNICAL_DESIGN.md) — architecture, HLD, LLD, decisions, roadmap
 - [Data dictionary](docs/data_dictionary.md)
 - [Approval matrix](docs/approval_matrix.md) (generated)
 - [Salesforce mapping](docs/salesforce_mapping.md) and [setup](docs/salesforce_setup.md)
-- [Demo script](docs/demo_script.md) and [talk track](docs/talk_track.md)
 
-## Screenshots
 
-| CPQ Operations | Account Prioritization | Data Quality |
-|---|---|---|
-| ![CPQ](docs/screenshots/cpq_operations.png) | ![GTM](docs/screenshots/account_prioritization.png) | ![DQ](docs/screenshots/data_quality.png) |
-
-## Roadmap (v2)
-
-1. NetSuite mock handoff on approved quotes (sales-order payload, reconciliation status)
-2. Opportunities with stage history; funnel and bottleneck view; conversion by tier
-3. Weighted pipeline forecast and forecast-vs-actual
-4. Sequence management for Tier 2 outbound
-5. Live Clay webhook and HubSpot API connectors
-6. Bounded Claude research loop with read-only tools
-7. Salesforce Custom Metadata generated from `policy.yaml`; human approve/reject capture
