@@ -26,6 +26,12 @@ class Settings(BaseSettings):
     sf_auth: str = "cli"          # "cli" = access token obtained from the Salesforce CLI login; "password" = username/password/security token
     sf_alias: str = "gtm-dev"     # CLI org alias used when sf_auth = "cli"
 
+    clay_enabled: bool = False
+    clay_webhook_secret: str = ""
+    hubspot_enabled: bool = False
+    hubspot_token: str = ""
+    hubspot_lookback_days: int = 90
+
     ai_enabled: bool = False
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-opus-5"

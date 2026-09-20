@@ -943,8 +943,8 @@ Ordered by value for the target role.
 2. Opportunities with stage history; funnel and bottleneck view; conversion by tier — shipped, see `docs/V2_DESIGN.md`.
 3. Weighted pipeline forecast and forecast-vs-actual — shipped, see `docs/V2_DESIGN.md`.
 4. Sequence management for Tier 2 outbound — shipped, see `docs/V2_DESIGN.md`.
-5. Live Clay webhook receiver; live HubSpot CRM API pull.
-6. Claude tool-loop research agent (read-only tools, bounded).
+5. Live Clay webhook receiver; live HubSpot CRM API pull — shipped, see `docs/V2_DESIGN.md`.
+6. Claude tool-loop research agent (read-only tools, bounded) — shipped, see `docs/V2_DESIGN.md`.
 7. Salesforce Custom Metadata generated from `policy.yaml`; Salesforce-native reports.
 
 The archived v1.1 design (`docs/TECHNICAL_DESIGN_v1.1_archive.md`) holds the detailed data model for items 2–6.

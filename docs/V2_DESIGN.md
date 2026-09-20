@@ -184,3 +184,33 @@ In this version status is derived deterministically from signals: an account tha
 ### Out of scope
 
 Multi-step cadences, send scheduling, and pushing enrollments to a real sequencing tool.
+
+
+## Item 5: Live Clay and HubSpot connectors
+
+**Goal.** Let the same pipeline take live inputs without changing anything downstream. CSV exports stay the default; each live path is behind its own switch.
+
+### Clay webhook (`CLAY_ENABLED=true`)
+
+- `POST /webhooks/clay` is registered on the API only when enabled. Clay's "Send to HTTP API" action posts a row (or a list of rows) to it; the `X-Clay-Secret` header must match `CLAY_WEBHOOK_SECRET`.
+- `src/ingestion/clay_webhook.py` normalizes Clay's user-defined column names through an alias table (`Website` / `domain`, `Headcount` / `employee_count`, `Technologies` / `tech_stack`, and so on), matches the row to an account by domain, upserts `account_enrichment` with `enrichment_source = clay_webhook`, and adds a `job_posting_ml_engineer` signal when open ML roles are present. Unmatched domains are returned in the response, not stored.
+- To test live from a laptop, expose the API with a tunnel (for example `ngrok http 8000`) and use that URL in Clay.
+
+### HubSpot API pull (`HUBSPOT_ENABLED=true`)
+
+- `src/ingestion/hubspot_api.py` searches `/crm/v3/objects/emails` and `/crm/v3/objects/meetings` since `HUBSPOT_LOOKBACK_DAYS`, resolves the associated contact's email, and writes the same `hubspot_engagement.csv` shape the offline path reads. Replies map to `email_click`, meetings to `meeting_booked`; the existing mapper then turns them into intent signals.
+- It runs at the start of `load-raw` when enabled, replacing the CSV export. A private-app token with CRM read scopes is required.
+
+Both adapters are unit-tested offline with a fake HTTP transport and a fake webhook client.
+
+## Item 6: Bounded AI-assisted research agent
+
+**Goal.** Replace manual account research for Tier 1 accounts with a model that reads what the system already knows and writes a brief, without ever touching a number.
+
+- Five read-only tools over DuckDB (`get_account`, `get_enrichment`, `get_signals`, `get_open_quotes`, `get_opportunities`), declared with strict JSON schemas.
+- A manual tool loop: at most six tool calls and a twenty-second budget; the model is told to call `get_account` first and to treat scores, tier and scoring reason as final.
+- Output is validated (`brief`, `outbound_draft`, `talking_points`); any refusal, budget overrun, or invalid output falls back to the deterministic template built from the same facts.
+- Results land in `account_research` with `source` (`template` / `claude`) and `tool_calls`; every run is logged with the correlation ID.
+- `python -m src.main research --account-id ACC-00003` runs it. With `AI_ENABLED=false` it prints the template brief; with a key it prints the model's.
+
+Tested with a fake model client that emits tool calls and a final answer, including the budget-exhausted and invalid-output fallbacks.

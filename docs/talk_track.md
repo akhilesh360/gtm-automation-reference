@@ -44,5 +44,11 @@ Stage probabilities sit in the same policy file as the discount thresholds, so f
 **What happens to Tier 2 accounts?**
 They are enrolled in a standard outbound sequence with the drafted first touch attached, one active enrollment per account, so outbound volume by tier is a number on the dashboard rather than an intention. Tier 1 gets executive outreach plus the Salesforce Task; Tier 3 stays in nurture.
 
+**How would live Clay and HubSpot plug in?**
+Clay posts rows to a secured webhook that normalizes its column names and upserts enrichment by domain. HubSpot is pulled from the CRM API into the same CSV shape the offline path reads. Nothing downstream changes, and both switches default to off.
+
+**Is the AI agentic?**
+Only in a bounded way: five read-only tools, six calls maximum, validated output, and a template fallback. It reads scores; it never sets them.
+
 **What's next?**
 Sequence management, live Clay and HubSpot connectors, and a bounded Claude research loop.

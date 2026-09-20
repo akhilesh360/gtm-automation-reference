@@ -51,6 +51,10 @@ Views (`07_funnel.sql`): `v_funnel`, `v_bottleneck`, `v_stage_cycle`, `v_convers
 
 `sequence_enrollments`: one row per enrollment with `sequence_name`, `status` (active / replied / completed / paused), `step`, `first_touch_draft`. Views: `v_sequence_summary`, `v_sequence_enrollments`. DQ checks: `duplicate_active_enrollments` (error), `tier2_without_enrollment` (warn).
 
+## v2: research
+
+`account_research`: one row per account with `brief`, `outbound_draft`, `talking_points` (JSON list), `source` (template / claude), `tool_calls`. `account_enrichment.enrichment_source` may now be `clay_webhook`; `intent_signals.signal_source` may be `clay_webhook`.
+
 ## Operational tables
 
 | Table | Grain | Notes |

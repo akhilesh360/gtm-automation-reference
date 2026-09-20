@@ -9,6 +9,10 @@ from src.ingestion.load_hubspot import load_hubspot_events
 
 
 def load_all(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
+    if settings.hubspot_enabled and settings.hubspot_token:
+        from src.ingestion.hubspot_api import pull_engagements  # live pull replaces the CSV export before loading
+
+        pull_engagements(settings.raw_dir / "hubspot_engagement.csv")
     run_sql_file(con, "02_load_raw_data.sql", {"raw_dir": str(settings.raw_dir)})
     hubspot_rows = load_hubspot_events(con, settings.raw_dir / "hubspot_engagement.csv")
     counts = {}

@@ -300,6 +300,8 @@ def main(argv=None) -> int:
 
     cid = new_correlation_id()
     with session() as con:
+        run_sql_file(con, "01_create_tables.sql")  # additive DDL so single commands work on a database created by an older version
+        run_sql_file(con, "06_v2_migrations.sql")
         if args.cmd == "init-db":
             stage_init_db(con, cid)
         elif args.cmd == "validate":
@@ -313,12 +315,15 @@ def main(argv=None) -> int:
         elif args.cmd == "draft":
             stage_draft(con, cid, limit=args.limit)
         elif args.cmd == "research":
-            from src.ai.run import research_one
-            res = research_one(con, args.account_id)
+            from src.ai.research_agent import research_account
+            res = research_account(con, args.account_id, cid)
             if res is None:
                 print("account not found or not scored yet:", args.account_id)
                 return 1
-            print(f"[{res.source}] narrative:\n{res.draft.narrative}\n\ntask description:\n{res.draft.task_description}\n\noutbound draft:\n{res.draft.outbound_draft}")
+            print(f"[{res.source}, {res.tool_calls} tool call(s)]\n\nBRIEF\n{res.research.brief}\n\nTALKING POINTS")
+            for tp in res.research.talking_points:
+                print(f"  - {tp}")
+            print(f"\nOUTBOUND DRAFT\n{res.research.outbound_draft}")
         elif args.cmd == "sync":
             stage_sync(con, cid)
         elif args.cmd == "sync-task-outcomes":

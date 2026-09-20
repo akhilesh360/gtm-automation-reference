@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/akhilesh360/gtm-automation-reference/actions/workflows/ci.yml/badge.svg)](https://github.com/akhilesh360/gtm-automation-reference/actions/workflows/ci.yml)
 ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
-![Tests](https://img.shields.io/badge/tests-82%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-93%20passing-brightgreen)
 ![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)
 
 A Salesforce-centered reference implementation for CPQ-style pricing governance, discount approvals, signal-based account prioritization, CRM data-quality controls, quote-to-cash handoff, and revenue operations reporting.
@@ -48,7 +48,7 @@ make setup        # python3.11 venv + dependencies
 make scenarios    # run the pipeline and print the reference scenarios
 make dashboard    # http://localhost:8501
 make api          # http://127.0.0.1:8000/docs
-make test         # 82 tests, no credentials needed
+make test         # 93 tests, no credentials needed
 ```
 
 Without `make`:
@@ -59,7 +59,7 @@ pip install -r requirements.txt
 python -m src.main scenarios
 ```
 
-No `.env` is required. A real Salesforce client authenticates with Salesforce credentials or an access token; a mock client supports offline development and testing. To push into a real org, deploy `sfdx/` once (see [docs/salesforce_setup.md](docs/salesforce_setup.md)), log in with `sf org login web -a gtm-dev`, and run with `SF_ENABLED=true`. Set `AI_ENABLED=true` with an API key for AI-assisted drafting. Set `ERP_URL` to hand off to the standalone mock ERP over HTTP.
+No `.env` is required. A real Salesforce client authenticates with Salesforce credentials or an access token; a mock client supports offline development and testing. To push into a real org, deploy `sfdx/` once (see [docs/salesforce_setup.md](docs/salesforce_setup.md)), log in with `sf org login web -a gtm-dev`, and run with `SF_ENABLED=true`. Set `AI_ENABLED=true` with an API key for AI-assisted drafting. Set `ERP_URL` to hand off to the standalone mock ERP over HTTP, `CLAY_ENABLED` / `HUBSPOT_ENABLED` for live connectors.
 
 ## Reference scenarios
 
@@ -112,6 +112,10 @@ Each score carries a deterministic `scoring_reason`, for example: *Tier 1 becaus
 
 **Outbound sequences.** Tier 1 accounts are enrolled in an executive-outreach sequence and Tier 2 in standard outbound, one active enrollment per account, with the drafted first touch attached. Re-runs never duplicate. Reply status is derived from signals in this version; a real sequencer would own it.
 
+**Live connectors.** `CLAY_ENABLED=true` registers a secured `POST /webhooks/clay` receiver that normalizes Clay's column aliases and upserts enrichment by domain. `HUBSPOT_ENABLED=true` pulls emails and meetings from the HubSpot CRM API into the same CSV shape the offline path reads. Both are unit-tested offline.
+
+**Research agent.** `python -m src.main research --account-id ACC-00003` runs a bounded tool loop (five read-only tools, six calls max) that writes a brief, talking points and an outbound draft, falling back to a template without a key.
+
 **Forecasting.** Stage probabilities live in `config/policy.yaml`. Open opportunities are weighted by close month and tier, a dated snapshot is stored on each run, six months of history are reconstructed from stage transitions, and closed months are compared to the forecast that stood at the start of the month. Design notes: [docs/V2_DESIGN.md](docs/V2_DESIGN.md).
 
 ## Screenshots
@@ -133,12 +137,12 @@ data/raw/              seeded CSVs: accounts, Clay-shaped enrichment, HubSpot-sh
 sql/                   DDL, loads, scoring views, parameterized DQ checks, reporting and funnel views (Snowflake-style)
 src/cpq/               validator, pricing engine, approval rules, audit persistence
 src/scoring/           sub-scores, tiering, explanation, scoring runner
-src/ingestion/         schema validation, raw load, HubSpot mapping
+src/ingestion/         schema validation, raw load, HubSpot mapping, Clay webhook adapter, HubSpot API pull
 src/salesforce/        client protocol, mock (Flow A/B emulation), real client, sync, task/approval readback, ERP write-back
 src/forecasting/       weighted forecast, dated snapshots, historical backfill
 src/outbound/          sequence enrollment by tier with dedupe
 src/erp/               sales-order payload, NetSuite-style mock client (in-process or HTTP), handoff and reconciliation
-src/ai/                optional drafter (one Claude call, template fallback)
+src/ai/                optional drafter (one call, template fallback), read-only tools, bounded research agent
 src/monitoring/        JSON logging, integration log, DQ runner, alerts
 src/main.py            CLI: init-db · load-raw · validate · score · evaluate · draft · research · sync · sync-task-outcomes
                        · sync-approval-outcomes · erp-handoff · forecast · enroll · decide · dq · run-all · scenarios · policy
@@ -146,7 +150,7 @@ api/                   FastAPI, three routes
 erp/mock_server.py     standalone HTTP mock of the ERP sales-order API
 dashboard/app.py       Streamlit: CPQ Operations · Account Prioritization · Pipeline · Data Quality
 sfdx/                  deployable metadata: objects, fields, permission set, custom setting, two Flows
-tests/                 82 tests incl. exact reproduction of the scenarios and the quote-to-cash path
+tests/                 93 tests incl. exact reproduction of the scenarios and the quote-to-cash path
 docs/                  technical design, v2 design, data dictionary, Salesforce mapping and setup, scenario tests, talk track
 .github/workflows/     CI: lint, seeded data, tests, scenario run
 ```
@@ -167,8 +171,8 @@ docs/                  technical design, v2 design, data dictionary, Salesforce 
 2. ~~Opportunities, funnel and bottleneck view~~ shipped (v2.2)
 3. ~~Weighted pipeline forecast and forecast-vs-actual~~ shipped (v2.3)
 4. ~~Outbound sequence management for Tier 2 accounts~~ shipped (v2.4)
-5. Live Clay webhook and HubSpot API connectors
-6. Bounded AI research loop with read-only tools
+5. ~~Live Clay webhook and HubSpot API connectors~~ shipped (v2.5)
+6. ~~Bounded AI research loop with read-only tools~~ shipped (v2.6)
 7. Salesforce role-to-user routing and Custom Metadata generated from `policy.yaml`
 
 ## License

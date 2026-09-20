@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.6 — Bounded research agent
+- Five read-only DuckDB tools, manual tool loop capped at six calls, validated output, template fallback; `account_research` table
+
+## v2.5 — Live connectors
+- Secured Clay webhook receiver with column-alias normalization and domain matching, behind `CLAY_ENABLED`
+- HubSpot CRM API pull for emails and meetings into the offline CSV shape, behind `HUBSPOT_ENABLED`
+
 ## v2.4 — Outbound sequence enrollment
 - Tier 1 and Tier 2 accounts enrolled in policy-defined sequences with one active enrollment per account and idempotent re-runs
 - First-touch draft attached; reply status derived from signals; two DQ checks; dashboard section

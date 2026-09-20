@@ -240,3 +240,16 @@ CREATE TABLE IF NOT EXISTS sequence_enrollments (
     last_activity_at  TIMESTAMP,
     correlation_id    VARCHAR
 );
+
+-- v2: AI-assisted (or template) account research
+CREATE TABLE IF NOT EXISTS account_research (
+    research_id     VARCHAR PRIMARY KEY,
+    account_id      VARCHAR NOT NULL,
+    brief           VARCHAR,
+    outbound_draft  VARCHAR,
+    talking_points  VARCHAR,
+    source          VARCHAR,
+    tool_calls      INTEGER,
+    researched_at   TIMESTAMP,
+    correlation_id  VARCHAR
+);

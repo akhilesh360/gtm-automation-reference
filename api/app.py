@@ -1,7 +1,9 @@
-"""FastAPI service. Three routes only: GET /health (operational), POST /score-account, POST /evaluate-quote."""
+"""FastAPI service. Core routes: GET /health (operational), POST /score-account, POST /evaluate-quote.
+POST /webhooks/clay is registered only when CLAY_ENABLED=true."""
 from fastapi import FastAPI
 
 from api.routes import evaluate_quote, health, score_account
+from src.config import settings
 
 app = FastAPI(
     title="GTM Revenue Operations Engine",
@@ -12,3 +14,8 @@ app = FastAPI(
 app.include_router(health.router)
 app.include_router(score_account.router)
 app.include_router(evaluate_quote.router)
+
+if settings.clay_enabled:  # optional connector route; absent unless switched on
+    from api.routes import clay_webhook
+
+    app.include_router(clay_webhook.router)
