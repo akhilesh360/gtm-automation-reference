@@ -11,9 +11,9 @@ Deterministic Python and SQL make every commercial-policy and scoring decision. 
 
 ## 60-second walkthrough
 
-[![Under the hood: live Clay, HubSpot, Salesforce and an ERP handoff](docs/media/under_the_hood_poster.png)](docs/media/under_the_hood.mp4)
+![Under the hood: live Clay, HubSpot, Salesforce and an ERP handoff](docs/media/under_the_hood.gif)
 
-*Click to open the video. It shows the architecture, live Clay enrichment, a live HubSpot pull, deterministic scoring, the Salesforce Task created by Flow B, the quote decision written into Salesforce, a human approval flowing to the mock ERP, and the pipeline analytics.*
+*Plays inline above; [open the full-quality mp4](docs/media/under_the_hood.mp4). It shows the architecture, live Clay enrichment, a live HubSpot pull, deterministic scoring, the Salesforce Task created by Flow B, the quote decision written into Salesforce, a human approval flowing to the mock ERP, and the pipeline analytics.*
 
 ![Architecture](docs/architecture.png)
 
