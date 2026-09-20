@@ -13,13 +13,13 @@ import duckdb
 
 ALIASES: dict[str, tuple[str, ...]] = {
     "domain": ("domain", "website", "company_domain", "Domain", "Website"),
-    "employee_count": ("employee_count", "headcount", "employees", "Employee Count", "Headcount"),
-    "funding_stage": ("funding_stage", "last_funding_round", "funding_round", "Funding Stage", "Last Funding Round"),
+    "employee_count": ("employee_count", "headcount", "employees", "Employee Count", "Headcount", "Employees"),
+    "funding_stage": ("funding_stage", "last_funding_round", "funding_round", "Funding Stage", "Last Funding Round", "Type"),
     "funding_amount_usd": ("funding_amount_usd", "total_funding", "funding_amount", "Total Funding"),
     "tech_stack": ("tech_stack", "technologies", "tech", "Tech Stack", "Technologies"),
     "open_ml_roles": ("open_ml_roles", "ml_job_postings", "ml_roles", "Open ML Roles"),
     "open_data_infra_roles": ("open_data_infra_roles", "data_infra_roles", "Data Infra Roles"),
-    "company_summary": ("company_summary", "summary", "description", "Company Summary"),
+    "company_summary": ("company_summary", "summary", "description", "Description", "Company Summary", "About"),
     "personalization_hook": ("personalization_hook", "hook", "icebreaker", "Personalization Hook"),
 }
 

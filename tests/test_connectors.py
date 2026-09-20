@@ -16,6 +16,13 @@ def test_normalize_accepts_clay_aliases():
     assert n["open_ml_roles"] == 2 and n["funding_stage"] == "Series B"
 
 
+def test_normalize_accepts_clay_enrich_company_export_columns():
+    # column names exactly as Clay's "Enrich company" action produces them
+    n = normalize_row({"Domain": "vercel.com", "Name": "Vercel", "Website": "https://vercel.com", "Employee Count": "1013",
+                       "Industry": "Software Development", "Description": "Vercel is the platform...", "Founded": "2015"})
+    assert n["domain"] == "vercel.com" and n["employee_count"] == 1013 and n["company_summary"].startswith("Vercel")
+
+
 def test_normalize_rejects_rows_without_domain():
     assert normalize_row({"Headcount": 10}) is None
 
