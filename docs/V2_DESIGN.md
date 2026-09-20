@@ -199,7 +199,9 @@ Multi-step cadences, send scheduling, and pushing enrollments to a real sequenci
 ### HubSpot API pull (`HUBSPOT_ENABLED=true`)
 
 - `src/ingestion/hubspot_api.py` searches `/crm/v3/objects/emails` and `/crm/v3/objects/meetings` since `HUBSPOT_LOOKBACK_DAYS`, resolves the associated contact's email, and writes the same `hubspot_engagement.csv` shape the offline path reads. Replies map to `email_click`, meetings to `meeting_booked`; the existing mapper then turns them into intent signals.
-- It runs at the start of `load-raw` when enabled, replacing the CSV export. A private-app token with CRM read scopes is required.
+- It runs at the start of `load-raw` when enabled and writes to a git-ignored file under `data/processed`, which is loaded in addition to the seeded export with `signal_source = hubspot_api`. A HubSpot service key (or legacy private-app token) with `crm.objects.contacts.read` and `sales-email-read` is required.
+- Optional `data/processed/accounts_live.csv` (git-ignored) adds real accounts for live-connector tests without touching the seeded, fictional data.
+- Verified live: a logged meeting and email on a test contact at a tracked domain arrived as `demo_request` and `email_engagement` signals and moved that account's intent score.
 
 Both adapters are unit-tested offline with a fake HTTP transport and a fake webhook client.
 

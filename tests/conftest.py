@@ -5,6 +5,8 @@ import pytest
 # Tests must run with no env vars set: force the offline mode regardless of a local .env
 os.environ["SF_ENABLED"] = "false"
 os.environ["AI_ENABLED"] = "false"
+os.environ["HUBSPOT_ENABLED"] = "false"
+os.environ["CLAY_ENABLED"] = "false"
 os.environ["ANTHROPIC_API_KEY"] = ""
 
 from src.policy import get_policy  # noqa: E402

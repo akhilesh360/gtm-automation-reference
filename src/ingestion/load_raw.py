@@ -15,6 +15,11 @@ def load_all(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
 
         pull_engagements(live_path)
     run_sql_file(con, "02_load_raw_data.sql", {"raw_dir": str(settings.raw_dir)})
+    extra = settings.processed_dir / "accounts_live.csv"   # optional, git-ignored: real accounts used for live connector tests
+    if extra.exists():
+        con.execute("INSERT OR REPLACE INTO accounts (account_id, account_name, domain, industry, employee_count, funding_stage, account_owner, "
+                    "created_at, updated_at) SELECT account_id, account_name, domain, industry, employee_count, funding_stage, account_owner, "
+                    "CURRENT_TIMESTAMP, CURRENT_TIMESTAMP FROM read_csv_auto(?, header=true)", [str(extra)])
     hubspot_rows = load_hubspot_events(con, [settings.raw_dir / "hubspot_engagement.csv", live_path])
     counts = {}
     for t in ("accounts", "account_enrichment", "intent_signals", "usage_signals", "products", "quote_requests", "opportunities", "opportunity_stage_history"):
