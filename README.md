@@ -156,7 +156,7 @@ erp/mock_server.py     standalone HTTP mock of the ERP sales-order API
 dashboard/app.py       Streamlit: CPQ Operations · Account Prioritization · Pipeline · Data Quality
 sfdx/                  deployable metadata: objects, fields, permission set, custom setting, custom metadata, two Flows
 tests/                 94 tests incl. exact reproduction of the scenarios and the quote-to-cash path
-docs/                  technical design, v2 design, data dictionary, Salesforce mapping and setup, scenario tests, talk track
+docs/                  technical design, v2 design, data dictionary, Salesforce mapping and setup, scenario tests
 .github/workflows/     CI: lint, seeded data, tests, scenario run
 ```
 
@@ -167,7 +167,7 @@ docs/                  technical design, v2 design, data dictionary, Salesforce 
 - [Data dictionary](docs/data_dictionary.md)
 - [Approval matrix](docs/approval_matrix.md) (generated)
 - [Salesforce mapping](docs/salesforce_mapping.md) and [setup](docs/salesforce_setup.md)
-- [Scenario tests](docs/scenario_tests.md) and [talk track](docs/talk_track.md)
+- [Scenario tests](docs/scenario_tests.md)
 - [Changelog](CHANGELOG.md)
 
 ## License
