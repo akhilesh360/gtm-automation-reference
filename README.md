@@ -26,7 +26,6 @@ This is a CPQ-style reference implementation using Salesforce custom objects. It
 - [Screenshots](#screenshots)
 - [Repository layout](#repository-layout)
 - [Documentation](#documentation)
-- [Roadmap](#roadmap)
 
 ## What it does
 
