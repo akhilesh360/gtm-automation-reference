@@ -58,7 +58,7 @@ def upsert_scores(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlat
     n = 0
     for r in rows:
         score_id, sf_acct = r[0], r[2]
-        data = {"Account__c": sf_acct, "Intent_Score__c": r[3], "Engagement_Score__c": r[4], "Firmographic_Fit_Score__c": r[5],
+        data = {"Name": score_id, "Account__c": sf_acct, "Intent_Score__c": r[3], "Engagement_Score__c": r[4], "Firmographic_Fit_Score__c": r[5],
                 "Usage_Score__c": r[6], "Priority_Score__c": r[7], "Account_Tier__c": r[8], "Scoring_Reason__c": r[9],
                 "Narrative__c": r[10], "Task_Description__c": r[11], "Scored_At__c": r[12]}
         _with_retry(con, "upsert_scores", "Account_Score__c", score_id, correlation_id,
@@ -82,7 +82,7 @@ def create_quotes(con: duckdb.DuckDBPyConnection, sf: SalesforceClient, correlat
     n = 0
     for r in rows:
         quote_id = r[0]
-        data = {"Account__c": r[1], "Product_Id__c": r[2], "Monthly_Commitment__c": r[3], "List_Price__c": r[4], "Quantity__c": r[5],
+        data = {"Name": quote_id, "Account__c": r[1], "Product_Id__c": r[2], "Monthly_Commitment__c": r[3], "List_Price__c": r[4], "Quantity__c": r[5],
                 "Contract_Term_Months__c": r[6], "Discount_Percent__c": r[7], "Discount_Amount__c": r[8], "Net_Price__c": r[9],
                 "Annual_Contract_Value__c": r[10],
                 # restricted picklist in the org: a validation-failed quote may carry a bad value, keep it in Exception_Reason__c only
