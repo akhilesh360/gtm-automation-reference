@@ -27,20 +27,26 @@ def map_event(event_type: str, campaign: str | None) -> str | None:
     return None
 
 
-def load_hubspot_events(con: duckdb.DuckDBPyConnection, path: Path) -> int:
-    if not path.exists():
+def load_hubspot_events(con: duckdb.DuckDBPyConnection, path: Path | list[Path]) -> int:
+    """Load one or more HubSpot-shaped CSVs (the seeded export plus, optionally, a live API pull) into intent_signals."""
+    paths = [p for p in (path if isinstance(path, list) else [path]) if p.exists()]
+    if not paths:
         return 0
-    df = pd.read_csv(path)
     domains = con.execute("SELECT domain, account_id FROM accounts WHERE domain IS NOT NULL").fetchall()
     by_domain = {d: a for d, a in domains}
-    rows = []
-    for r in df.itertuples(index=False):
-        aid = by_domain.get(r.domain)
-        stype = map_event(r.event_type, getattr(r, "campaign", None))
-        if aid is None or stype is None:
-            continue
-        rows.append((f"HS-{r.event_id}", aid, stype, 1.0, "hubspot", r.event_timestamp))
-    con.execute("DELETE FROM intent_signals WHERE signal_source = 'hubspot'")
+    rows, seen = [], set()
+    for p in paths:
+        df = pd.read_csv(p)
+        source = "hubspot_api" if "live" in p.name else "hubspot"
+        for r in df.itertuples(index=False):
+            aid = by_domain.get(r.domain)
+            stype = map_event(r.event_type, getattr(r, "campaign", None))
+            sid = f"HS-{r.event_id}"
+            if aid is None or stype is None or sid in seen:
+                continue
+            seen.add(sid)
+            rows.append((sid, aid, stype, 1.0, source, r.event_timestamp))
+    con.execute("DELETE FROM intent_signals WHERE signal_source IN ('hubspot', 'hubspot_api')")
     if rows:
         con.executemany("INSERT INTO intent_signals VALUES (?,?,?,?,?,?)", rows)
     return len(rows)

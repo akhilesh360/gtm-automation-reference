@@ -9,12 +9,13 @@ from src.ingestion.load_hubspot import load_hubspot_events
 
 
 def load_all(con: duckdb.DuckDBPyConnection) -> dict[str, int]:
+    live_path = settings.processed_dir / "hubspot_engagement_live.csv"   # git-ignored; the seeded export stays untouched
     if settings.hubspot_enabled and settings.hubspot_token:
-        from src.ingestion.hubspot_api import pull_engagements  # live pull replaces the CSV export before loading
+        from src.ingestion.hubspot_api import pull_engagements  # live pull is loaded IN ADDITION to the CSV export
 
-        pull_engagements(settings.raw_dir / "hubspot_engagement.csv")
+        pull_engagements(live_path)
     run_sql_file(con, "02_load_raw_data.sql", {"raw_dir": str(settings.raw_dir)})
-    hubspot_rows = load_hubspot_events(con, settings.raw_dir / "hubspot_engagement.csv")
+    hubspot_rows = load_hubspot_events(con, [settings.raw_dir / "hubspot_engagement.csv", live_path])
     counts = {}
     for t in ("accounts", "account_enrichment", "intent_signals", "usage_signals", "products", "quote_requests", "opportunities", "opportunity_stage_history"):
         counts[t] = con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
