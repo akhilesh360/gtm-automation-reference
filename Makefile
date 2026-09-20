@@ -1,4 +1,4 @@
-.PHONY: setup data run scenarios test lint dashboard api erp policy clean
+.PHONY: setup data run scenarios test lint dashboard api erp policy screenshots clean
 
 PY := .venv/bin/python
 
@@ -31,6 +31,9 @@ erp:              ## start the standalone mock ERP (then set ERP_URL=http://127.
 
 policy:           ## regenerate docs/approval_matrix.md from config/policy.yaml
 	$(PY) -m src.main policy --render
+
+screenshots:      ## rebuild the database, then capture docs/screenshots (needs playwright)
+	$(PY) -m src.main run-all >/dev/null && $(PY) -m scripts.capture_screenshots
 
 clean:            ## remove generated database, mock stores and logs
 	rm -f data/gtm.duckdb data/processed/*.json data/processed/*.csv logs/*.log
