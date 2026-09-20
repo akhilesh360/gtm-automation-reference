@@ -22,7 +22,7 @@ from src.monitoring.alerts import summarize
 from src.monitoring.logger import STATUS_FAILED_VALIDATION, get_logger, new_correlation_id, workflow_run
 from src.monitoring.quality_checks import has_errors, run_checks
 from src.outbound.sequences import enroll_accounts
-from src.policy import get_policy, render_approval_matrix
+from src.policy import get_policy, render_approval_matrix, render_commercial_policy_metadata
 from src.salesforce.client import get_client
 from src.salesforce.sync import (
     create_quotes,
@@ -277,6 +277,7 @@ def main(argv=None) -> int:
     g.add_argument("--seed", type=int, default=None)
     pol = sub.add_parser("policy")
     pol.add_argument("--render", action="store_true")
+    pol.add_argument("--sfdx", action="store_true", help="write sfdx/.../customMetadata/Commercial_Policy.Current.md-meta.xml")
     args = p.parse_args(argv)
 
     if args.cmd == "run-all":
@@ -294,7 +295,12 @@ def main(argv=None) -> int:
             out = PROJECT_ROOT / "docs" / "approval_matrix.md"
             out.write_text(render_approval_matrix(pol_obj), encoding="utf-8")
             print("wrote", out)
-        else:
+        if args.sfdx:
+            out = PROJECT_ROOT / "sfdx" / "force-app" / "main" / "default" / "customMetadata" / "Commercial_Policy.Current.md-meta.xml"
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(render_commercial_policy_metadata(pol_obj), encoding="utf-8")
+            print("wrote", out)
+        if not (args.render or args.sfdx):
             print(pol_obj.model_dump_json(indent=2))
         return 0
 

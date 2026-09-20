@@ -124,3 +124,23 @@ def render_approval_matrix(policy: Policy) -> str:
     out += ["", f"Approver order on a route: {', '.join(policy.approver_order)}.",
             f"Pending-approval SLA: {policy.sla.pending_approval_days} days.", ""]
     return "\n".join(out)
+
+
+def render_commercial_policy_metadata(policy: Policy) -> str:
+    """Salesforce Custom Metadata record (Commercial_Policy__mdt.Current) generated from the policy so the org can DISPLAY
+    the thresholds without owning them. Flows still do not compute policy."""
+    vals = [
+        ("Policy_Version__c", "string", policy.version),
+        ("Discount_Standard_Limit__c", "double", f"{policy.discount.standard_limit:g}"),
+        ("Discount_Manager_Limit__c", "double", f"{policy.discount.manager_limit:g}"),
+        ("VP_ACV_Threshold__c", "double", f"{policy.acv.vp_threshold:g}"),
+        ("Standard_Payment_Terms__c", "string", ", ".join(policy.payment_terms.standard)),
+        ("Pending_SLA_Days__c", "double", str(policy.sla.pending_approval_days)),
+    ]
+    body = "".join(f"\n    <values>\n        <field>{f}</field>\n        <value xsi:type=\"xsd:{t}\">{v}</value>\n    </values>" for f, t, v in vals)
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+        'xmlns:xsd="http://www.w3.org/2001/XMLSchema">\n'
+        f'    <label>Current ({policy.version})</label>\n    <protected>false</protected>{body}\n</CustomMetadata>\n'
+    )

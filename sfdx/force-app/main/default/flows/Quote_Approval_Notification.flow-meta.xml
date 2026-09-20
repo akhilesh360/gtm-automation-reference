@@ -5,7 +5,7 @@
         <name>Email_Approval_Request</name><label>Email Quote Owner + RevOps mailbox</label>
         <locationX>50</locationX><locationY>450</locationY>
         <actionName>emailSimple</actionName><actionType>emailSimple</actionType>
-        <inputParameters><name>emailAddresses</name><value><elementReference>Recipient_List</elementReference></value></inputParameters>
+        <inputParameters><name>emailAddresses</name><value><elementReference>Recipients_Text</elementReference></value></inputParameters>
         <inputParameters><name>emailSubject</name><value><elementReference>Subject_Pending</elementReference></value></inputParameters>
         <inputParameters><name>emailBody</name><value><elementReference>Body_Pending</elementReference></value></inputParameters>
         <connector><targetReference>Stamp_Requested_At</targetReference></connector>
@@ -34,6 +34,19 @@
         <inputParameters><name>emailSubject</name><value><stringValue>Quote failed validation</stringValue></value></inputParameters>
         <inputParameters><name>emailBody</name><value><elementReference>Body_Failed</elementReference></value></inputParameters>
     </actionCalls>
+    <assignments>
+        <name>Init_Recipients</name><label>Start with Quote Owner + RevOps mailbox</label>
+        <locationX>50</locationX><locationY>380</locationY>
+        <assignmentItems><assignToReference>Recipients_Text</assignToReference><operator>Assign</operator><value><elementReference>Recipient_List</elementReference></value></assignmentItems>
+        <connector><targetReference>Get_Approver_Roles</targetReference></connector>
+    </assignments>
+    <assignments>
+        <name>Add_Recipient</name><label>Add mapped approver email</label>
+        <locationX>250</locationX><locationY>420</locationY>
+        <assignmentItems><assignToReference>Recipients_Text</assignToReference><operator>Add</operator><value><stringValue>,</stringValue></value></assignmentItems>
+        <assignmentItems><assignToReference>Recipients_Text</assignToReference><operator>Add</operator><value><elementReference>Loop_Roles.Notification_Email__c</elementReference></value></assignmentItems>
+        <connector><targetReference>Loop_Roles</targetReference></connector>
+    </assignments>
     <decisions>
         <name>Check_Required_Fields</name><label>Required fields present?</label>
         <locationX>50</locationX><locationY>150</locationY>
@@ -57,7 +70,7 @@
         <rules>
             <name>Pending</name><conditionLogic>and</conditionLogic>
             <conditions><leftValueReference>$Record.Approval_Status__c</leftValueReference><operator>EqualTo</operator><rightValue><stringValue>Pending Approval</stringValue></rightValue></conditions>
-            <connector><targetReference>Email_Approval_Request</targetReference></connector>
+            <connector><targetReference>Init_Recipients</targetReference></connector>
             <label>Pending Approval</label>
         </rules>
         <rules>
@@ -85,15 +98,46 @@
             <label>Failed Validation</label>
         </rules>
     </decisions>
-    <description>Orchestration only. Reads Approval_Status__c and Approval_Route__c written by the Python policy engine. Contains no discount, ACV or payment-term logic. v1 emails the Quote Owner plus the RevOps test mailbox from GTM_Settings__c; role-to-user routing is v2.</description>
+    <decisions>
+        <name>Role_In_Route</name><label>Is this role in Approval_Route__c?</label>
+        <locationX>250</locationX><locationY>400</locationY>
+        <defaultConnector><targetReference>Loop_Roles</targetReference></defaultConnector>
+        <defaultConnectorLabel>Not in route</defaultConnectorLabel>
+        <rules>
+            <name>In_Route</name><conditionLogic>and</conditionLogic>
+            <conditions><leftValueReference>Role_Match</leftValueReference><operator>EqualTo</operator><rightValue><booleanValue>true</booleanValue></rightValue></conditions>
+            <connector><targetReference>Add_Recipient</targetReference></connector>
+            <label>In route</label>
+        </rules>
+    </decisions>
+    <description>Orchestration only. Approver recipients come from Approver_Role__mdt (role-to-email/queue mapping) for the roles named in Approval_Route__c, plus the Quote Owner and the RevOps mailbox. Reads Approval_Status__c and Approval_Route__c written by the Python policy engine. Contains no discount, ACV or payment-term logic. v1 emails the Quote Owner plus the RevOps test mailbox from GTM_Settings__c; role-to-user routing is v2.</description>
     <formulas><name>Owner_Email</name><dataType>String</dataType><expression>{!$Record.Owner:User.Email}</expression></formulas>
     <formulas><name>Recipient_List</name><dataType>String</dataType><expression>{!$Record.Owner:User.Email} &amp; "," &amp; {!$Setup.GTM_Settings__c.RevOps_Notification_Email__c}</expression></formulas>
     <formulas><name>Approver_Name</name><dataType>String</dataType><expression>IF(ISBLANK({!$Record.Approver__c}), {!$Record.LastModifiedBy.Name}, {!$Record.Approver__c})</expression></formulas>
     <formulas><name>Subject_Rejected</name><dataType>String</dataType><expression>"Quote rejected: " &amp; {!$Record.Quote_Number__c}</expression></formulas>
+    <formulas><name>Role_Match</name><dataType>Boolean</dataType><expression>CONTAINS({!$Record.Approval_Route__c}, {!Loop_Roles.Role_Name__c})</expression></formulas>
     <formulas><name>Subject_Pending</name><dataType>String</dataType><expression>"Approval requested: " &amp; {!$Record.Quote_Number__c} &amp; " (" &amp; {!$Record.Approval_Route__c} &amp; ")"</expression></formulas>
     <interviewLabel>Quote Approval Notification {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Quote Approval Notification</label>
+    <loops>
+        <name>Loop_Roles</name><label>For each approver role</label>
+        <locationX>50</locationX><locationY>420</locationY>
+        <collectionReference>Get_Approver_Roles</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector><targetReference>Role_In_Route</targetReference></nextValueConnector>
+        <noMoreValuesConnector><targetReference>Email_Approval_Request</targetReference></noMoreValuesConnector>
+    </loops>
     <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Approver_Roles</name><label>Get approver role mapping (Custom Metadata)</label>
+        <locationX>50</locationX><locationY>400</locationY>
+        <object>Approver_Role__mdt</object>
+        <filterLogic>and</filterLogic>
+        <filters><field>Role_Name__c</field><operator>IsNull</operator><value><booleanValue>false</booleanValue></value></filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <connector><targetReference>Loop_Roles</targetReference></connector>
+    </recordLookups>
     <recordUpdates>
         <name>Stamp_Requested_At</name><label>Stamp Approval_Requested_At__c</label>
         <locationX>50</locationX><locationY>600</locationY>
@@ -132,4 +176,7 @@ v1: role routing is displayed here; role-to-user/queue mapping is deferred to v2
 Reason: {!$Record.Rejection_Reason__c}</text></textTemplates>
     <textTemplates><name>Body_Incomplete</name><isViewedAsPlainText>true</isViewedAsPlainText><text>Quote {!$Record.Quote_Number__c} was saved without all required fields (commitment, term, discount, payment terms, approval status). Check the integration log.</text></textTemplates>
     <textTemplates><name>Body_Failed</name><isViewedAsPlainText>true</isViewedAsPlainText><text>Quote {!$Record.Quote_Number__c} failed validation in the policy engine: {!$Record.Exception_Reason__c}</text></textTemplates>
+    <variables>
+        <name>Recipients_Text</name><dataType>String</dataType><isCollection>false</isCollection><isInput>false</isInput><isOutput>false</isOutput>
+    </variables>
 </Flow>

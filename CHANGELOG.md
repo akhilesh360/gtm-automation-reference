@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.7 — Salesforce hardening
+- `Approver_Role__mdt` role-to-recipient mapping used by Flow A for the roles named on the quote
+- `Commercial_Policy__mdt` record generated from `config/policy.yaml` (`policy --sfdx`), display-only
+
 ## v2.6 — Bounded research agent
 - Five read-only DuckDB tools, manual tool loop capped at six calls, validated output, template fallback; `account_research` table
 

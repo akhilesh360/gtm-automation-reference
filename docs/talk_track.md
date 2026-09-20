@@ -50,5 +50,8 @@ Clay posts rows to a secured webhook that normalizes its column names and upsert
 **Is the AI agentic?**
 Only in a bounded way: five read-only tools, six calls maximum, validated output, and a template fallback. It reads scores; it never sets them.
 
+**How do approvers actually get notified?**
+The route on the quote names roles. A Custom Metadata mapping turns each role into an email or queue, and the Flow loops over the roles in the route to build the recipient list. Changing who RevOps is means editing one metadata record, not the Flow.
+
 **What's next?**
 Sequence management, live Clay and HubSpot connectors, and a bounded Claude research loop.

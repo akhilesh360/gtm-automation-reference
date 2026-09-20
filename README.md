@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/akhilesh360/gtm-automation-reference/actions/workflows/ci.yml/badge.svg)](https://github.com/akhilesh360/gtm-automation-reference/actions/workflows/ci.yml)
 ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
-![Tests](https://img.shields.io/badge/tests-93%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-94%20passing-brightgreen)
 ![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)
 
 A Salesforce-centered reference implementation for CPQ-style pricing governance, discount approvals, signal-based account prioritization, CRM data-quality controls, quote-to-cash handoff, and revenue operations reporting.
@@ -48,7 +48,7 @@ make setup        # python3.11 venv + dependencies
 make scenarios    # run the pipeline and print the reference scenarios
 make dashboard    # http://localhost:8501
 make api          # http://127.0.0.1:8000/docs
-make test         # 93 tests, no credentials needed
+make test         # 94 tests, no credentials needed
 ```
 
 Without `make`:
@@ -81,7 +81,7 @@ quote request
   → approval_rules       thresholds from policy.yaml → status, ordered approvers, reasons
   → audit                one quotes row, ≥ 1 approval_audit rows (auto-approvals included)
   → Salesforce sync      Quote__c + Approval_Audit__c upserted by external ID; human decisions never overwritten
-  → Flow A               emails Quote Owner + RevOps mailbox, stamps timestamps and approver; no policy math
+  → Flow A               emails Quote Owner + RevOps mailbox + mapped approver roles, stamps timestamps and approver; no policy math
 ```
 
 | Rule | Route |
@@ -116,6 +116,8 @@ Each score carries a deterministic `scoring_reason`, for example: *Tier 1 becaus
 
 **Research agent.** `python -m src.main research --account-id ACC-00003` runs a bounded tool loop (five read-only tools, six calls max) that writes a brief, talking points and an outbound draft, falling back to a template without a key.
 
+**Salesforce hardening.** Flow A now builds approver recipients from an `Approver_Role__mdt` mapping for the roles named on the quote, and `python -m src.main policy --sfdx` generates a `Commercial_Policy__mdt` record so the org displays the thresholds it never computes.
+
 **Forecasting.** Stage probabilities live in `config/policy.yaml`. Open opportunities are weighted by close month and tier, a dated snapshot is stored on each run, six months of history are reconstructed from stage transitions, and closed months are compared to the forecast that stood at the start of the month. Design notes: [docs/V2_DESIGN.md](docs/V2_DESIGN.md).
 
 ## Screenshots
@@ -149,8 +151,8 @@ src/main.py            CLI: init-db · load-raw · validate · score · evaluate
 api/                   FastAPI, three routes
 erp/mock_server.py     standalone HTTP mock of the ERP sales-order API
 dashboard/app.py       Streamlit: CPQ Operations · Account Prioritization · Pipeline · Data Quality
-sfdx/                  deployable metadata: objects, fields, permission set, custom setting, two Flows
-tests/                 93 tests incl. exact reproduction of the scenarios and the quote-to-cash path
+sfdx/                  deployable metadata: objects, fields, permission set, custom setting, custom metadata, two Flows
+tests/                 94 tests incl. exact reproduction of the scenarios and the quote-to-cash path
 docs/                  technical design, v2 design, data dictionary, Salesforce mapping and setup, scenario tests, talk track
 .github/workflows/     CI: lint, seeded data, tests, scenario run
 ```
@@ -173,7 +175,7 @@ docs/                  technical design, v2 design, data dictionary, Salesforce 
 4. ~~Outbound sequence management for Tier 2 accounts~~ shipped (v2.4)
 5. ~~Live Clay webhook and HubSpot API connectors~~ shipped (v2.5)
 6. ~~Bounded AI research loop with read-only tools~~ shipped (v2.6)
-7. Salesforce role-to-user routing and Custom Metadata generated from `policy.yaml`
+7. ~~Salesforce role-to-user routing and Custom Metadata generated from `policy.yaml`~~ shipped (v2.7)
 
 ## License
 

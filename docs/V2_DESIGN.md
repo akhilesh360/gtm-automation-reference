@@ -214,3 +214,24 @@ Both adapters are unit-tested offline with a fake HTTP transport and a fake webh
 - `python -m src.main research --account-id ACC-00003` runs it. With `AI_ENABLED=false` it prints the template brief; with a key it prints the model's.
 
 Tested with a fake model client that emits tool calls and a final answer, including the budget-exhausted and invalid-output fallbacks.
+
+
+## Item 7: Salesforce hardening — approver role mapping and policy metadata
+
+**Goal.** Replace the v1 "email the Quote Owner plus one test mailbox" behaviour with a real role-to-recipient mapping, and let the org display the commercial policy without owning it.
+
+### Approver role mapping (`Approver_Role__mdt`)
+
+- Custom Metadata type with `Role_Name__c` (exactly as written in `Approval_Route__c`), `Notification_Email__c`, and an optional `Queue_Developer_Name__c`.
+- Four records ship in `sfdx/force-app/main/default/customMetadata`: Sales Manager, RevOps, Finance, VP Sales. In the Developer Org they all point at the org user's mailbox; in production each maps to a distribution list or a queue.
+- Flow A, on `Pending Approval`, starts the recipient list with the Quote Owner and the RevOps mailbox, gets all `Approver_Role__mdt` records, loops them, and appends the email of every role whose name appears in `Approval_Route__c` (a `CONTAINS` formula). It then sends one email. No policy math was added; the Flow still only reads the route Python wrote.
+- Verified: a recreated pending quote routed to "Sales Manager, Finance" fired the Flow and stamped `Approval_Requested_At__c` with no errors.
+
+### Commercial policy metadata (`Commercial_Policy__mdt`)
+
+- `python -m src.main policy --sfdx` renders `Commercial_Policy.Current` from `config/policy.yaml`: policy version, discount limits, VP ACV threshold, standard payment terms, pending SLA days.
+- Deployed and readable in the org. It is display-only: admins and approvers can see the thresholds in Setup and on reports, while Python remains the only place they are evaluated. Regenerate and redeploy whenever the policy file changes.
+
+### Out of scope
+
+Queue ownership of quotes, Salesforce Approval Processes, and reading the metadata back into Python (the file is the source of truth, the metadata is a mirror).

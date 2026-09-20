@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Discount_Manager_Limit__c</fullName>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Discount Manager Limit (%)</label>
+    <precision>18</precision>
+    <scale>2</scale>
+    <unique>false</unique>
+    <type>Number</type>
+    <required>true</required>
+</CustomField>

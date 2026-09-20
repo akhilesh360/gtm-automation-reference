@@ -70,3 +70,9 @@ It reads the tier Python assigned; it does not compare the score to a threshold.
 ## Local mode
 
 With `SF_ENABLED=false`, `MockSalesforceClient` persists to `data/processed/mock_salesforce.json` and emulates Flow B (one Task per Tier 1 Account, deduped on open High-priority Tasks), so the scenario run behaves the same way without an org.
+
+
+## v2.7: approver role mapping and policy metadata
+
+- After deploying, open Setup → Custom Metadata Types → Approver Role → Manage Records and set each role's Notification Email (and optionally a queue developer name). Flow A emails the Quote Owner, the RevOps mailbox, and every mapped role that appears in the quote's route.
+- Run `python -m src.main policy --sfdx` and deploy `customMetadata/` whenever `config/policy.yaml` changes, so the Commercial Policy record in the org matches the engine. The org displays it; it never evaluates it.

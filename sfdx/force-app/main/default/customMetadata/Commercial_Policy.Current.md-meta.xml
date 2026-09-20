@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Current (2026.09)</label>
+    <protected>false</protected>
+    <values>
+        <field>Policy_Version__c</field>
+        <value xsi:type="xsd:string">2026.09</value>
+    </values>
+    <values>
+        <field>Discount_Standard_Limit__c</field>
+        <value xsi:type="xsd:double">10</value>
+    </values>
+    <values>
+        <field>Discount_Manager_Limit__c</field>
+        <value xsi:type="xsd:double">20</value>
+    </values>
+    <values>
+        <field>VP_ACV_Threshold__c</field>
+        <value xsi:type="xsd:double">100000</value>
+    </values>
+    <values>
+        <field>Standard_Payment_Terms__c</field>
+        <value xsi:type="xsd:string">Net 30, Annual Prepaid</value>
+    </values>
+    <values>
+        <field>Pending_SLA_Days__c</field>
+        <value xsi:type="xsd:double">2</value>
+    </values>
+</CustomMetadata>
