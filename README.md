@@ -167,16 +167,6 @@ docs/                  technical design, v2 design, data dictionary, Salesforce 
 - [Scenario tests](docs/scenario_tests.md) and [talk track](docs/talk_track.md)
 - [Changelog](CHANGELOG.md)
 
-## Roadmap
-
-1. ~~NetSuite-style ERP handoff with human approval capture~~ shipped (v2.1)
-2. ~~Opportunities, funnel and bottleneck view~~ shipped (v2.2)
-3. ~~Weighted pipeline forecast and forecast-vs-actual~~ shipped (v2.3)
-4. ~~Outbound sequence management for Tier 2 accounts~~ shipped (v2.4)
-5. ~~Live Clay webhook and HubSpot API connectors~~ shipped (v2.5)
-6. ~~Bounded AI research loop with read-only tools~~ shipped (v2.6)
-7. ~~Salesforce role-to-user routing and Custom Metadata generated from `policy.yaml`~~ shipped (v2.7)
-
 ## License
 
 MIT
