@@ -214,11 +214,11 @@ def run_scenarios():
     """Run the pipeline, then print the three scenarios."""
     run_all()
     with session() as con:
-        print("\n=== Scenario 1: Alpha AI (standard startup quote) ===")
+        print("\n=== Scenario 1: Acme AI (standard startup quote) ===")
         _print_quote(con, "Q-00001")
-        print("\n=== Scenario 2: EnterpriseGen (enterprise exception quote) ===")
+        print("\n=== Scenario 2: Globex Enterprise (enterprise exception quote) ===")
         _print_quote(con, "Q-00002")
-        print("\n=== Scenario 3: FastScale AI (high-intent account) ===")
+        print("\n=== Scenario 3: Initech ML (high-intent account) ===")
         r = con.execute("SELECT priority_score, account_tier, intent_score, usage_score, engagement_score, firmographic_fit_score, "
                         "scoring_reason, task_description, draft_source FROM account_scores WHERE account_id = 'ACC-00003'").fetchone()
         print(f"  priority {r[0]}  {r[1]}  (intent {r[2]}, usage {r[3]}, engagement {r[4]}, fit {r[5]})")
@@ -229,7 +229,7 @@ def run_scenarios():
     # ---- v2 scenario 4: human approval + ERP handoff ----
     cid = new_correlation_id()
     with session() as con:
-        print("\n=== Scenario 4: EnterpriseGen approved by a human, handed off to the ERP ===")
+        print("\n=== Scenario 4: Globex Enterprise approved by a human, handed off to the ERP ===")
         try:
             stage_decide(con, cid, "Q-00002", "Approved", "Jane Doe", None)
         except ValueError as e:

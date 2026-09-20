@@ -65,10 +65,14 @@ No `.env` is required. A real Salesforce client authenticates with Salesforce cr
 
 | # | Scenario | Input | Result |
 |---|---|---|---|
-| 1 | **Alpha AI** | Starter API Commitment, $5,000/mo × 12, 5% discount, Net 30 | ACV $57,000 → **Auto-Approved**, one `STANDARD_POLICY` audit row, handed to the ERP and reconciled |
-| 2 | **EnterpriseGen** | Enterprise Platform, $50,000/mo × 12, 25% discount, Net 60, custom overage rate | ACV $450,000 → **Pending Approval**, route RevOps + Finance + VP Sales, five audit rows |
-| 3 | **FastScale AI** | Clay hiring signals, HubSpot meeting and emails, 3 pricing visits, 40% MoM usage growth | priority **87.0** → Tier 1 → one Salesforce Task created by Flow B, deduped on re-run |
-| 4 | **EnterpriseGen, approved** (v2) | Jane Doe approves in Salesforce | `HUMAN_DECISION` audit row → sales order for $450,000 with a 12-line billing schedule → **Reconciled** on the quote |
+| 1 | **Acme AI** | Starter API Commitment, $5,000/mo × 12, 5% discount, Net 30 | ACV $57,000 → **Auto-Approved**, one `STANDARD_POLICY` audit row, handed to the ERP and reconciled |
+| 2 | **Globex Enterprise** | Enterprise Platform, $50,000/mo × 12, 25% discount, Net 60, custom overage rate | ACV $450,000 → **Pending Approval**, route RevOps + Finance + VP Sales, five audit rows |
+| 3 | **Initech ML** | Clay hiring signals, HubSpot meeting and emails, 3 pricing visits, 40% MoM usage growth | priority **87.0** → Tier 1 → one Salesforce Task created by Flow B, deduped on re-run |
+| 4 | **Globex Enterprise, approved** (v2) | Jane Doe approves in Salesforce | `HUMAN_DECISION` audit row → sales order for $450,000 with a 12-line billing schedule → **Reconciled** on the quote |
+
+> All company and person names in these scenarios (Acme AI, Globex Enterprise, Initech ML, Jane Doe, the account owners) are fictional placeholders produced by the seeded data generator. Domains use the reserved `.example` suffix.
+
+![Scenario flow](docs/scenario_flow.png)
 
 `python -m src.main scenarios` prints all four. [docs/scenario_tests.md](docs/scenario_tests.md) is the walkthrough.
 

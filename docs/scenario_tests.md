@@ -16,7 +16,7 @@ Open `config/policy.yaml`. Every threshold the scenario run uses lives here: dis
 
 > "I centralized commercial-policy decisions in a versioned config to avoid policy drift. Salesforce Flow handles workflow execution and CRM actions after the decision is written back."
 
-## 2. Scenario 1 — Alpha AI, standard quote (1 min)
+## 2. Scenario 1 — Acme AI, standard quote (1 min)
 
 From the `scenario run` output: Starter API Commitment, $5,000/month, 12 months, 5%, Net 30.
 
@@ -25,7 +25,7 @@ From the `scenario run` output: Starter API Commitment, $5,000/month, 12 months,
 
 > "Every decision gets an audit row, including auto-approvals, so the trail is complete."
 
-## 3. Scenario 2 — EnterpriseGen, exception quote (2 min)
+## 3. Scenario 2 — Globex Enterprise, exception quote (2 min)
 
 Enterprise Platform, $50,000/month, 12 months, 25%, Net 60, 45M forecasted units against a 50M allowance, custom overage rate.
 
@@ -35,7 +35,7 @@ Enterprise Platform, $50,000/month, 12 months, 25%, Net 60, 45M forecasted units
 
 > "A custom overage rate replaces the list rate for pricing and independently triggers RevOps review, even when no overage is forecasted."
 
-## 4. Scenario 3 — FastScale AI, high-intent account (2 min)
+## 4. Scenario 3 — Initech ML, high-intent account (2 min)
 
 Signals from Clay (2 open ML roles), HubSpot (meeting booked, 5 email engagements), web analytics (3 pricing-page visits, 15 site visits) and product telemetry (40% MoM growth).
 
@@ -48,7 +48,7 @@ Signals from Clay (2 open ML roles), HubSpot (meeting booked, 5 email engagement
 
 ## 4b. Scenario 4 — human approval and ERP handoff (v2, 1.5 min)
 
-`python -m src.main scenarios` now ends with Scenario 4: Jane Doe approves Q-00002, the engine reads the decision back as a `HUMAN_DECISION` audit row, the mock NetSuite accepts a sales order for $450,000 with a 12-line monthly billing schedule, and the quote shows `Reconciled`. Alpha AI (auto-approved) was handed off with no human step; pending and rejected quotes never reach the ERP.
+`python -m src.main scenarios` now ends with Scenario 4: Jane Doe approves Q-00002, the engine reads the decision back as a `HUMAN_DECISION` audit row, the mock NetSuite accepts a sales order for $450,000 with a 12-line monthly billing schedule, and the quote shows `Reconciled`. Acme AI (auto-approved) was handed off with no human step; pending and rejected quotes never reach the ERP.
 
 > "Salesforce is the system of record for the human decision, the policy engine is the system of record for the pricing, and the ERP receives a payload that reconciles to the cent."
 

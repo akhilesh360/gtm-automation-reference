@@ -48,7 +48,7 @@ sequenceDiagram
   "external_quote_id": "Q-00002",
   "policy_version": "2026.09",
   "correlation_id": "run-...",
-  "customer": {"name": "EnterpriseGen", "external_account_id": "ACC-00002", "salesforce_account_id": "001..."},
+  "customer": {"name": "Globex Enterprise", "external_account_id": "ACC-00002", "salesforce_account_id": "001..."},
   "terms": {"contract_term_months": 12, "payment_terms": "Net 60", "start_date": "2026-10-01"},
   "lines": [
     {"product_id": "PRD-ENT-PLATFORM", "description": "Enterprise Platform", "quantity": 1,
@@ -90,7 +90,7 @@ After the ERP acknowledges, Python compares `accepted_total` to `quotes.net_cont
 
 ### Scenario 4
 
-Approve Q-00002 as "Jane Doe" → `HUMAN_DECISION` audit row → sales order `SO-…` with a 12-line monthly schedule summing to $450,000 → `RECONCILED` → `Quote__c.ERP_Status__c = Reconciled`. Alpha AI (Q-00001, auto-approved) is handed off without a human step. A rejected quote produces no order.
+Approve Q-00002 as "Jane Doe" → `HUMAN_DECISION` audit row → sales order `SO-…` with a 12-line monthly schedule summing to $450,000 → `RECONCILED` → `Quote__c.ERP_Status__c = Reconciled`. Acme AI (Q-00001, auto-approved) is handed off without a human step. A rejected quote produces no order.
 
 ### Out of scope for item 1
 

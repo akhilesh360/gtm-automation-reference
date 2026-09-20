@@ -62,7 +62,7 @@ A personal reference implementation of a Salesforce-centered GTM automation engi
 | API | FastAPI, exactly two endpoints: `POST /score-account`, `POST /evaluate-quote` | Service story, minimal surface |
 | AI layer | Deterministic core. Optional Claude (`AI_ENABLED=true`) writes the prioritization narrative and drafts the task description; deterministic template otherwise | Trustworthy numbers, better prose |
 | Mock data | ~200 accounts, ~2,000 signals, 50 quote requests, `RANDOM_SEED=42`, three test records seeded explicitly | Reproducible scenario run |
-| Scenario 1 fix | Alpha AI commitment $10,000 → **$5,000**/month. ACV = $57,000, under the $100,000 VP threshold | Keeps the approval matrix as written |
+| Scenario 1 fix | Acme AI commitment $10,000 → **$5,000**/month. ACV = $57,000, under the $100,000 VP threshold | Keeps the approval matrix as written |
 | Tooling | Python 3.11, `requirements.txt`, `pytest`, no Poetry | Simple |
 | HubSpot source | HubSpot is the marketing signal source (email engagement, form fills, page views). Local mode reads a HubSpot-shaped CSV export; `HUBSPOT_ENABLED=true` pulls from the HubSpot CRM API with a private-app token | Makes "Salesforce + HubSpot + Snowflake" literally true |
 | Agentic research | When `AI_ENABLED=true`, Claude runs a bounded tool loop per Tier 1 account (max 6 tool calls) and returns a research brief + outbound draft. Off, a deterministic template brief is produced. Scoring is never delegated to the model | "Replace manual account research" without giving up explainability |
@@ -904,9 +904,9 @@ Seeded explicitly in `scripts/generate_mock_data.py`; asserted in `tests/test_sc
 
 | # | Customer | Inputs | Expected |
 |---|---|---|---|
-| 1 | Alpha AI | $5,000/mo, 12 mo, 5%, Net 30, no custom pricing | Gross $60,000, net $57,000, ACV $57,000 → **Auto-Approved**, 1 audit row "meets standard policy" |
-| 2 | EnterpriseGen | $50,000/mo, 12 mo, 25%, Net 60, custom overage | Gross $600,000, net $450,000, ACV $450,000 → **Pending Approval**, route RevOps + Finance + VP Sales, 4 audit rows: Discount > 20%, ACV ≥ $100K, Nonstandard terms, Custom pricing |
-| 3 | FastScale AI | intent 90, usage 90, engagement 80, firmographic 84 | Priority **87.0**, Tier 1, task created (dedupe verified), reason + narrative stored, research brief + outbound draft stored, enrolled in `tier1_exec_outreach` |
+| 1 | Acme AI | $5,000/mo, 12 mo, 5%, Net 30, no custom pricing | Gross $60,000, net $57,000, ACV $57,000 → **Auto-Approved**, 1 audit row "meets standard policy" |
+| 2 | Globex Enterprise | $50,000/mo, 12 mo, 25%, Net 60, custom overage | Gross $600,000, net $450,000, ACV $450,000 → **Pending Approval**, route RevOps + Finance + VP Sales, 4 audit rows: Discount > 20%, ACV ≥ $100K, Nonstandard terms, Custom pricing |
+| 3 | Initech ML | intent 90, usage 90, engagement 80, firmographic 84 | Priority **87.0**, Tier 1, task created (dedupe verified), reason + narrative stored, research brief + outbound draft stored, enrolled in `tier1_exec_outreach` |
 | 4 | Pipeline view | seeded opportunities across 6 months | Funnel shows Proposal → Negotiation as the bottleneck; Tier 1 win rate visibly higher than Tier 3; forecast table has a value for every open close month |
 
 Scenario 3 arithmetic: 0.4·90 + 0.3·90 + 0.2·80 + 0.1·84 = 36 + 27 + 16 + 8.4 = 87.4 → seeds are tuned so the computed sub-scores land at exactly 87.0 (test asserts `== 87.0`).

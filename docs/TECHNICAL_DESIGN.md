@@ -133,7 +133,7 @@ Ownership statement: *"Python owns decisioning; Salesforce Flow owns CRM-native 
 | Audit trail | Every quote decision writes at least one audit row, including auto-approvals (`STANDARD_POLICY`) | Complete decision trail |
 | Dashboard | Streamlit, three tabs, reads DuckDB only | Runs without an org |
 | Mock data | ~200 accounts, ~2,000 signals, 50 quote requests, `RANDOM_SEED=42`, three seeded test records | Reproducible |
-| Scenario 1 | Alpha AI at $5,000/month → ACV $57,000, under the $100,000 VP threshold | Stays auto-approved |
+| Scenario 1 | Acme AI at $5,000/month → ACV $57,000, under the $100,000 VP threshold | Stays auto-approved |
 | Scenario 3 | Firmographic fit = 80 → priority exactly 87.0 | Arithmetic is consistent |
 | Tooling | Python 3.11, `requirements.txt`, `pytest`, no Poetry | Simple |
 | Deferred to v2 | Opportunities and stage history, funnel/bottleneck, forecasting, sequence management, Claude tool loop, live Clay/HubSpot, Salesforce-native reports, NetSuite mock handoff | Keep v1 deep, not wide |
@@ -894,9 +894,9 @@ Seeded in `scripts/generate_mock_data.py`; asserted in `tests/test_scenarios.py`
 
 | # | Customer | Inputs | Expected |
 |---|---|---|---|
-| 1 | Alpha AI | Starter API Commitment, $5,000/mo, 12 mo, 5%, Net 30, no custom pricing | Gross $60,000, discount $3,000, net $57,000, ACV $57,000 → **Auto-Approved**, exactly 1 audit row: `STANDARD_POLICY`, approver NULL |
-| 2 | EnterpriseGen | Enterprise Platform, $50,000/mo, 12 mo, 25%, Net 60, forecasted 45,000,000 units/mo, custom_overage_rate $0.0000010 (⇒ custom pricing) | Overage 0 units, $0; gross $600,000, discount $150,000, net $450,000, ACV $450,000 → **Pending Approval**, route `RevOps, Finance, VP Sales`, 5 audit rows (DISCOUNT_GT_20 ×2, ACV_GTE_100K, NONSTANDARD_TERMS, CUSTOM_PRICING) |
-| 3 | FastScale AI | Clay, HubSpot and usage signals → intent 90, usage 90, engagement 80, firmographic 80 | Priority **87.0** (36 + 27 + 16 + 8), Tier 1, `sales_tasks` row `planned`, `Account_Score__c` synced, Flow B (or mock emulation) creates one High-priority Task, re-run creates no second Task, `scoring_reason` stored, narrative + outbound draft stored (`draft_source` = template or claude) |
+| 1 | Acme AI | Starter API Commitment, $5,000/mo, 12 mo, 5%, Net 30, no custom pricing | Gross $60,000, discount $3,000, net $57,000, ACV $57,000 → **Auto-Approved**, exactly 1 audit row: `STANDARD_POLICY`, approver NULL |
+| 2 | Globex Enterprise | Enterprise Platform, $50,000/mo, 12 mo, 25%, Net 60, forecasted 45,000,000 units/mo, custom_overage_rate $0.0000010 (⇒ custom pricing) | Overage 0 units, $0; gross $600,000, discount $150,000, net $450,000, ACV $450,000 → **Pending Approval**, route `RevOps, Finance, VP Sales`, 5 audit rows (DISCOUNT_GT_20 ×2, ACV_GTE_100K, NONSTANDARD_TERMS, CUSTOM_PRICING) |
+| 3 | Initech ML | Clay, HubSpot and usage signals → intent 90, usage 90, engagement 80, firmographic 80 | Priority **87.0** (36 + 27 + 16 + 8), Tier 1, `sales_tasks` row `planned`, `Account_Score__c` synced, Flow B (or mock emulation) creates one High-priority Task, re-run creates no second Task, `scoring_reason` stored, narrative + outbound draft stored (`draft_source` = template or claude) |
 
 Scenario 2 usage detail (the custom overage rate creates the RevOps exception even though no overage is forecasted):
 
@@ -912,9 +912,9 @@ Scenario 3 sub-scores are asserted exactly; the generator seeds signals that pro
 
 Scenario flow (`python -m src.main scenarios`, then `streamlit run dashboard/app.py`):
 
-1. Alpha AI quote: Starter plan → 5% discount → auto-approved → one audit row.
-2. EnterpriseGen quote: enterprise pricing → 25% discount + Net 60 + custom overage → RevOps + Finance + VP Sales routing → five auditable policy exceptions.
-3. FastScale AI: Clay/HubSpot/usage signals → score 87 → Tier 1 → Salesforce account score → Flow creates high-priority task → optional Claude drafts the task description.
+1. Acme AI quote: Starter plan → 5% discount → auto-approved → one audit row.
+2. Globex Enterprise quote: enterprise pricing → 25% discount + Net 60 + custom overage → RevOps + Finance + VP Sales routing → five auditable policy exceptions.
+3. Initech ML: Clay/HubSpot/usage signals → score 87 → Tier 1 → Salesforce account score → Flow creates high-priority task → optional Claude drafts the task description.
 
 ---
 

@@ -29,7 +29,7 @@ def test_score_account_missing_inputs():
 
 
 def test_evaluate_quote_auto_approved(pipeline_db):
-    r = client.post("/evaluate-quote", json={"account_name": "Alpha AI", "product_id": "PRD-API-STARTER", "monthly_commitment": 5000,
+    r = client.post("/evaluate-quote", json={"account_name": "Acme AI", "product_id": "PRD-API-STARTER", "monthly_commitment": 5000,
                                              "contract_term_months": 12, "discount_percent": 5, "payment_terms": "Net 30"})
     assert r.status_code == 200
     body = r.json()

@@ -1,201 +1,201 @@
 account_id,account_name,domain,industry,employee_count,funding_stage,account_owner,sf_account_id,created_at,updated_at
-ACC-00001,Alpha AI,alpha.ai,AI/ML,85,Series A,Priya Natarajan,,2026-03-03 18:00:00,2026-09-19 18:00:00
-ACC-00002,EnterpriseGen,enterprisegen.com,SaaS,4200,Public,Marcus Lee,,2026-03-03 18:00:00,2026-09-19 18:00:00
-ACC-00003,FastScale AI,fastscale.ai,AI/ML,3200,Series B,Elena Petrova,,2026-03-03 18:00:00,2026-09-19 18:00:00
-ACC-00004,Cinder Labs,cinderlabs.com,Healthcare,60,Series A,Wei Zhang,,2026-05-08 18:00:00,2026-09-19 18:00:00
-ACC-00005,Nova Robotics,novarobotics.com,Fintech,12,Seed,Marcus Lee,,2025-12-25 18:00:00,2026-09-19 18:00:00
-ACC-00006,Harbor Logic,harborlogic.com,Developer Tools,4000,Series B,Sam Okafor,,2025-06-17 18:00:00,2026-09-19 18:00:00
-ACC-00007,Kepler Pay,keplerpay.ai,E-commerce,12,Series C,Marcus Lee,,2025-06-14 18:00:00,2026-09-19 18:00:00
-ACC-00008,Pixel Data,pixeldata.io,SaaS,8000,Series A,Priya Natarajan,,2025-07-27 18:00:00,2026-09-19 18:00:00
-ACC-00009,Lumen Analytics,lumenanalytics.ai,Fintech,8000,Seed,Jordan Alvarez,,2025-02-17 18:00:00,2026-09-19 18:00:00
-ACC-00010,Lumen Health,lumenhealth.com,Developer Tools,2600,Series B,Elena Petrova,,2025-01-06 18:00:00,2026-09-19 18:00:00
-ACC-00011,Helix Robotics,,AI/ML,60,Series C,Priya Natarajan,,2025-12-25 18:00:00,2026-09-19 18:00:00
-ACC-00012,Lumen Health Group,,Fintech,200,Seed,Elena Petrova,,2026-01-18 18:00:00,2026-09-19 18:00:00
-ACC-00013,Nova Data,emberhealth.ai,Fintech,40,Series B,Marcus Lee,,2026-03-06 18:00:00,2026-09-19 18:00:00
-ACC-00014,Ember Health,emberhealth.ai,Logistics,2600,Series C,Marcus Lee,,2025-09-22 18:00:00,2026-09-19 18:00:00
-ACC-00015,Vector Cloud,pixelcloud.co,E-commerce,320,Series A,Marcus Lee,,2025-01-17 18:00:00,2026-09-19 18:00:00
-ACC-00016,Pixel Cloud,pixelcloud.co,SaaS,2600,Series B,Elena Petrova,,2026-03-31 18:00:00,2026-09-19 18:00:00
-ACC-00017,Kepler Robotics,keplerrobotics.ai,Healthcare,320,Series D,,,2025-08-15 18:00:00,2026-09-19 18:00:00
-ACC-00018,Kepler Systems,keplersystems.co,AI/ML,12,Series D,,,2024-11-16 18:00:00,2026-09-19 18:00:00
-ACC-00019,Signal Networks,signalnetworks.co,Fintech,320,Series A,Jordan Alvarez,,2025-02-25 18:00:00,2026-09-19 18:00:00
-ACC-00020,Atlas Works,atlasworks.com,Fintech,25,Series C,Sam Okafor,,2025-11-20 18:00:00,2026-09-19 18:00:00
-ACC-00021,Cinder Analytics,cinderanalytics.com,SaaS,40,Series B,Wei Zhang,,2025-11-24 18:00:00,2026-09-19 18:00:00
-ACC-00022,Harbor Systems,harborsystems.com,E-commerce,120,Series D,Sam Okafor,,2024-12-05 18:00:00,2026-09-19 18:00:00
-ACC-00023,Helix Systems,helixsystems.ai,Healthcare,800,Public,Sam Okafor,,2026-08-20 18:00:00,2026-09-19 18:00:00
-ACC-00024,Ridge Analytics,ridgeanalytics.co,AI/ML,200,Series D,Elena Petrova,,2025-12-18 18:00:00,2026-09-19 18:00:00
-ACC-00025,Vector Cloud Inc,vectorcloudinc.com,Healthcare,25,Public,Sam Okafor,,2026-04-14 18:00:00,2026-09-19 18:00:00
-ACC-00026,Orbit Networks,orbitnetworks.co,Media,40,Series A,Sam Okafor,,2025-06-13 18:00:00,2026-09-19 18:00:00
-ACC-00027,Helix Works,helixworks.io,Healthcare,320,Public,Wei Zhang,,2025-08-03 18:00:00,2026-09-19 18:00:00
-ACC-00028,Ember Works,emberworks.co,AI/ML,60,Seed,Priya Natarajan,,2024-12-26 18:00:00,2026-09-19 18:00:00
-ACC-00029,Meridian Cloud,meridiancloud.io,AI/ML,4000,Series B,Marcus Lee,,2026-06-12 18:00:00,2026-09-19 18:00:00
-ACC-00030,Vector Analytics,vectoranalytics.com,Developer Tools,120,Series C,Marcus Lee,,2025-02-14 18:00:00,2026-09-19 18:00:00
-ACC-00031,Orbit Robotics,orbitrobotics.co,SaaS,500,Series C,Marcus Lee,,2026-05-16 18:00:00,2026-09-19 18:00:00
-ACC-00032,Lumen Networks,lumennetworks.co,SaaS,320,Series B,Wei Zhang,,2026-06-26 18:00:00,2026-09-19 18:00:00
-ACC-00033,Nova Networks,novanetworks.com,AI/ML,4000,Series A,Priya Natarajan,,2025-12-09 18:00:00,2026-09-19 18:00:00
-ACC-00034,Helix Cloud,helixcloud.co,AI/ML,40,Series A,Marcus Lee,,2026-06-04 18:00:00,2026-09-19 18:00:00
-ACC-00035,Ember Works Inc,emberworksinc.com,Fintech,800,Series D,Priya Natarajan,,2025-12-21 18:00:00,2026-09-19 18:00:00
-ACC-00036,Signal Health,signalhealth.co,Developer Tools,320,Series D,Marcus Lee,,2025-07-28 18:00:00,2026-09-19 18:00:00
-ACC-00037,Nimbus Health,nimbushealth.ai,Media,8000,Series B,Jordan Alvarez,,2025-01-28 18:00:00,2026-09-19 18:00:00
-ACC-00038,Nova Robotics Tech,novaroboticstech.io,AI/ML,60,Public,Sam Okafor,,2025-02-11 18:00:00,2026-09-19 18:00:00
-ACC-00039,Vector Robotics,vectorrobotics.ai,AI/ML,1500,Series B,Sam Okafor,,2026-03-12 18:00:00,2026-09-19 18:00:00
-ACC-00040,Vector Works,vectorworks.com,E-commerce,25,Series B,Wei Zhang,,2025-12-23 18:00:00,2026-09-19 18:00:00
-ACC-00041,Beacon Labs,beaconlabs.io,Developer Tools,12,Series B,Jordan Alvarez,,2024-12-31 18:00:00,2026-09-19 18:00:00
-ACC-00042,Summit Works,summitworks.ai,Media,60,Series C,Elena Petrova,,2025-12-19 18:00:00,2026-09-19 18:00:00
-ACC-00043,Atlas Health,atlashealth.io,Fintech,120,Series B,Priya Natarajan,,2026-08-11 18:00:00,2026-09-19 18:00:00
-ACC-00044,Ember Logic,emberlogic.com,AI/ML,60,Series B,Marcus Lee,,2025-08-28 18:00:00,2026-09-19 18:00:00
-ACC-00045,Quanta Cloud,quantacloud.ai,SaaS,500,Series D,Wei Zhang,,2025-10-15 18:00:00,2026-09-19 18:00:00
-ACC-00046,Ridge Networks,ridgenetworks.com,Fintech,800,Series A,Wei Zhang,,2026-05-06 18:00:00,2026-09-19 18:00:00
-ACC-00047,Orbit Data,orbitdata.com,E-commerce,4000,Series B,Elena Petrova,,2025-11-05 18:00:00,2026-09-19 18:00:00
-ACC-00048,Ridge Cloud,ridgecloud.ai,AI/ML,2600,Series D,Sam Okafor,,2025-04-07 18:00:00,2026-09-19 18:00:00
-ACC-00049,Atlas AI,atlasai.com,Fintech,120,Seed,Elena Petrova,,2026-04-09 18:00:00,2026-09-19 18:00:00
-ACC-00050,Cinder Data,cinderdata.io,Healthcare,800,Series C,Sam Okafor,,2026-08-11 18:00:00,2026-09-19 18:00:00
-ACC-00051,Lumen Labs,lumenlabs.io,Developer Tools,200,Series B,Marcus Lee,,2025-06-06 18:00:00,2026-09-19 18:00:00
-ACC-00052,Orbit AI,orbitai.ai,SaaS,8000,Public,Priya Natarajan,,2025-08-19 18:00:00,2026-09-19 18:00:00
-ACC-00053,Helix Networks,helixnetworks.io,Fintech,200,Series C,Jordan Alvarez,,2024-11-23 18:00:00,2026-09-19 18:00:00
-ACC-00054,Orbit Cloud,orbitcloud.io,Logistics,8000,Series A,Jordan Alvarez,,2026-07-26 18:00:00,2026-09-19 18:00:00
-ACC-00055,Signal Robotics,signalrobotics.ai,Healthcare,320,Series C,Wei Zhang,,2025-12-09 18:00:00,2026-09-19 18:00:00
-ACC-00056,Atlas Systems,atlassystems.com,SaaS,12,Series D,Marcus Lee,,2026-01-28 18:00:00,2026-09-19 18:00:00
-ACC-00057,Ember Analytics,emberanalytics.ai,E-commerce,60,Series A,Wei Zhang,,2026-02-04 18:00:00,2026-09-19 18:00:00
-ACC-00058,Beacon Analytics,beaconanalytics.ai,E-commerce,8000,Series A,Wei Zhang,,2025-03-17 18:00:00,2026-09-19 18:00:00
-ACC-00059,Beacon Networks,beaconnetworks.ai,Media,25,Series D,Elena Petrova,,2026-02-19 18:00:00,2026-09-19 18:00:00
-ACC-00060,Summit Data,summitdata.com,AI/ML,320,Series A,Elena Petrova,,2025-05-31 18:00:00,2026-09-19 18:00:00
-ACC-00061,Ridge Works,ridgeworks.com,SaaS,1500,Series A,Priya Natarajan,,2025-05-31 18:00:00,2026-09-19 18:00:00
-ACC-00062,Nimbus Works,nimbusworks.io,SaaS,25,Public,Elena Petrova,,2024-11-20 18:00:00,2026-09-19 18:00:00
-ACC-00063,Pixel Networks,pixelnetworks.com,Healthcare,120,Series B,Wei Zhang,,2025-06-28 18:00:00,2026-09-19 18:00:00
-ACC-00064,Pixel Health,pixelhealth.ai,Developer Tools,60,Series B,Jordan Alvarez,,2026-02-23 18:00:00,2026-09-19 18:00:00
-ACC-00065,Ridge Logic,ridgelogic.ai,SaaS,12,Series A,Marcus Lee,,2025-06-06 18:00:00,2026-09-19 18:00:00
-ACC-00066,Summit Logic,summitlogic.ai,Developer Tools,500,Series C,Sam Okafor,,2025-04-23 18:00:00,2026-09-19 18:00:00
-ACC-00067,Signal Networks Inc,signalnetworksinc.ai,Developer Tools,2600,Series B,Priya Natarajan,,2025-12-23 18:00:00,2026-09-19 18:00:00
-ACC-00068,Nova Data Co,novadataco.io,AI/ML,12,Series A,Jordan Alvarez,,2024-12-03 18:00:00,2026-09-19 18:00:00
-ACC-00069,Quanta Pay,quantapay.co,E-commerce,1500,Series A,Wei Zhang,,2025-07-23 18:00:00,2026-09-19 18:00:00
-ACC-00070,Zenith Health,zenithhealth.io,AI/ML,4000,Seed,Priya Natarajan,,2025-06-11 18:00:00,2026-09-19 18:00:00
-ACC-00071,Kepler Systems Tech,keplersystemstech.com,Developer Tools,25,Series B,Jordan Alvarez,,2025-02-23 18:00:00,2026-09-19 18:00:00
-ACC-00072,Meridian Logic,meridianlogic.ai,Logistics,500,Series B,Wei Zhang,,2025-03-22 18:00:00,2026-09-19 18:00:00
-ACC-00073,Cobalt Works,cobaltworks.co,Media,4000,Series D,Jordan Alvarez,,2025-11-28 18:00:00,2026-09-19 18:00:00
-ACC-00074,Kepler Networks,keplernetworks.ai,Healthcare,800,Series B,Marcus Lee,,2025-11-12 18:00:00,2026-09-19 18:00:00
-ACC-00075,Ember Labs,emberlabs.ai,SaaS,200,Series A,Sam Okafor,,2026-05-30 18:00:00,2026-09-19 18:00:00
-ACC-00076,Orbit Systems,orbitsystems.io,SaaS,40,Series C,Priya Natarajan,,2025-06-22 18:00:00,2026-09-19 18:00:00
-ACC-00077,Cobalt Analytics,cobaltanalytics.co,SaaS,60,Series C,Jordan Alvarez,,2024-12-30 18:00:00,2026-09-19 18:00:00
-ACC-00078,Nimbus Logic,nimbuslogic.co,Developer Tools,200,Series A,Jordan Alvarez,,2025-06-17 18:00:00,2026-09-19 18:00:00
-ACC-00079,Meridian Robotics,meridianrobotics.io,Developer Tools,120,Series B,Priya Natarajan,,2025-07-18 18:00:00,2026-09-19 18:00:00
-ACC-00080,Pixel Networks Tech,pixelnetworkstech.io,E-commerce,40,Public,Sam Okafor,,2026-07-24 18:00:00,2026-09-19 18:00:00
-ACC-00081,Beacon Logic,beaconlogic.com,AI/ML,320,Seed,Jordan Alvarez,,2026-02-15 18:00:00,2026-09-19 18:00:00
-ACC-00082,Vector Data,vectordata.co,SaaS,500,Series A,Jordan Alvarez,,2025-11-09 18:00:00,2026-09-19 18:00:00
-ACC-00083,Cobalt Data,cobaltdata.com,Developer Tools,4000,Series B,Elena Petrova,,2026-01-03 18:00:00,2026-09-19 18:00:00
-ACC-00084,Cinder Labs Inc,cinderlabsinc.com,Logistics,60,Series D,Sam Okafor,,2026-03-17 18:00:00,2026-09-19 18:00:00
-ACC-00085,Nova Labs,novalabs.io,Developer Tools,120,Series C,Marcus Lee,,2024-12-08 18:00:00,2026-09-19 18:00:00
-ACC-00086,Ridge Robotics,ridgerobotics.com,Healthcare,40,Public,Priya Natarajan,,2025-01-05 18:00:00,2026-09-19 18:00:00
-ACC-00087,Nimbus Data,nimbusdata.co,SaaS,4000,Series A,Sam Okafor,,2024-11-16 18:00:00,2026-09-19 18:00:00
-ACC-00088,Kepler Labs,keplerlabs.ai,E-commerce,1500,Series C,Sam Okafor,,2026-07-09 18:00:00,2026-09-19 18:00:00
-ACC-00089,Forge Works,forgeworks.co,Fintech,25,Series B,Elena Petrova,,2026-08-08 18:00:00,2026-09-19 18:00:00
-ACC-00090,Cobalt Pay,cobaltpay.com,Developer Tools,200,Series B,Jordan Alvarez,,2026-03-17 18:00:00,2026-09-19 18:00:00
-ACC-00091,Cobalt Systems,cobaltsystems.ai,Fintech,800,Series C,Jordan Alvarez,,2025-05-31 18:00:00,2026-09-19 18:00:00
-ACC-00092,Summit Data Group,summitdatagroup.io,E-commerce,25,Series A,Jordan Alvarez,,2025-12-14 18:00:00,2026-09-19 18:00:00
-ACC-00093,Ember Logic Tech,emberlogictech.ai,AI/ML,200,Series A,Marcus Lee,,2025-08-22 18:00:00,2026-09-19 18:00:00
-ACC-00094,Atlas Analytics,atlasanalytics.ai,E-commerce,4000,Series D,Sam Okafor,,2026-08-10 18:00:00,2026-09-19 18:00:00
-ACC-00095,Harbor Cloud,harborcloud.com,SaaS,320,Series B,Marcus Lee,,2025-04-20 18:00:00,2026-09-19 18:00:00
-ACC-00096,Cinder Robotics,cinderrobotics.co,Developer Tools,12,Seed,Marcus Lee,,2025-07-02 18:00:00,2026-09-19 18:00:00
-ACC-00097,Kepler Data,keplerdata.ai,Developer Tools,800,Series A,Wei Zhang,,2025-02-03 18:00:00,2026-09-19 18:00:00
-ACC-00098,Pixel Analytics,pixelanalytics.co,SaaS,120,Series A,Wei Zhang,,2026-02-04 18:00:00,2026-09-19 18:00:00
-ACC-00099,Pixel Labs,pixellabs.io,AI/ML,4000,Series B,Wei Zhang,,2024-12-25 18:00:00,2026-09-19 18:00:00
-ACC-00100,Harbor Logic Group,harborlogicgroup.com,E-commerce,120,Series A,Marcus Lee,,2025-10-15 18:00:00,2026-09-19 18:00:00
-ACC-00101,Nimbus Robotics,nimbusrobotics.io,SaaS,12,Series B,Wei Zhang,,2026-04-13 18:00:00,2026-09-19 18:00:00
-ACC-00102,Cinder Pay,cinderpay.com,E-commerce,1500,Series A,Jordan Alvarez,,2025-05-26 18:00:00,2026-09-19 18:00:00
-ACC-00103,Pixel Systems,pixelsystems.com,SaaS,500,Seed,Priya Natarajan,,2025-07-06 18:00:00,2026-09-19 18:00:00
-ACC-00104,Zenith Labs,zenithlabs.com,AI/ML,8000,Series B,Elena Petrova,,2026-05-25 18:00:00,2026-09-19 18:00:00
-ACC-00105,Kepler Labs Tech,keplerlabstech.io,Healthcare,320,Series B,Jordan Alvarez,,2025-10-20 18:00:00,2026-09-19 18:00:00
-ACC-00106,Summit Health,summithealth.ai,Developer Tools,12,Series B,Wei Zhang,,2026-05-11 18:00:00,2026-09-19 18:00:00
-ACC-00107,Helix Networks Co,helixnetworksco.ai,Fintech,40,Series A,Sam Okafor,,2026-06-05 18:00:00,2026-09-19 18:00:00
-ACC-00108,Signal AI,signalai.co,Developer Tools,1500,Series B,Priya Natarajan,,2025-12-26 18:00:00,2026-09-19 18:00:00
-ACC-00109,Delta Robotics,deltarobotics.ai,Healthcare,500,Seed,Marcus Lee,,2025-11-23 18:00:00,2026-09-19 18:00:00
-ACC-00110,Cinder Logic,cinderlogic.io,Developer Tools,800,Series A,Marcus Lee,,2025-11-21 18:00:00,2026-09-19 18:00:00
-ACC-00111,Orbit Labs,orbitlabs.com,AI/ML,120,Series B,Sam Okafor,,2025-10-29 18:00:00,2026-09-19 18:00:00
-ACC-00112,Ember Labs Tech,emberlabstech.ai,Healthcare,120,Series B,Jordan Alvarez,,2025-05-29 18:00:00,2026-09-19 18:00:00
-ACC-00113,Quanta Logic,quantalogic.com,E-commerce,4000,Series A,Elena Petrova,,2026-07-25 18:00:00,2026-09-19 18:00:00
-ACC-00114,Quanta Cloud Inc,quantacloudinc.ai,Developer Tools,8000,Series C,Jordan Alvarez,,2025-03-07 18:00:00,2026-09-19 18:00:00
-ACC-00115,Cinder Pay Group,cinderpaygroup.io,Logistics,320,Series B,Jordan Alvarez,,2026-05-19 18:00:00,2026-09-19 18:00:00
-ACC-00116,Zenith Analytics,zenithanalytics.co,SaaS,2600,Seed,Marcus Lee,,2025-09-17 18:00:00,2026-09-19 18:00:00
-ACC-00117,Cobalt Robotics,cobaltrobotics.co,SaaS,320,Series C,Sam Okafor,,2026-07-14 18:00:00,2026-09-19 18:00:00
-ACC-00118,Ember Labs Group,emberlabsgroup.ai,SaaS,8000,Series A,Sam Okafor,,2026-08-19 18:00:00,2026-09-19 18:00:00
-ACC-00119,Nova Works,novaworks.co,SaaS,60,Series B,Sam Okafor,,2025-03-28 18:00:00,2026-09-19 18:00:00
-ACC-00120,Cinder Pay Inc,cinderpayinc.io,SaaS,40,Public,Jordan Alvarez,,2025-04-11 18:00:00,2026-09-19 18:00:00
-ACC-00121,Lumen AI,lumenai.io,Healthcare,120,Series B,Sam Okafor,,2025-06-29 18:00:00,2026-09-19 18:00:00
-ACC-00122,Ember Labs Co,emberlabsco.co,Media,120,Series B,Elena Petrova,,2025-06-21 18:00:00,2026-09-19 18:00:00
-ACC-00123,Zenith Pay,zenithpay.io,Developer Tools,40,Series A,Sam Okafor,,2025-03-18 18:00:00,2026-09-19 18:00:00
-ACC-00124,Orbit Labs Group,orbitlabsgroup.co,SaaS,8000,Series B,Priya Natarajan,,2025-11-04 18:00:00,2026-09-19 18:00:00
-ACC-00125,Delta Logic,deltalogic.co,E-commerce,500,Series B,Elena Petrova,,2025-09-14 18:00:00,2026-09-19 18:00:00
-ACC-00126,Meridian Works,meridianworks.co,Developer Tools,200,Series D,Wei Zhang,,2025-12-19 18:00:00,2026-09-19 18:00:00
-ACC-00127,Summit Health Co,summithealthco.co,AI/ML,4000,Series B,Jordan Alvarez,,2025-07-21 18:00:00,2026-09-19 18:00:00
-ACC-00128,Nova Networks Co,novanetworksco.co,Logistics,40,Series B,Sam Okafor,,2025-09-15 18:00:00,2026-09-19 18:00:00
-ACC-00129,Lumen Pay,lumenpay.com,Developer Tools,500,Seed,Marcus Lee,,2025-06-27 18:00:00,2026-09-19 18:00:00
-ACC-00130,Cinder Systems,cindersystems.com,Developer Tools,120,Series A,Wei Zhang,,2025-07-09 18:00:00,2026-09-19 18:00:00
-ACC-00131,Cinder Labs Group,cinderlabsgroup.co,Logistics,2600,Series C,Jordan Alvarez,,2025-02-12 18:00:00,2026-09-19 18:00:00
-ACC-00132,Vector Logic,vectorlogic.com,SaaS,2600,Public,Marcus Lee,,2026-05-20 18:00:00,2026-09-19 18:00:00
-ACC-00133,Cobalt Labs,cobaltlabs.com,Developer Tools,4000,Series A,Priya Natarajan,,2026-07-04 18:00:00,2026-09-19 18:00:00
-ACC-00134,Pixel AI,pixelai.ai,SaaS,320,Seed,Sam Okafor,,2025-06-25 18:00:00,2026-09-19 18:00:00
-ACC-00135,Summit Networks,summitnetworks.io,AI/ML,25,Series B,Jordan Alvarez,,2024-11-24 18:00:00,2026-09-19 18:00:00
-ACC-00136,Nova Cloud,novacloud.co,Media,40,Series A,Wei Zhang,,2025-12-03 18:00:00,2026-09-19 18:00:00
-ACC-00137,Ember Data,emberdata.com,Media,500,Series D,Wei Zhang,,2025-02-07 18:00:00,2026-09-19 18:00:00
-ACC-00138,Signal Labs,signallabs.co,Media,1500,Series A,Jordan Alvarez,,2025-12-07 18:00:00,2026-09-19 18:00:00
-ACC-00139,Ember Data Co,emberdataco.co,E-commerce,25,Series A,Sam Okafor,,2025-08-18 18:00:00,2026-09-19 18:00:00
-ACC-00140,Nimbus Networks,nimbusnetworks.co,SaaS,1500,Series D,Wei Zhang,,2026-07-01 18:00:00,2026-09-19 18:00:00
-ACC-00141,Ridge Robotics Tech,ridgeroboticstech.ai,Healthcare,60,Series B,Elena Petrova,,2026-01-08 18:00:00,2026-09-19 18:00:00
-ACC-00142,Cinder Cloud,cindercloud.ai,Fintech,4000,Series C,Wei Zhang,,2026-04-02 18:00:00,2026-09-19 18:00:00
-ACC-00143,Delta Pay,deltapay.com,Fintech,4000,Seed,Elena Petrova,,2025-09-20 18:00:00,2026-09-19 18:00:00
-ACC-00144,Cobalt Systems Co,cobaltsystemsco.io,Healthcare,200,Series B,Elena Petrova,,2026-03-05 18:00:00,2026-09-19 18:00:00
-ACC-00145,Atlas Pay,atlaspay.ai,Healthcare,200,Series C,Jordan Alvarez,,2026-06-04 18:00:00,2026-09-19 18:00:00
-ACC-00146,Orbit Cloud Tech,orbitcloudtech.ai,AI/ML,320,Seed,Sam Okafor,,2026-04-16 18:00:00,2026-09-19 18:00:00
-ACC-00147,Ember Analytics Group,emberanalyticsgroup.co,E-commerce,200,Seed,Marcus Lee,,2025-04-25 18:00:00,2026-09-19 18:00:00
-ACC-00148,Nimbus Logic Group,nimbuslogicgroup.io,Fintech,2600,Series C,Wei Zhang,,2025-10-15 18:00:00,2026-09-19 18:00:00
-ACC-00149,Cinder Health,cinderhealth.com,AI/ML,12,Series A,Jordan Alvarez,,2026-04-24 18:00:00,2026-09-19 18:00:00
-ACC-00150,Lumen Cloud,lumencloud.io,SaaS,200,Series C,Wei Zhang,,2025-02-13 18:00:00,2026-09-19 18:00:00
-ACC-00151,Cobalt Logic,cobaltlogic.io,E-commerce,2600,Seed,Jordan Alvarez,,2024-11-28 18:00:00,2026-09-19 18:00:00
-ACC-00152,Cobalt Data Inc,cobaltdatainc.ai,SaaS,500,Public,Elena Petrova,,2026-05-11 18:00:00,2026-09-19 18:00:00
-ACC-00153,Nova Analytics,novaanalytics.ai,AI/ML,120,Series A,Priya Natarajan,,2025-05-12 18:00:00,2026-09-19 18:00:00
-ACC-00154,Quanta Networks,quantanetworks.io,Fintech,1500,Public,Priya Natarajan,,2025-09-13 18:00:00,2026-09-19 18:00:00
-ACC-00155,Kepler Systems Co,keplersystemsco.com,E-commerce,800,Series A,Marcus Lee,,2025-12-25 18:00:00,2026-09-19 18:00:00
-ACC-00156,Pixel Systems Inc,pixelsystemsinc.ai,E-commerce,40,Public,Sam Okafor,,2025-12-07 18:00:00,2026-09-19 18:00:00
-ACC-00157,Signal Labs Inc,signallabsinc.io,AI/ML,8000,Series C,Sam Okafor,,2025-09-23 18:00:00,2026-09-19 18:00:00
-ACC-00158,Nimbus Systems,nimbussystems.ai,AI/ML,4000,Series B,Priya Natarajan,,2026-06-16 18:00:00,2026-09-19 18:00:00
-ACC-00159,Zenith Pay Group,zenithpaygroup.com,Developer Tools,60,Public,Priya Natarajan,,2025-03-05 18:00:00,2026-09-19 18:00:00
-ACC-00160,Delta Pay Inc,deltapayinc.com,Logistics,320,Series B,Priya Natarajan,,2025-04-05 18:00:00,2026-09-19 18:00:00
-ACC-00161,Ember Labs Inc,emberlabsinc.ai,Fintech,25,Seed,Sam Okafor,,2024-11-10 18:00:00,2026-09-19 18:00:00
-ACC-00162,Summit Works Group,summitworksgroup.co,Logistics,800,Series A,Sam Okafor,,2024-12-09 18:00:00,2026-09-19 18:00:00
-ACC-00163,Cobalt Labs Inc,cobaltlabsinc.io,Developer Tools,60,Series A,Jordan Alvarez,,2025-07-08 18:00:00,2026-09-19 18:00:00
-ACC-00164,Cobalt Robotics Inc,cobaltroboticsinc.ai,Developer Tools,2600,Series A,Marcus Lee,,2025-04-22 18:00:00,2026-09-19 18:00:00
-ACC-00165,Quanta Labs,quantalabs.com,AI/ML,25,Series C,Elena Petrova,,2026-04-09 18:00:00,2026-09-19 18:00:00
-ACC-00166,Meridian AI,meridianai.ai,Fintech,320,Series A,Wei Zhang,,2025-06-13 18:00:00,2026-09-19 18:00:00
-ACC-00167,Vector Data Group,vectordatagroup.ai,AI/ML,800,Series A,Wei Zhang,,2025-04-14 18:00:00,2026-09-19 18:00:00
-ACC-00168,Kepler Labs Group,keplerlabsgroup.ai,AI/ML,120,Series B,Jordan Alvarez,,2025-01-23 18:00:00,2026-09-19 18:00:00
-ACC-00169,Ridge Logic Inc,ridgelogicinc.ai,AI/ML,120,Series C,Elena Petrova,,2025-09-07 18:00:00,2026-09-19 18:00:00
-ACC-00170,Forge AI,forgeai.io,E-commerce,1500,Series B,Priya Natarajan,,2026-03-28 18:00:00,2026-09-19 18:00:00
-ACC-00171,Cinder AI,cinderai.com,Healthcare,60,Series A,Jordan Alvarez,,2025-09-05 18:00:00,2026-09-19 18:00:00
-ACC-00172,Signal Analytics,signalanalytics.ai,Healthcare,8000,Public,Sam Okafor,,2026-05-26 18:00:00,2026-09-19 18:00:00
-ACC-00173,Vector Systems,vectorsystems.io,Healthcare,12,Series C,Elena Petrova,,2025-05-24 18:00:00,2026-09-19 18:00:00
-ACC-00174,Nova Health,novahealth.co,Fintech,320,Series A,Sam Okafor,,2026-04-26 18:00:00,2026-09-19 18:00:00
-ACC-00175,Forge Health,forgehealth.com,SaaS,2600,Series B,Sam Okafor,,2025-10-09 18:00:00,2026-09-19 18:00:00
-ACC-00176,Vector Cloud Tech,vectorcloudtech.com,AI/ML,120,Public,Marcus Lee,,2025-12-02 18:00:00,2026-09-19 18:00:00
-ACC-00177,Delta Analytics,deltaanalytics.com,AI/ML,4000,Series B,Marcus Lee,,2025-07-27 18:00:00,2026-09-19 18:00:00
-ACC-00178,Meridian Robotics Co,meridianroboticsco.ai,AI/ML,4000,Seed,Priya Natarajan,,2025-05-07 18:00:00,2026-09-19 18:00:00
-ACC-00179,Quanta Analytics,quantaanalytics.co,Developer Tools,4000,Series B,Elena Petrova,,2026-04-25 18:00:00,2026-09-19 18:00:00
-ACC-00180,Beacon AI,beaconai.ai,AI/ML,1500,Series B,Wei Zhang,,2025-08-15 18:00:00,2026-09-19 18:00:00
-ACC-00181,Quanta Health,quantahealth.com,SaaS,1500,Series A,Priya Natarajan,,2025-07-11 18:00:00,2026-09-19 18:00:00
-ACC-00182,Delta Robotics Group,deltaroboticsgroup.io,SaaS,40,Seed,Wei Zhang,,2026-04-26 18:00:00,2026-09-19 18:00:00
-ACC-00183,Harbor Works,harborworks.io,Media,200,Series A,Wei Zhang,,2026-03-22 18:00:00,2026-09-19 18:00:00
-ACC-00184,Kepler Labs Co,keplerlabsco.ai,AI/ML,1500,Seed,Wei Zhang,,2026-06-04 18:00:00,2026-09-19 18:00:00
-ACC-00185,Signal Networks Tech,signalnetworkstech.co,Healthcare,8000,Series B,Wei Zhang,,2025-01-19 18:00:00,2026-09-19 18:00:00
-ACC-00186,Cinder Networks,cindernetworks.ai,E-commerce,2600,Series A,Jordan Alvarez,,2026-06-12 18:00:00,2026-09-19 18:00:00
-ACC-00187,Atlas Logic,atlaslogic.com,SaaS,25,Series A,Jordan Alvarez,,2026-07-13 18:00:00,2026-09-19 18:00:00
-ACC-00188,Vector Analytics Group,vectoranalyticsgroup.com,Fintech,25,Series B,Sam Okafor,,2025-07-23 18:00:00,2026-09-19 18:00:00
-ACC-00189,Ember Logic Inc,emberlogicinc.co,Media,1500,Series B,Elena Petrova,,2024-12-09 18:00:00,2026-09-19 18:00:00
-ACC-00190,Zenith Works,zenithworks.io,Logistics,500,Seed,Elena Petrova,,2026-05-26 18:00:00,2026-09-19 18:00:00
-ACC-00191,Harbor Networks,harbornetworks.io,AI/ML,4000,Series B,Jordan Alvarez,,2025-03-02 18:00:00,2026-09-19 18:00:00
-ACC-00192,Harbor Logic Co,harborlogicco.ai,SaaS,120,Series A,Elena Petrova,,2024-12-16 18:00:00,2026-09-19 18:00:00
-ACC-00193,Vector Networks,vectornetworks.ai,AI/ML,25,Series B,Jordan Alvarez,,2025-11-03 18:00:00,2026-09-19 18:00:00
-ACC-00194,Atlas Robotics,atlasrobotics.io,SaaS,1500,Series B,Elena Petrova,,2025-10-07 18:00:00,2026-09-19 18:00:00
-ACC-00195,Cinder Robotics Tech,cinderroboticstech.io,Fintech,25,Series A,Jordan Alvarez,,2024-10-31 18:00:00,2026-09-19 18:00:00
-ACC-00196,Cinder Networks Tech,cindernetworkstech.ai,AI/ML,120,Series A,Marcus Lee,,2025-09-05 18:00:00,2026-09-19 18:00:00
-ACC-00197,Zenith Cloud,zenithcloud.io,Logistics,40,Seed,Priya Natarajan,,2025-03-19 18:00:00,2026-09-19 18:00:00
-ACC-00198,Meridian Robotics Inc,meridianroboticsinc.ai,E-commerce,1500,Seed,Jordan Alvarez,,2026-03-16 18:00:00,2026-09-19 18:00:00
-ACC-00199,Signal Systems,signalsystems.io,Healthcare,12,Series A,Wei Zhang,,2025-12-20 18:00:00,2026-09-19 18:00:00
-ACC-00200,Ember Logic Group,emberlogicgroup.co,SaaS,60,Series A,Jordan Alvarez,,2026-02-03 18:00:00,2026-09-19 18:00:00
+ACC-00001,Acme AI,acme-ai.example,AI/ML,85,Series A,Priya Natarajan,,2026-03-03 23:00:00,2026-09-19 23:00:00
+ACC-00002,Globex Enterprise,globex-enterprise.example,SaaS,4200,Public,Marcus Lee,,2026-03-03 23:00:00,2026-09-19 23:00:00
+ACC-00003,Initech ML,initech-ml.example,AI/ML,3200,Series B,Elena Petrova,,2026-03-03 23:00:00,2026-09-19 23:00:00
+ACC-00004,Cinder Labs,cinderlabs.com,Healthcare,60,Series A,Wei Zhang,,2026-05-08 23:00:00,2026-09-19 23:00:00
+ACC-00005,Nova Robotics,novarobotics.com,Fintech,12,Seed,Marcus Lee,,2025-12-25 23:00:00,2026-09-19 23:00:00
+ACC-00006,Harbor Logic,harborlogic.com,Developer Tools,4000,Series B,Sam Okafor,,2025-06-17 23:00:00,2026-09-19 23:00:00
+ACC-00007,Kepler Pay,keplerpay.ai,E-commerce,12,Series C,Marcus Lee,,2025-06-14 23:00:00,2026-09-19 23:00:00
+ACC-00008,Pixel Data,pixeldata.io,SaaS,8000,Series A,Priya Natarajan,,2025-07-27 23:00:00,2026-09-19 23:00:00
+ACC-00009,Lumen Analytics,lumenanalytics.ai,Fintech,8000,Seed,Jordan Alvarez,,2025-02-17 23:00:00,2026-09-19 23:00:00
+ACC-00010,Lumen Health,lumenhealth.com,Developer Tools,2600,Series B,Elena Petrova,,2025-01-06 23:00:00,2026-09-19 23:00:00
+ACC-00011,Helix Robotics,,AI/ML,60,Series C,Priya Natarajan,,2025-12-25 23:00:00,2026-09-19 23:00:00
+ACC-00012,Lumen Health Group,,Fintech,200,Seed,Elena Petrova,,2026-01-18 23:00:00,2026-09-19 23:00:00
+ACC-00013,Nova Data,emberhealth.ai,Fintech,40,Series B,Marcus Lee,,2026-03-06 23:00:00,2026-09-19 23:00:00
+ACC-00014,Ember Health,emberhealth.ai,Logistics,2600,Series C,Marcus Lee,,2025-09-22 23:00:00,2026-09-19 23:00:00
+ACC-00015,Vector Cloud,pixelcloud.co,E-commerce,320,Series A,Marcus Lee,,2025-01-17 23:00:00,2026-09-19 23:00:00
+ACC-00016,Pixel Cloud,pixelcloud.co,SaaS,2600,Series B,Elena Petrova,,2026-03-31 23:00:00,2026-09-19 23:00:00
+ACC-00017,Kepler Robotics,keplerrobotics.ai,Healthcare,320,Series D,,,2025-08-15 23:00:00,2026-09-19 23:00:00
+ACC-00018,Kepler Systems,keplersystems.co,AI/ML,12,Series D,,,2024-11-16 23:00:00,2026-09-19 23:00:00
+ACC-00019,Signal Networks,signalnetworks.co,Fintech,320,Series A,Jordan Alvarez,,2025-02-25 23:00:00,2026-09-19 23:00:00
+ACC-00020,Atlas Works,atlasworks.com,Fintech,25,Series C,Sam Okafor,,2025-11-20 23:00:00,2026-09-19 23:00:00
+ACC-00021,Cinder Analytics,cinderanalytics.com,SaaS,40,Series B,Wei Zhang,,2025-11-24 23:00:00,2026-09-19 23:00:00
+ACC-00022,Harbor Systems,harborsystems.com,E-commerce,120,Series D,Sam Okafor,,2024-12-05 23:00:00,2026-09-19 23:00:00
+ACC-00023,Helix Systems,helixsystems.ai,Healthcare,800,Public,Sam Okafor,,2026-08-20 23:00:00,2026-09-19 23:00:00
+ACC-00024,Ridge Analytics,ridgeanalytics.co,AI/ML,200,Series D,Elena Petrova,,2025-12-18 23:00:00,2026-09-19 23:00:00
+ACC-00025,Vector Cloud Inc,vectorcloudinc.com,Healthcare,25,Public,Sam Okafor,,2026-04-14 23:00:00,2026-09-19 23:00:00
+ACC-00026,Orbit Networks,orbitnetworks.co,Media,40,Series A,Sam Okafor,,2025-06-13 23:00:00,2026-09-19 23:00:00
+ACC-00027,Helix Works,helixworks.io,Healthcare,320,Public,Wei Zhang,,2025-08-03 23:00:00,2026-09-19 23:00:00
+ACC-00028,Ember Works,emberworks.co,AI/ML,60,Seed,Priya Natarajan,,2024-12-26 23:00:00,2026-09-19 23:00:00
+ACC-00029,Meridian Cloud,meridiancloud.io,AI/ML,4000,Series B,Marcus Lee,,2026-06-12 23:00:00,2026-09-19 23:00:00
+ACC-00030,Vector Analytics,vectoranalytics.com,Developer Tools,120,Series C,Marcus Lee,,2025-02-14 23:00:00,2026-09-19 23:00:00
+ACC-00031,Orbit Robotics,orbitrobotics.co,SaaS,500,Series C,Marcus Lee,,2026-05-16 23:00:00,2026-09-19 23:00:00
+ACC-00032,Lumen Networks,lumennetworks.co,SaaS,320,Series B,Wei Zhang,,2026-06-26 23:00:00,2026-09-19 23:00:00
+ACC-00033,Nova Networks,novanetworks.com,AI/ML,4000,Series A,Priya Natarajan,,2025-12-09 23:00:00,2026-09-19 23:00:00
+ACC-00034,Helix Cloud,helixcloud.co,AI/ML,40,Series A,Marcus Lee,,2026-06-04 23:00:00,2026-09-19 23:00:00
+ACC-00035,Ember Works Inc,emberworksinc.com,Fintech,800,Series D,Priya Natarajan,,2025-12-21 23:00:00,2026-09-19 23:00:00
+ACC-00036,Signal Health,signalhealth.co,Developer Tools,320,Series D,Marcus Lee,,2025-07-28 23:00:00,2026-09-19 23:00:00
+ACC-00037,Nimbus Health,nimbushealth.ai,Media,8000,Series B,Jordan Alvarez,,2025-01-28 23:00:00,2026-09-19 23:00:00
+ACC-00038,Nova Robotics Tech,novaroboticstech.io,AI/ML,60,Public,Sam Okafor,,2025-02-11 23:00:00,2026-09-19 23:00:00
+ACC-00039,Vector Robotics,vectorrobotics.ai,AI/ML,1500,Series B,Sam Okafor,,2026-03-12 23:00:00,2026-09-19 23:00:00
+ACC-00040,Vector Works,vectorworks.com,E-commerce,25,Series B,Wei Zhang,,2025-12-23 23:00:00,2026-09-19 23:00:00
+ACC-00041,Beacon Labs,beaconlabs.io,Developer Tools,12,Series B,Jordan Alvarez,,2024-12-31 23:00:00,2026-09-19 23:00:00
+ACC-00042,Summit Works,summitworks.ai,Media,60,Series C,Elena Petrova,,2025-12-19 23:00:00,2026-09-19 23:00:00
+ACC-00043,Atlas Health,atlashealth.io,Fintech,120,Series B,Priya Natarajan,,2026-08-11 23:00:00,2026-09-19 23:00:00
+ACC-00044,Ember Logic,emberlogic.com,AI/ML,60,Series B,Marcus Lee,,2025-08-28 23:00:00,2026-09-19 23:00:00
+ACC-00045,Quanta Cloud,quantacloud.ai,SaaS,500,Series D,Wei Zhang,,2025-10-15 23:00:00,2026-09-19 23:00:00
+ACC-00046,Ridge Networks,ridgenetworks.com,Fintech,800,Series A,Wei Zhang,,2026-05-06 23:00:00,2026-09-19 23:00:00
+ACC-00047,Orbit Data,orbitdata.com,E-commerce,4000,Series B,Elena Petrova,,2025-11-05 23:00:00,2026-09-19 23:00:00
+ACC-00048,Ridge Cloud,ridgecloud.ai,AI/ML,2600,Series D,Sam Okafor,,2025-04-07 23:00:00,2026-09-19 23:00:00
+ACC-00049,Atlas AI,atlasai.com,Fintech,120,Seed,Elena Petrova,,2026-04-09 23:00:00,2026-09-19 23:00:00
+ACC-00050,Cinder Data,cinderdata.io,Healthcare,800,Series C,Sam Okafor,,2026-08-11 23:00:00,2026-09-19 23:00:00
+ACC-00051,Lumen Labs,lumenlabs.io,Developer Tools,200,Series B,Marcus Lee,,2025-06-06 23:00:00,2026-09-19 23:00:00
+ACC-00052,Orbit AI,orbitai.ai,SaaS,8000,Public,Priya Natarajan,,2025-08-19 23:00:00,2026-09-19 23:00:00
+ACC-00053,Helix Networks,helixnetworks.io,Fintech,200,Series C,Jordan Alvarez,,2024-11-23 23:00:00,2026-09-19 23:00:00
+ACC-00054,Orbit Cloud,orbitcloud.io,Logistics,8000,Series A,Jordan Alvarez,,2026-07-26 23:00:00,2026-09-19 23:00:00
+ACC-00055,Signal Robotics,signalrobotics.ai,Healthcare,320,Series C,Wei Zhang,,2025-12-09 23:00:00,2026-09-19 23:00:00
+ACC-00056,Atlas Systems,atlassystems.com,SaaS,12,Series D,Marcus Lee,,2026-01-28 23:00:00,2026-09-19 23:00:00
+ACC-00057,Ember Analytics,emberanalytics.ai,E-commerce,60,Series A,Wei Zhang,,2026-02-04 23:00:00,2026-09-19 23:00:00
+ACC-00058,Beacon Analytics,beaconanalytics.ai,E-commerce,8000,Series A,Wei Zhang,,2025-03-17 23:00:00,2026-09-19 23:00:00
+ACC-00059,Beacon Networks,beaconnetworks.ai,Media,25,Series D,Elena Petrova,,2026-02-19 23:00:00,2026-09-19 23:00:00
+ACC-00060,Summit Data,summitdata.com,AI/ML,320,Series A,Elena Petrova,,2025-05-31 23:00:00,2026-09-19 23:00:00
+ACC-00061,Ridge Works,ridgeworks.com,SaaS,1500,Series A,Priya Natarajan,,2025-05-31 23:00:00,2026-09-19 23:00:00
+ACC-00062,Nimbus Works,nimbusworks.io,SaaS,25,Public,Elena Petrova,,2024-11-20 23:00:00,2026-09-19 23:00:00
+ACC-00063,Pixel Networks,pixelnetworks.com,Healthcare,120,Series B,Wei Zhang,,2025-06-28 23:00:00,2026-09-19 23:00:00
+ACC-00064,Pixel Health,pixelhealth.ai,Developer Tools,60,Series B,Jordan Alvarez,,2026-02-23 23:00:00,2026-09-19 23:00:00
+ACC-00065,Ridge Logic,ridgelogic.ai,SaaS,12,Series A,Marcus Lee,,2025-06-06 23:00:00,2026-09-19 23:00:00
+ACC-00066,Summit Logic,summitlogic.ai,Developer Tools,500,Series C,Sam Okafor,,2025-04-23 23:00:00,2026-09-19 23:00:00
+ACC-00067,Signal Networks Inc,signalnetworksinc.ai,Developer Tools,2600,Series B,Priya Natarajan,,2025-12-23 23:00:00,2026-09-19 23:00:00
+ACC-00068,Nova Data Co,novadataco.io,AI/ML,12,Series A,Jordan Alvarez,,2024-12-03 23:00:00,2026-09-19 23:00:00
+ACC-00069,Quanta Pay,quantapay.co,E-commerce,1500,Series A,Wei Zhang,,2025-07-23 23:00:00,2026-09-19 23:00:00
+ACC-00070,Zenith Health,zenithhealth.io,AI/ML,4000,Seed,Priya Natarajan,,2025-06-11 23:00:00,2026-09-19 23:00:00
+ACC-00071,Kepler Systems Tech,keplersystemstech.com,Developer Tools,25,Series B,Jordan Alvarez,,2025-02-23 23:00:00,2026-09-19 23:00:00
+ACC-00072,Meridian Logic,meridianlogic.ai,Logistics,500,Series B,Wei Zhang,,2025-03-22 23:00:00,2026-09-19 23:00:00
+ACC-00073,Cobalt Works,cobaltworks.co,Media,4000,Series D,Jordan Alvarez,,2025-11-28 23:00:00,2026-09-19 23:00:00
+ACC-00074,Kepler Networks,keplernetworks.ai,Healthcare,800,Series B,Marcus Lee,,2025-11-12 23:00:00,2026-09-19 23:00:00
+ACC-00075,Ember Labs,emberlabs.ai,SaaS,200,Series A,Sam Okafor,,2026-05-30 23:00:00,2026-09-19 23:00:00
+ACC-00076,Orbit Systems,orbitsystems.io,SaaS,40,Series C,Priya Natarajan,,2025-06-22 23:00:00,2026-09-19 23:00:00
+ACC-00077,Cobalt Analytics,cobaltanalytics.co,SaaS,60,Series C,Jordan Alvarez,,2024-12-30 23:00:00,2026-09-19 23:00:00
+ACC-00078,Nimbus Logic,nimbuslogic.co,Developer Tools,200,Series A,Jordan Alvarez,,2025-06-17 23:00:00,2026-09-19 23:00:00
+ACC-00079,Meridian Robotics,meridianrobotics.io,Developer Tools,120,Series B,Priya Natarajan,,2025-07-18 23:00:00,2026-09-19 23:00:00
+ACC-00080,Pixel Networks Tech,pixelnetworkstech.io,E-commerce,40,Public,Sam Okafor,,2026-07-24 23:00:00,2026-09-19 23:00:00
+ACC-00081,Beacon Logic,beaconlogic.com,AI/ML,320,Seed,Jordan Alvarez,,2026-02-15 23:00:00,2026-09-19 23:00:00
+ACC-00082,Vector Data,vectordata.co,SaaS,500,Series A,Jordan Alvarez,,2025-11-09 23:00:00,2026-09-19 23:00:00
+ACC-00083,Cobalt Data,cobaltdata.com,Developer Tools,4000,Series B,Elena Petrova,,2026-01-03 23:00:00,2026-09-19 23:00:00
+ACC-00084,Cinder Labs Inc,cinderlabsinc.com,Logistics,60,Series D,Sam Okafor,,2026-03-17 23:00:00,2026-09-19 23:00:00
+ACC-00085,Nova Labs,novalabs.io,Developer Tools,120,Series C,Marcus Lee,,2024-12-08 23:00:00,2026-09-19 23:00:00
+ACC-00086,Ridge Robotics,ridgerobotics.com,Healthcare,40,Public,Priya Natarajan,,2025-01-05 23:00:00,2026-09-19 23:00:00
+ACC-00087,Nimbus Data,nimbusdata.co,SaaS,4000,Series A,Sam Okafor,,2024-11-16 23:00:00,2026-09-19 23:00:00
+ACC-00088,Kepler Labs,keplerlabs.ai,E-commerce,1500,Series C,Sam Okafor,,2026-07-09 23:00:00,2026-09-19 23:00:00
+ACC-00089,Forge Works,forgeworks.co,Fintech,25,Series B,Elena Petrova,,2026-08-08 23:00:00,2026-09-19 23:00:00
+ACC-00090,Cobalt Pay,cobaltpay.com,Developer Tools,200,Series B,Jordan Alvarez,,2026-03-17 23:00:00,2026-09-19 23:00:00
+ACC-00091,Cobalt Systems,cobaltsystems.ai,Fintech,800,Series C,Jordan Alvarez,,2025-05-31 23:00:00,2026-09-19 23:00:00
+ACC-00092,Summit Data Group,summitdatagroup.io,E-commerce,25,Series A,Jordan Alvarez,,2025-12-14 23:00:00,2026-09-19 23:00:00
+ACC-00093,Ember Logic Tech,emberlogictech.ai,AI/ML,200,Series A,Marcus Lee,,2025-08-22 23:00:00,2026-09-19 23:00:00
+ACC-00094,Atlas Analytics,atlasanalytics.ai,E-commerce,4000,Series D,Sam Okafor,,2026-08-10 23:00:00,2026-09-19 23:00:00
+ACC-00095,Harbor Cloud,harborcloud.com,SaaS,320,Series B,Marcus Lee,,2025-04-20 23:00:00,2026-09-19 23:00:00
+ACC-00096,Cinder Robotics,cinderrobotics.co,Developer Tools,12,Seed,Marcus Lee,,2025-07-02 23:00:00,2026-09-19 23:00:00
+ACC-00097,Kepler Data,keplerdata.ai,Developer Tools,800,Series A,Wei Zhang,,2025-02-03 23:00:00,2026-09-19 23:00:00
+ACC-00098,Pixel Analytics,pixelanalytics.co,SaaS,120,Series A,Wei Zhang,,2026-02-04 23:00:00,2026-09-19 23:00:00
+ACC-00099,Pixel Labs,pixellabs.io,AI/ML,4000,Series B,Wei Zhang,,2024-12-25 23:00:00,2026-09-19 23:00:00
+ACC-00100,Harbor Logic Group,harborlogicgroup.com,E-commerce,120,Series A,Marcus Lee,,2025-10-15 23:00:00,2026-09-19 23:00:00
+ACC-00101,Nimbus Robotics,nimbusrobotics.io,SaaS,12,Series B,Wei Zhang,,2026-04-13 23:00:00,2026-09-19 23:00:00
+ACC-00102,Cinder Pay,cinderpay.com,E-commerce,1500,Series A,Jordan Alvarez,,2025-05-26 23:00:00,2026-09-19 23:00:00
+ACC-00103,Pixel Systems,pixelsystems.com,SaaS,500,Seed,Priya Natarajan,,2025-07-06 23:00:00,2026-09-19 23:00:00
+ACC-00104,Zenith Labs,zenithlabs.com,AI/ML,8000,Series B,Elena Petrova,,2026-05-25 23:00:00,2026-09-19 23:00:00
+ACC-00105,Kepler Labs Tech,keplerlabstech.io,Healthcare,320,Series B,Jordan Alvarez,,2025-10-20 23:00:00,2026-09-19 23:00:00
+ACC-00106,Summit Health,summithealth.ai,Developer Tools,12,Series B,Wei Zhang,,2026-05-11 23:00:00,2026-09-19 23:00:00
+ACC-00107,Helix Networks Co,helixnetworksco.ai,Fintech,40,Series A,Sam Okafor,,2026-06-05 23:00:00,2026-09-19 23:00:00
+ACC-00108,Signal AI,signalai.co,Developer Tools,1500,Series B,Priya Natarajan,,2025-12-26 23:00:00,2026-09-19 23:00:00
+ACC-00109,Delta Robotics,deltarobotics.ai,Healthcare,500,Seed,Marcus Lee,,2025-11-23 23:00:00,2026-09-19 23:00:00
+ACC-00110,Cinder Logic,cinderlogic.io,Developer Tools,800,Series A,Marcus Lee,,2025-11-21 23:00:00,2026-09-19 23:00:00
+ACC-00111,Orbit Labs,orbitlabs.com,AI/ML,120,Series B,Sam Okafor,,2025-10-29 23:00:00,2026-09-19 23:00:00
+ACC-00112,Ember Labs Tech,emberlabstech.ai,Healthcare,120,Series B,Jordan Alvarez,,2025-05-29 23:00:00,2026-09-19 23:00:00
+ACC-00113,Quanta Logic,quantalogic.com,E-commerce,4000,Series A,Elena Petrova,,2026-07-25 23:00:00,2026-09-19 23:00:00
+ACC-00114,Quanta Cloud Inc,quantacloudinc.ai,Developer Tools,8000,Series C,Jordan Alvarez,,2025-03-07 23:00:00,2026-09-19 23:00:00
+ACC-00115,Cinder Pay Group,cinderpaygroup.io,Logistics,320,Series B,Jordan Alvarez,,2026-05-19 23:00:00,2026-09-19 23:00:00
+ACC-00116,Zenith Analytics,zenithanalytics.co,SaaS,2600,Seed,Marcus Lee,,2025-09-17 23:00:00,2026-09-19 23:00:00
+ACC-00117,Cobalt Robotics,cobaltrobotics.co,SaaS,320,Series C,Sam Okafor,,2026-07-14 23:00:00,2026-09-19 23:00:00
+ACC-00118,Ember Labs Group,emberlabsgroup.ai,SaaS,8000,Series A,Sam Okafor,,2026-08-19 23:00:00,2026-09-19 23:00:00
+ACC-00119,Nova Works,novaworks.co,SaaS,60,Series B,Sam Okafor,,2025-03-28 23:00:00,2026-09-19 23:00:00
+ACC-00120,Cinder Pay Inc,cinderpayinc.io,SaaS,40,Public,Jordan Alvarez,,2025-04-11 23:00:00,2026-09-19 23:00:00
+ACC-00121,Lumen AI,lumenai.io,Healthcare,120,Series B,Sam Okafor,,2025-06-29 23:00:00,2026-09-19 23:00:00
+ACC-00122,Ember Labs Co,emberlabsco.co,Media,120,Series B,Elena Petrova,,2025-06-21 23:00:00,2026-09-19 23:00:00
+ACC-00123,Zenith Pay,zenithpay.io,Developer Tools,40,Series A,Sam Okafor,,2025-03-18 23:00:00,2026-09-19 23:00:00
+ACC-00124,Orbit Labs Group,orbitlabsgroup.co,SaaS,8000,Series B,Priya Natarajan,,2025-11-04 23:00:00,2026-09-19 23:00:00
+ACC-00125,Delta Logic,deltalogic.co,E-commerce,500,Series B,Elena Petrova,,2025-09-14 23:00:00,2026-09-19 23:00:00
+ACC-00126,Meridian Works,meridianworks.co,Developer Tools,200,Series D,Wei Zhang,,2025-12-19 23:00:00,2026-09-19 23:00:00
+ACC-00127,Summit Health Co,summithealthco.co,AI/ML,4000,Series B,Jordan Alvarez,,2025-07-21 23:00:00,2026-09-19 23:00:00
+ACC-00128,Nova Networks Co,novanetworksco.co,Logistics,40,Series B,Sam Okafor,,2025-09-15 23:00:00,2026-09-19 23:00:00
+ACC-00129,Lumen Pay,lumenpay.com,Developer Tools,500,Seed,Marcus Lee,,2025-06-27 23:00:00,2026-09-19 23:00:00
+ACC-00130,Cinder Systems,cindersystems.com,Developer Tools,120,Series A,Wei Zhang,,2025-07-09 23:00:00,2026-09-19 23:00:00
+ACC-00131,Cinder Labs Group,cinderlabsgroup.co,Logistics,2600,Series C,Jordan Alvarez,,2025-02-12 23:00:00,2026-09-19 23:00:00
+ACC-00132,Vector Logic,vectorlogic.com,SaaS,2600,Public,Marcus Lee,,2026-05-20 23:00:00,2026-09-19 23:00:00
+ACC-00133,Cobalt Labs,cobaltlabs.com,Developer Tools,4000,Series A,Priya Natarajan,,2026-07-04 23:00:00,2026-09-19 23:00:00
+ACC-00134,Pixel AI,pixelai.ai,SaaS,320,Seed,Sam Okafor,,2025-06-25 23:00:00,2026-09-19 23:00:00
+ACC-00135,Summit Networks,summitnetworks.io,AI/ML,25,Series B,Jordan Alvarez,,2024-11-24 23:00:00,2026-09-19 23:00:00
+ACC-00136,Nova Cloud,novacloud.co,Media,40,Series A,Wei Zhang,,2025-12-03 23:00:00,2026-09-19 23:00:00
+ACC-00137,Ember Data,emberdata.com,Media,500,Series D,Wei Zhang,,2025-02-07 23:00:00,2026-09-19 23:00:00
+ACC-00138,Signal Labs,signallabs.co,Media,1500,Series A,Jordan Alvarez,,2025-12-07 23:00:00,2026-09-19 23:00:00
+ACC-00139,Ember Data Co,emberdataco.co,E-commerce,25,Series A,Sam Okafor,,2025-08-18 23:00:00,2026-09-19 23:00:00
+ACC-00140,Nimbus Networks,nimbusnetworks.co,SaaS,1500,Series D,Wei Zhang,,2026-07-01 23:00:00,2026-09-19 23:00:00
+ACC-00141,Ridge Robotics Tech,ridgeroboticstech.ai,Healthcare,60,Series B,Elena Petrova,,2026-01-08 23:00:00,2026-09-19 23:00:00
+ACC-00142,Cinder Cloud,cindercloud.ai,Fintech,4000,Series C,Wei Zhang,,2026-04-02 23:00:00,2026-09-19 23:00:00
+ACC-00143,Delta Pay,deltapay.com,Fintech,4000,Seed,Elena Petrova,,2025-09-20 23:00:00,2026-09-19 23:00:00
+ACC-00144,Cobalt Systems Co,cobaltsystemsco.io,Healthcare,200,Series B,Elena Petrova,,2026-03-05 23:00:00,2026-09-19 23:00:00
+ACC-00145,Atlas Pay,atlaspay.ai,Healthcare,200,Series C,Jordan Alvarez,,2026-06-04 23:00:00,2026-09-19 23:00:00
+ACC-00146,Orbit Cloud Tech,orbitcloudtech.ai,AI/ML,320,Seed,Sam Okafor,,2026-04-16 23:00:00,2026-09-19 23:00:00
+ACC-00147,Ember Analytics Group,emberanalyticsgroup.co,E-commerce,200,Seed,Marcus Lee,,2025-04-25 23:00:00,2026-09-19 23:00:00
+ACC-00148,Nimbus Logic Group,nimbuslogicgroup.io,Fintech,2600,Series C,Wei Zhang,,2025-10-15 23:00:00,2026-09-19 23:00:00
+ACC-00149,Cinder Health,cinderhealth.com,AI/ML,12,Series A,Jordan Alvarez,,2026-04-24 23:00:00,2026-09-19 23:00:00
+ACC-00150,Lumen Cloud,lumencloud.io,SaaS,200,Series C,Wei Zhang,,2025-02-13 23:00:00,2026-09-19 23:00:00
+ACC-00151,Cobalt Logic,cobaltlogic.io,E-commerce,2600,Seed,Jordan Alvarez,,2024-11-28 23:00:00,2026-09-19 23:00:00
+ACC-00152,Cobalt Data Inc,cobaltdatainc.ai,SaaS,500,Public,Elena Petrova,,2026-05-11 23:00:00,2026-09-19 23:00:00
+ACC-00153,Nova Analytics,novaanalytics.ai,AI/ML,120,Series A,Priya Natarajan,,2025-05-12 23:00:00,2026-09-19 23:00:00
+ACC-00154,Quanta Networks,quantanetworks.io,Fintech,1500,Public,Priya Natarajan,,2025-09-13 23:00:00,2026-09-19 23:00:00
+ACC-00155,Kepler Systems Co,keplersystemsco.com,E-commerce,800,Series A,Marcus Lee,,2025-12-25 23:00:00,2026-09-19 23:00:00
+ACC-00156,Pixel Systems Inc,pixelsystemsinc.ai,E-commerce,40,Public,Sam Okafor,,2025-12-07 23:00:00,2026-09-19 23:00:00
+ACC-00157,Signal Labs Inc,signallabsinc.io,AI/ML,8000,Series C,Sam Okafor,,2025-09-23 23:00:00,2026-09-19 23:00:00
+ACC-00158,Nimbus Systems,nimbussystems.ai,AI/ML,4000,Series B,Priya Natarajan,,2026-06-16 23:00:00,2026-09-19 23:00:00
+ACC-00159,Zenith Pay Group,zenithpaygroup.com,Developer Tools,60,Public,Priya Natarajan,,2025-03-05 23:00:00,2026-09-19 23:00:00
+ACC-00160,Delta Pay Inc,deltapayinc.com,Logistics,320,Series B,Priya Natarajan,,2025-04-05 23:00:00,2026-09-19 23:00:00
+ACC-00161,Ember Labs Inc,emberlabsinc.ai,Fintech,25,Seed,Sam Okafor,,2024-11-10 23:00:00,2026-09-19 23:00:00
+ACC-00162,Summit Works Group,summitworksgroup.co,Logistics,800,Series A,Sam Okafor,,2024-12-09 23:00:00,2026-09-19 23:00:00
+ACC-00163,Cobalt Labs Inc,cobaltlabsinc.io,Developer Tools,60,Series A,Jordan Alvarez,,2025-07-08 23:00:00,2026-09-19 23:00:00
+ACC-00164,Cobalt Robotics Inc,cobaltroboticsinc.ai,Developer Tools,2600,Series A,Marcus Lee,,2025-04-22 23:00:00,2026-09-19 23:00:00
+ACC-00165,Quanta Labs,quantalabs.com,AI/ML,25,Series C,Elena Petrova,,2026-04-09 23:00:00,2026-09-19 23:00:00
+ACC-00166,Meridian AI,meridianai.ai,Fintech,320,Series A,Wei Zhang,,2025-06-13 23:00:00,2026-09-19 23:00:00
+ACC-00167,Vector Data Group,vectordatagroup.ai,AI/ML,800,Series A,Wei Zhang,,2025-04-14 23:00:00,2026-09-19 23:00:00
+ACC-00168,Kepler Labs Group,keplerlabsgroup.ai,AI/ML,120,Series B,Jordan Alvarez,,2025-01-23 23:00:00,2026-09-19 23:00:00
+ACC-00169,Ridge Logic Inc,ridgelogicinc.ai,AI/ML,120,Series C,Elena Petrova,,2025-09-07 23:00:00,2026-09-19 23:00:00
+ACC-00170,Forge AI,forgeai.io,E-commerce,1500,Series B,Priya Natarajan,,2026-03-28 23:00:00,2026-09-19 23:00:00
+ACC-00171,Cinder AI,cinderai.com,Healthcare,60,Series A,Jordan Alvarez,,2025-09-05 23:00:00,2026-09-19 23:00:00
+ACC-00172,Signal Analytics,signalanalytics.ai,Healthcare,8000,Public,Sam Okafor,,2026-05-26 23:00:00,2026-09-19 23:00:00
+ACC-00173,Vector Systems,vectorsystems.io,Healthcare,12,Series C,Elena Petrova,,2025-05-24 23:00:00,2026-09-19 23:00:00
+ACC-00174,Nova Health,novahealth.co,Fintech,320,Series A,Sam Okafor,,2026-04-26 23:00:00,2026-09-19 23:00:00
+ACC-00175,Forge Health,forgehealth.com,SaaS,2600,Series B,Sam Okafor,,2025-10-09 23:00:00,2026-09-19 23:00:00
+ACC-00176,Vector Cloud Tech,vectorcloudtech.com,AI/ML,120,Public,Marcus Lee,,2025-12-02 23:00:00,2026-09-19 23:00:00
+ACC-00177,Delta Analytics,deltaanalytics.com,AI/ML,4000,Series B,Marcus Lee,,2025-07-27 23:00:00,2026-09-19 23:00:00
+ACC-00178,Meridian Robotics Co,meridianroboticsco.ai,AI/ML,4000,Seed,Priya Natarajan,,2025-05-07 23:00:00,2026-09-19 23:00:00
+ACC-00179,Quanta Analytics,quantaanalytics.co,Developer Tools,4000,Series B,Elena Petrova,,2026-04-25 23:00:00,2026-09-19 23:00:00
+ACC-00180,Beacon AI,beaconai.ai,AI/ML,1500,Series B,Wei Zhang,,2025-08-15 23:00:00,2026-09-19 23:00:00
+ACC-00181,Quanta Health,quantahealth.com,SaaS,1500,Series A,Priya Natarajan,,2025-07-11 23:00:00,2026-09-19 23:00:00
+ACC-00182,Delta Robotics Group,deltaroboticsgroup.io,SaaS,40,Seed,Wei Zhang,,2026-04-26 23:00:00,2026-09-19 23:00:00
+ACC-00183,Harbor Works,harborworks.io,Media,200,Series A,Wei Zhang,,2026-03-22 23:00:00,2026-09-19 23:00:00
+ACC-00184,Kepler Labs Co,keplerlabsco.ai,AI/ML,1500,Seed,Wei Zhang,,2026-06-04 23:00:00,2026-09-19 23:00:00
+ACC-00185,Signal Networks Tech,signalnetworkstech.co,Healthcare,8000,Series B,Wei Zhang,,2025-01-19 23:00:00,2026-09-19 23:00:00
+ACC-00186,Cinder Networks,cindernetworks.ai,E-commerce,2600,Series A,Jordan Alvarez,,2026-06-12 23:00:00,2026-09-19 23:00:00
+ACC-00187,Atlas Logic,atlaslogic.com,SaaS,25,Series A,Jordan Alvarez,,2026-07-13 23:00:00,2026-09-19 23:00:00
+ACC-00188,Vector Analytics Group,vectoranalyticsgroup.com,Fintech,25,Series B,Sam Okafor,,2025-07-23 23:00:00,2026-09-19 23:00:00
+ACC-00189,Ember Logic Inc,emberlogicinc.co,Media,1500,Series B,Elena Petrova,,2024-12-09 23:00:00,2026-09-19 23:00:00
+ACC-00190,Zenith Works,zenithworks.io,Logistics,500,Seed,Elena Petrova,,2026-05-26 23:00:00,2026-09-19 23:00:00
+ACC-00191,Harbor Networks,harbornetworks.io,AI/ML,4000,Series B,Jordan Alvarez,,2025-03-02 23:00:00,2026-09-19 23:00:00
+ACC-00192,Harbor Logic Co,harborlogicco.ai,SaaS,120,Series A,Elena Petrova,,2024-12-16 23:00:00,2026-09-19 23:00:00
+ACC-00193,Vector Networks,vectornetworks.ai,AI/ML,25,Series B,Jordan Alvarez,,2025-11-03 23:00:00,2026-09-19 23:00:00
+ACC-00194,Atlas Robotics,atlasrobotics.io,SaaS,1500,Series B,Elena Petrova,,2025-10-07 23:00:00,2026-09-19 23:00:00
+ACC-00195,Cinder Robotics Tech,cinderroboticstech.io,Fintech,25,Series A,Jordan Alvarez,,2024-10-31 23:00:00,2026-09-19 23:00:00
+ACC-00196,Cinder Networks Tech,cindernetworkstech.ai,AI/ML,120,Series A,Marcus Lee,,2025-09-05 23:00:00,2026-09-19 23:00:00
+ACC-00197,Zenith Cloud,zenithcloud.io,Logistics,40,Seed,Priya Natarajan,,2025-03-19 23:00:00,2026-09-19 23:00:00
+ACC-00198,Meridian Robotics Inc,meridianroboticsinc.ai,E-commerce,1500,Seed,Jordan Alvarez,,2026-03-16 23:00:00,2026-09-19 23:00:00
+ACC-00199,Signal Systems,signalsystems.io,Healthcare,12,Series A,Wei Zhang,,2025-12-20 23:00:00,2026-09-19 23:00:00
+ACC-00200,Ember Logic Group,emberlogicgroup.co,SaaS,60,Series A,Jordan Alvarez,,2026-02-03 23:00:00,2026-09-19 23:00:00

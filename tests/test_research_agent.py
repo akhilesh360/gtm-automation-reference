@@ -14,7 +14,7 @@ class FakeClient:
     def __init__(self, n_tool_turns=2, final=None, bad_final=False):
         self.n = n_tool_turns
         self.turn = 0
-        self.final = final or {"brief": "FastScale AI is growing fast.", "outbound_draft": "Hi team, ...",
+        self.final = final or {"brief": "Initech ML is growing fast.", "outbound_draft": "Hi team, ...",
                                "talking_points": ["usage +40%", "2 ML roles"]}
         self.bad_final = bad_final
         self.messages = SimpleNamespace(create=self.create)
@@ -44,7 +44,7 @@ def test_tools_are_read_only_and_answer(pipeline_db):
 def test_template_path_without_key(pipeline_db):
     con = duckdb.connect(str(pipeline_db))
     res = research_account(con, "ACC-00003", "run-t")
-    assert res.source == "template" and res.tool_calls == 0 and "FastScale AI" in res.research.brief
+    assert res.source == "template" and res.tool_calls == 0 and "Initech ML" in res.research.brief
     row = con.execute("SELECT source, tool_calls FROM account_research WHERE account_id = 'ACC-00003'").fetchone()
     assert row == ("template", 0)
     con.close()

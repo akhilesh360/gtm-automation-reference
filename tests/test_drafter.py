@@ -3,7 +3,7 @@ from src.ai.drafter import DraftFacts, draft, template_draft
 
 
 def _facts():
-    return DraftFacts(account_id="ACC-00003", account_name="FastScale AI", account_owner="Elena", account_tier="Tier 1",
+    return DraftFacts(account_id="ACC-00003", account_name="Initech ML", account_owner="Elena", account_tier="Tier 1",
                       priority_score=87.0, intent_score=90, usage_score=90, engagement_score=80, firmographic_fit_score=80,
                       scoring_reason="Tier 1 because usage grew 40%.", industry="AI/ML", mom_growth_pct=40, pricing_page_visits=3,
                       demo_requests=1, ml_job_postings=2, personalization_hook="your push into inference")
@@ -12,7 +12,7 @@ def _facts():
 def test_template_path_when_ai_disabled():
     res = draft(_facts())
     assert res.source == "template"
-    assert "FastScale AI" in res.draft.narrative and res.draft.task_description and res.draft.outbound_draft
+    assert "Initech ML" in res.draft.narrative and res.draft.task_description and res.draft.outbound_draft
 
 
 def test_template_never_changes_numbers():

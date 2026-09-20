@@ -22,7 +22,7 @@ def test_tier1_and_tier2_enrolled_tier3_not(pipeline_db):
 def test_fastscale_enrolled_in_exec_outreach_with_draft(pipeline_db):
     con = _con(pipeline_db)
     r = con.execute("SELECT sequence_name, status, first_touch_draft FROM sequence_enrollments WHERE account_id = 'ACC-00003'").fetchone()
-    assert r[0] == "tier1_exec_outreach" and r[1] in ("active", "replied") and "FastScale AI" in r[2]
+    assert r[0] == "tier1_exec_outreach" and r[1] in ("active", "replied") and "Initech ML" in r[2]
 
 
 def test_re_enrollment_is_idempotent(pipeline_db, policy):

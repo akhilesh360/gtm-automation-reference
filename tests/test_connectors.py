@@ -10,9 +10,9 @@ from src.ingestion.hubspot_api import pull_engagements
 
 
 def test_normalize_accepts_clay_aliases():
-    n = normalize_row({"Website": "https://www.FastScale.ai/about", "Headcount": "3200", "Last Funding Round": "Series B",
+    n = normalize_row({"Website": "https://www.Initech-ML.example/about", "Headcount": "3200", "Last Funding Round": "Series B",
                        "Technologies": ["Python", "PyTorch"], "Open ML Roles": 2, "Personalization Hook": "your inference push"})
-    assert n["domain"] == "fastscale.ai" and n["employee_count"] == 3200 and n["tech_stack"] == "python,pytorch"
+    assert n["domain"] == "initech-ml.example" and n["employee_count"] == 3200 and n["tech_stack"] == "python,pytorch"
     assert n["open_ml_roles"] == 2 and n["funding_stage"] == "Series B"
 
 
@@ -22,7 +22,7 @@ def test_normalize_rejects_rows_without_domain():
 
 def test_ingest_matches_by_domain_and_adds_signal(pipeline_db):
     con = duckdb.connect(str(pipeline_db))
-    res = ingest_clay_rows(con, [{"domain": "fastscale.ai", "headcount": 3300, "open_ml_roles": 4, "hook": "new hook"},
+    res = ingest_clay_rows(con, [{"domain": "initech-ml.example", "headcount": 3300, "open_ml_roles": 4, "hook": "new hook"},
                                  {"domain": "nobody.example", "headcount": 5}, {"headcount": 1}], "run-t")
     assert res["upserted"] == 1 and res["unmatched_domains"] == ["nobody.example"] and res["invalid"] == 1
     r = con.execute("SELECT employee_count, personalization_hook, enrichment_source FROM account_enrichment WHERE account_id = 'ACC-00003'").fetchone()
@@ -46,8 +46,8 @@ def test_webhook_route_present_and_secured_when_enabled(monkeypatch, pipeline_db
     app = FastAPI()
     app.include_router(clay_webhook.router)
     c = TestClient(app)
-    assert c.post("/webhooks/clay", json=[{"domain": "fastscale.ai"}]).status_code == 401
-    r = c.post("/webhooks/clay", json=[{"domain": "fastscale.ai", "headcount": 3400}], headers={"X-Clay-Secret": "s3cret"})
+    assert c.post("/webhooks/clay", json=[{"domain": "initech-ml.example"}]).status_code == 401
+    r = c.post("/webhooks/clay", json=[{"domain": "initech-ml.example", "headcount": 3400}], headers={"X-Clay-Secret": "s3cret"})
     assert r.status_code == 202 and r.json()["upserted"] == 1
 
 
@@ -61,11 +61,11 @@ def test_hubspot_pull_writes_csv_shape(tmp_path):
         if "/associations/contacts" in p:
             return httpx.Response(200, json={"results": [{"toObjectId": 42}]})
         if p.endswith("/contacts/batch/read"):
-            return httpx.Response(200, json={"results": [{"id": "42", "properties": {"email": "cto@fastscale.ai"}}]})
+            return httpx.Response(200, json={"results": [{"id": "42", "properties": {"email": "cto@initech-ml.example"}}]})
         return httpx.Response(404)
     client = httpx.Client(transport=httpx.MockTransport(handler))
     out = tmp_path / "hubspot_engagement.csv"
     n = pull_engagements(out, token="t", lookback_days=30, client=client)
     rows = list(csv.DictReader(open(out)))
     assert n == 2 and {r["event_type"] for r in rows} == {"email_click", "meeting_booked"}
-    assert all(r["domain"] == "fastscale.ai" for r in rows)
+    assert all(r["domain"] == "initech-ml.example" for r in rows)

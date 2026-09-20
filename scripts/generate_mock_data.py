@@ -1,9 +1,9 @@
 """Seeded mock-data generator. Produces data/raw/*.csv with three explicitly seeded test scenarios.
 
 Scenario accounts:
-  ACC-00001 Alpha AI        -> Q-00001 Starter plan, 5% discount, Net 30  -> Auto-Approved
-  ACC-00002 EnterpriseGen   -> Q-00002 Enterprise, 25%, Net 60, custom overage -> RevOps + Finance + VP Sales
-  ACC-00003 FastScale AI    -> intent 90, usage 90, engagement 80, firmographic 80 -> priority 87.0, Tier 1
+  ACC-00001 Acme AI        -> Q-00001 Starter plan, 5% discount, Net 30  -> Auto-Approved
+  ACC-00002 Globex Enterprise   -> Q-00002 Enterprise, 25%, Net 60, custom overage -> RevOps + Finance + VP Sales
+  ACC-00003 Initech ML    -> intent 90, usage 90, engagement 80, firmographic 80 -> priority 87.0, Tier 1
 """
 from __future__ import annotations
 
@@ -54,10 +54,10 @@ def generate(seed: int | None = None, n_accounts: int = 200, n_signals: int = 20
     def add_account(aid, name, domain, industry, emp, stage, owner, created_days=200):
         accounts.append([aid, name, domain, industry, emp, stage, owner, None, ts(now - timedelta(days=created_days)), ts(now)])
 
-    add_account("ACC-00001", "Alpha AI", "alpha.ai", "AI/ML", 85, "Series A", "Priya Natarajan")
-    add_account("ACC-00002", "EnterpriseGen", "enterprisegen.com", "SaaS", 4200, "Public", "Marcus Lee")
-    add_account("ACC-00003", "FastScale AI", "fastscale.ai", "AI/ML", 3200, "Series B", "Elena Petrova")
-    names_used.update({"Alpha AI", "EnterpriseGen", "FastScale AI"})
+    add_account("ACC-00001", "Acme AI", "acme-ai.example", "AI/ML", 85, "Series A", "Priya Natarajan")
+    add_account("ACC-00002", "Globex Enterprise", "globex-enterprise.example", "SaaS", 4200, "Public", "Marcus Lee")
+    add_account("ACC-00003", "Initech ML", "initech-ml.example", "AI/ML", 3200, "Series B", "Elena Petrova")
+    names_used.update({"Acme AI", "Globex Enterprise", "Initech ML"})
 
     i = 4
     while len(accounts) < n_accounts:
@@ -99,7 +99,7 @@ def generate(seed: int | None = None, n_accounts: int = 200, n_signals: int = 20
         funding = rng.choice([0, 0, 2_000_000, 8_000_000, 25_000_000, 60_000_000, 150_000_000])
         if aid == "ACC-00003":
             ml_roles, di_roles, funding = 2, 3, 45_000_000
-            summary = "FastScale AI builds inference infrastructure for mid-market ML teams; product usage grew 40% month over month."
+            summary = "Initech ML builds inference infrastructure for mid-market ML teams; product usage grew 40% month over month."
             hook = "your recent push into multi-region inference and the open ML platform roles you're hiring for"
         else:
             summary = f"{name} is a {stage} {industry} company with roughly {emp} employees."
@@ -122,14 +122,14 @@ def generate(seed: int | None = None, n_accounts: int = 200, n_signals: int = 20
         signals.append([f"SIG-{sid:06d}", aid, stype, value, source, ts(now - timedelta(days=days_ago, hours=rng.randint(0, 23)))])
         sid += 1
 
-    # FastScale AI (exact): 3 pricing visits, ml job postings 2 (Clay), website visits totalling 15
+    # Initech ML (exact): 3 pricing visits, ml job postings 2 (Clay), website visits totalling 15
     for d in (3, 9, 21):
         add_signal("ACC-00003", "pricing_page_visit", 1, "web_analytics", d)
     add_signal("ACC-00003", "job_posting_ml_engineer", 2, "clay", 12)
     for d, v in ((2, 5), (15, 5), (40, 5)):
         add_signal("ACC-00003", "website_visit", v, "web_analytics", d)
     add_signal("ACC-00003", "product_usage_growth", 40, "product_telemetry", 1)
-    # Alpha AI and EnterpriseGen: modest signals
+    # Acme AI and Globex Enterprise: modest signals
     add_signal("ACC-00001", "website_visit", 4, "web_analytics", 6)
     add_signal("ACC-00001", "pricing_page_visit", 1, "web_analytics", 5)
     add_signal("ACC-00002", "website_visit", 6, "web_analytics", 10)
@@ -161,10 +161,10 @@ def generate(seed: int | None = None, n_accounts: int = 200, n_signals: int = 20
         hs.append([f"HS-{hid:06d}", email, domain, etype, ts(now - timedelta(days=days_ago, hours=rng.randint(0, 23))), campaign])
         hid += 1
 
-    # FastScale AI (exact): 1 meeting booked -> demo_request, 5 email events -> email_engagement
-    add_hs("cto@fastscale.ai", "fastscale.ai", "meeting_booked", 4, "Enterprise Webinar")
+    # Initech ML (exact): 1 meeting booked -> demo_request, 5 email events -> email_engagement
+    add_hs("cto@initech-ml.example", "initech-ml.example", "meeting_booked", 4, "Enterprise Webinar")
     for d, et in ((1, "email_open"), (3, "email_click"), (8, "email_open"), (14, "email_click"), (22, "email_open")):
-        add_hs("cto@fastscale.ai", "fastscale.ai", et, d, rng.choice(CAMPAIGNS))
+        add_hs("cto@initech-ml.example", "initech-ml.example", et, d, rng.choice(CAMPAIGNS))
     domain_of = {a[0]: a[2] for a in accounts if a[2]}
     for _ in range(320):
         aid = rng.choice(pool)
@@ -201,8 +201,8 @@ def generate(seed: int | None = None, n_accounts: int = 200, n_signals: int = 20
 
     # ---------------- quote requests ----------------
     quotes: list[list] = []
-    quotes.append(["Q-00001", "ACC-00001", "Alpha AI", "PRD-API-STARTER", 5000, 1, 12, 5, "Net 30", False, 4_000_000, None, ts(now - timedelta(days=1))])
-    quotes.append(["Q-00002", "ACC-00002", "EnterpriseGen", "PRD-ENT-PLATFORM", 50000, 1, 12, 25, "Net 60", False, 45_000_000, 0.0000010, ts(now - timedelta(days=1))])
+    quotes.append(["Q-00001", "ACC-00001", "Acme AI", "PRD-API-STARTER", 5000, 1, 12, 5, "Net 30", False, 4_000_000, None, ts(now - timedelta(days=1))])
+    quotes.append(["Q-00002", "ACC-00002", "Globex Enterprise", "PRD-ENT-PLATFORM", 50000, 1, 12, 25, "Net 60", False, 45_000_000, 0.0000010, ts(now - timedelta(days=1))])
     qi = 3
     while len(quotes) < n_quotes:
         a = rng.choice(accounts[3:])
