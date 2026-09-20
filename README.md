@@ -9,6 +9,12 @@ A Salesforce-centered reference implementation for CPQ-style pricing governance,
 
 Deterministic Python and SQL make every commercial-policy and scoring decision. An optional AI step drafts prose. Salesforce Flow executes CRM actions. Everything runs locally on DuckDB and Streamlit with no credentials, and optionally syncs to a Salesforce org through a deployable SFDX package.
 
+## 60-second walkthrough
+
+[![Under the hood: live Clay, HubSpot, Salesforce and an ERP handoff](docs/media/under_the_hood_poster.png)](docs/media/under_the_hood.mp4)
+
+*Click to open the video. It shows the architecture, live Clay enrichment, a live HubSpot pull, deterministic scoring, the Salesforce Task created by Flow B, the quote decision written into Salesforce, a human approval flowing to the mock ERP, and the pipeline analytics.*
+
 ![Architecture](docs/architecture.png)
 
 **Status:** v1 is complete. I tested the seeded scenarios, deployed the Salesforce metadata to a Developer Org, verified the Flow behavior, and confirmed the offline and Salesforce-connected modes. v2 adds a quote-to-cash handoff to a NetSuite-style mock ERP and pipeline funnel analytics, both verified in the same org.
@@ -17,6 +23,7 @@ This is a CPQ-style reference implementation using Salesforce custom objects. It
 
 ## Contents
 
+- [60-second walkthrough](#60-second-walkthrough)
 - [What it does](#what-it-does)
 - [Quick start](#quick-start)
 - [Reference scenarios](#reference-scenarios)
@@ -156,7 +163,8 @@ erp/mock_server.py     standalone HTTP mock of the ERP sales-order API
 dashboard/app.py       Streamlit: CPQ Operations · Account Prioritization · Pipeline · Data Quality
 sfdx/                  deployable metadata: objects, fields, permission set, custom setting, custom metadata, two Flows
 tests/                 94 tests incl. exact reproduction of the scenarios and the quote-to-cash path
-docs/                  technical design, v2 design, data dictionary, Salesforce mapping and setup, scenario tests
+docs/                  technical design, v2 design, data dictionary, Salesforce mapping and setup, scenario tests,
+                       architecture diagram, screenshots, media/ (60-second walkthrough video)
 .github/workflows/     CI: lint, seeded data, tests, scenario run
 ```
 
