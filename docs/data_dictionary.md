@@ -47,6 +47,10 @@ Views: `v_quote_to_cash`, `v_erp_orders`, `v_human_decisions`. DQ checks: `appro
 
 Views (`07_funnel.sql`): `v_funnel`, `v_bottleneck`, `v_stage_cycle`, `v_conversion_by_tier`, `v_open_pipeline_by_stage`. DQ checks: `opportunities_without_stage_history`, `closed_won_missing_amount`.
 
+## v2: outbound sequences
+
+`sequence_enrollments`: one row per enrollment with `sequence_name`, `status` (active / replied / completed / paused), `step`, `first_touch_draft`. Views: `v_sequence_summary`, `v_sequence_enrollments`. DQ checks: `duplicate_active_enrollments` (error), `tier2_without_enrollment` (warn).
+
 ## Operational tables
 
 | Table | Grain | Notes |

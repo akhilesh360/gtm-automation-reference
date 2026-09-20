@@ -57,6 +57,11 @@ class ForecastPolicy(BaseModel):
         return self
 
 
+class OutboundPolicy(BaseModel):
+    sequences: dict[str, str]
+    max_active_per_account: int = Field(ge=1)
+
+
 class Policy(BaseModel):
     version: str
     discount: DiscountPolicy
@@ -66,6 +71,7 @@ class Policy(BaseModel):
     sla: SlaPolicy
     scoring: ScoringPolicy
     forecast: ForecastPolicy
+    outbound: OutboundPolicy
 
     @model_validator(mode="after")
     def _invariants(self) -> Policy:

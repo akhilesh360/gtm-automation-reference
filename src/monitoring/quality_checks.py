@@ -24,6 +24,8 @@ SEVERITY = {
     "erp_orders_not_reconciled": "error",
     "opportunities_without_stage_history": "error",
     "closed_won_missing_amount": "error",
+    "duplicate_active_enrollments": "error",
+    "tier2_without_enrollment": "warn",
 }
 
 

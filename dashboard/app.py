@@ -134,6 +134,24 @@ with tab_gtm:
         st.dataframe(df, hide_index=True, use_container_width=True)
         st.caption("`template` = deterministic text; `claude` = optional AI-assisted draft. Scores are never AI-generated.")
 
+    st.subheader("Outbound sequences (v2)")
+    seq = q("SELECT * FROM v_sequence_summary")
+    if len(seq):
+        s1, s2, s3, s4 = st.columns(4)
+        s1.metric("Enrolled", int(seq.enrolled.sum()))
+        s2.metric("Active", int(seq.active.sum()))
+        s3.metric("Replied", int(seq.replied.sum()))
+        s4.metric("Reply rate", f"{100.0 * seq.replied.sum() / max(seq.enrolled.sum(), 1):.0f}%")
+        left3, right3 = st.columns(2)
+        with left3:
+            st.plotly_chart(px.bar(seq, x="sequence_name", y=["active", "replied", "completed"], barmode="stack",
+                                   color_discrete_sequence=PALETTE, labels={"value": "accounts", "variable": "status"}),
+                            use_container_width=True)
+        with right3:
+            st.dataframe(q("SELECT account_name, account_owner, account_tier, sequence_name, status FROM v_sequence_enrollments LIMIT 20"),
+                         use_container_width=True, hide_index=True)
+        st.caption("Tier 1 → executive outreach, Tier 2 → standard outbound, Tier 3 → nurture. One active enrollment per account; re-runs never duplicate.")
+
     st.subheader("Top accounts")
     st.dataframe(q("SELECT * FROM v_top_accounts LIMIT 30"), use_container_width=True, hide_index=True)
 

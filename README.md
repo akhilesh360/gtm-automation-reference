@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/akhilesh360/gtm-automation-reference/actions/workflows/ci.yml/badge.svg)](https://github.com/akhilesh360/gtm-automation-reference/actions/workflows/ci.yml)
 ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
-![Tests](https://img.shields.io/badge/tests-78%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-82%20passing-brightgreen)
 ![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)
 
 A Salesforce-centered reference implementation for CPQ-style pricing governance, discount approvals, signal-based account prioritization, CRM data-quality controls, quote-to-cash handoff, and revenue operations reporting.
@@ -33,7 +33,7 @@ This is a CPQ-style reference implementation using Salesforce custom objects. It
 | Module | Flow | Output |
 |---|---|---|
 | **CPQ-style pricing and approvals** | quote request → validation → pricing (subscription and usage overage) → approval route from `config/policy.yaml` → audit trail → Salesforce sync | `quotes`, `approval_audit`, `Quote__c`, `Approval_Audit__c` |
-| **Signal-based account scoring** | accounts, Clay-shaped enrichment, HubSpot-shaped engagement, usage telemetry → deterministic sub-scores → weighted priority → Tier 1/2/3 → `Account_Score__c` → Flow B creates the Salesforce Task | `account_scores`, `sales_tasks`, Salesforce Task |
+| **Signal-based account scoring** | accounts, Clay-shaped enrichment, HubSpot-shaped engagement, usage telemetry → deterministic sub-scores → weighted priority → Tier 1/2/3 → `Account_Score__c` → Flow B creates the Salesforce Task; Tier 1 and 2 enrolled in outbound sequences | `account_scores`, `sales_tasks`, `sequence_enrollments`, Salesforce Task |
 | **Quote-to-cash** (v2) | human approve/reject in Salesforce → read back with audit row → sales-order payload with billing schedule → NetSuite-style mock ERP → reconciliation written back | `erp_orders`, `Quote__c.ERP_Status__c` |
 | **Pipeline analytics and forecasting** (v2) | opportunities with stage history → funnel, bottleneck, days in stage, conversion by tier, weighted forecast and forecast vs actual → Salesforce `Opportunity` sync | Pipeline dashboard tab, `forecast_snapshots` |
 | **Data quality and monitoring** | schema validation, dedupe, quote validator, 13 parameterized SQL checks, JSON logs with correlation IDs, retries, integration log | `dq_results`, `integration_log`, CI exit code |
@@ -48,7 +48,7 @@ make setup        # python3.11 venv + dependencies
 make scenarios    # run the pipeline and print the reference scenarios
 make dashboard    # http://localhost:8501
 make api          # http://127.0.0.1:8000/docs
-make test         # 78 tests, no credentials needed
+make test         # 82 tests, no credentials needed
 ```
 
 Without `make`:
@@ -110,6 +110,8 @@ Each score carries a deterministic `scoring_reason`, for example: *Tier 1 becaus
 
 **Pipeline analytics.** Seeded opportunities with stage history feed a funnel, a bottleneck flag on the step with the lowest conversion, median days in stage, and conversion by the account tier at deal creation. Opportunities sync to the standard Salesforce `Opportunity` object with mapped stages.
 
+**Outbound sequences.** Tier 1 accounts are enrolled in an executive-outreach sequence and Tier 2 in standard outbound, one active enrollment per account, with the drafted first touch attached. Re-runs never duplicate. Reply status is derived from signals in this version; a real sequencer would own it.
+
 **Forecasting.** Stage probabilities live in `config/policy.yaml`. Open opportunities are weighted by close month and tier, a dated snapshot is stored on each run, six months of history are reconstructed from stage transitions, and closed months are compared to the forecast that stood at the start of the month. Design notes: [docs/V2_DESIGN.md](docs/V2_DESIGN.md).
 
 ## Screenshots
@@ -134,16 +136,17 @@ src/scoring/           sub-scores, tiering, explanation, scoring runner
 src/ingestion/         schema validation, raw load, HubSpot mapping
 src/salesforce/        client protocol, mock (Flow A/B emulation), real client, sync, task/approval readback, ERP write-back
 src/forecasting/       weighted forecast, dated snapshots, historical backfill
+src/outbound/          sequence enrollment by tier with dedupe
 src/erp/               sales-order payload, NetSuite-style mock client (in-process or HTTP), handoff and reconciliation
 src/ai/                optional drafter (one Claude call, template fallback)
 src/monitoring/        JSON logging, integration log, DQ runner, alerts
 src/main.py            CLI: init-db · load-raw · validate · score · evaluate · draft · research · sync · sync-task-outcomes
-                       · sync-approval-outcomes · erp-handoff · forecast · decide · dq · run-all · scenarios · policy
+                       · sync-approval-outcomes · erp-handoff · forecast · enroll · decide · dq · run-all · scenarios · policy
 api/                   FastAPI, three routes
 erp/mock_server.py     standalone HTTP mock of the ERP sales-order API
 dashboard/app.py       Streamlit: CPQ Operations · Account Prioritization · Pipeline · Data Quality
 sfdx/                  deployable metadata: objects, fields, permission set, custom setting, two Flows
-tests/                 78 tests incl. exact reproduction of the scenarios and the quote-to-cash path
+tests/                 82 tests incl. exact reproduction of the scenarios and the quote-to-cash path
 docs/                  technical design, v2 design, data dictionary, Salesforce mapping and setup, scenario tests, talk track
 .github/workflows/     CI: lint, seeded data, tests, scenario run
 ```
@@ -163,7 +166,7 @@ docs/                  technical design, v2 design, data dictionary, Salesforce 
 1. ~~NetSuite-style ERP handoff with human approval capture~~ shipped (v2.1)
 2. ~~Opportunities, funnel and bottleneck view~~ shipped (v2.2)
 3. ~~Weighted pipeline forecast and forecast-vs-actual~~ shipped (v2.3)
-4. Outbound sequence management for Tier 2 accounts
+4. ~~Outbound sequence management for Tier 2 accounts~~ shipped (v2.4)
 5. Live Clay webhook and HubSpot API connectors
 6. Bounded AI research loop with read-only tools
 7. Salesforce role-to-user routing and Custom Metadata generated from `policy.yaml`

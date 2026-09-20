@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.4 — Outbound sequence enrollment
+- Tier 1 and Tier 2 accounts enrolled in policy-defined sequences with one active enrollment per account and idempotent re-runs
+- First-touch draft attached; reply status derived from signals; two DQ checks; dashboard section
+
 ## v2.3 — Weighted forecast and forecast vs actual
 - Stage probabilities in `config/policy.yaml`, passed to SQL as parameters
 - Weighted pipeline by close month and tier; dated `forecast_snapshots` with six months of history reconstructed from stage transitions

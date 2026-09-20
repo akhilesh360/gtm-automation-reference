@@ -227,3 +227,16 @@ CREATE TABLE IF NOT EXISTS forecast_snapshots (
     policy_version     VARCHAR,
     correlation_id     VARCHAR
 );
+
+-- v2: outbound sequence enrollments
+CREATE TABLE IF NOT EXISTS sequence_enrollments (
+    enrollment_id     VARCHAR PRIMARY KEY,
+    account_id        VARCHAR NOT NULL,
+    sequence_name     VARCHAR NOT NULL,
+    enrolled_at       TIMESTAMP,
+    status            VARCHAR,
+    step              INTEGER,
+    first_touch_draft VARCHAR,
+    last_activity_at  TIMESTAMP,
+    correlation_id    VARCHAR
+);

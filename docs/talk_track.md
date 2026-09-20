@@ -41,5 +41,8 @@ Every stage transition is recorded with days in stage. The funnel view computes 
 **How do you forecast?**
 Stage probabilities sit in the same policy file as the discount thresholds, so finance can see and version them. Open deals are weighted by close month and tier, every run stores a dated snapshot, and closed months are compared with the forecast that stood on the first of that month. On the seeded data Tier 1 over-attains and Tier 3 under-attains, which is exactly the argument for tier-specific probabilities as the next step.
 
+**What happens to Tier 2 accounts?**
+They are enrolled in a standard outbound sequence with the drafted first touch attached, one active enrollment per account, so outbound volume by tier is a number on the dashboard rather than an intention. Tier 1 gets executive outreach plus the Salesforce Task; Tier 3 stays in nurture.
+
 **What's next?**
 Sequence management, live Clay and HubSpot connectors, and a bounded Claude research loop.

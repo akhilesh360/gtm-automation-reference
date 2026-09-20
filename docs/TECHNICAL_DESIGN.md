@@ -734,7 +734,7 @@ tier     = "Tier 1" if priority >= 80 else "Tier 2" if priority >= 60 else "Tier
 | Tier | v1 action |
 |---|---|
 | Tier 1 (≥ 80) | `sales_tasks` row with status `planned`; `Account_Score__c` synced; Salesforce Flow B creates the High-priority Task and dedupes; optional AI draft supplies the description |
-| Tier 2 (60–79) | `sales_tasks` row (Normal, "Add to outbound", status `planned`); no Salesforce Task |
+| Tier 2 (60–79) | enrolled in the `tier2_outbound` sequence (v2); no Salesforce Task |
 | Tier 3 (< 60) | Nurture, no action |
 
 ### 8.3 Explainability (`src/scoring/explain_score.py`)
@@ -942,7 +942,7 @@ Ordered by value for the target role.
 1. **NetSuite mock handoff** — shipped. Human approve/reject captured in Salesforce and read back; sales-order payload with billing schedule sent to a NetSuite-style mock (in-process or HTTP); reconciliation written back to DuckDB and `Quote__c`. See `docs/V2_DESIGN.md`.
 2. Opportunities with stage history; funnel and bottleneck view; conversion by tier — shipped, see `docs/V2_DESIGN.md`.
 3. Weighted pipeline forecast and forecast-vs-actual — shipped, see `docs/V2_DESIGN.md`.
-4. Sequence management for Tier 2 outbound.
+4. Sequence management for Tier 2 outbound — shipped, see `docs/V2_DESIGN.md`.
 5. Live Clay webhook receiver; live HubSpot CRM API pull.
 6. Claude tool-loop research agent (read-only tools, bounded).
 7. Salesforce Custom Metadata generated from `policy.yaml`; Salesforce-native reports.

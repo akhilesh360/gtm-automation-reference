@@ -21,6 +21,7 @@ from src.ingestion.validate_schema import validate_raw_dir
 from src.monitoring.alerts import summarize
 from src.monitoring.logger import STATUS_FAILED_VALIDATION, get_logger, new_correlation_id, workflow_run
 from src.monitoring.quality_checks import has_errors, run_checks
+from src.outbound.sequences import enroll_accounts
 from src.policy import get_policy, render_approval_matrix
 from src.salesforce.client import get_client
 from src.salesforce.sync import (
@@ -112,6 +113,12 @@ def stage_draft(con, cid, limit: int | None = None):
     print("Drafts:", counts, "(AI enabled)" if settings.ai_enabled else "(template mode)")
 
 
+def stage_enroll(con, cid):
+    with workflow_run(con, "enroll_sequences", cid):
+        counts = enroll_accounts(con, get_policy(), cid)
+    print("Sequence enrollment:", counts)
+
+
 def stage_sync(con, cid):
     sf = get_client()
     with workflow_run(con, "sync_salesforce", cid):
@@ -192,6 +199,7 @@ def run_all(reset_mock: bool = True) -> int:
         stage_score(con, cid)
         stage_evaluate(con, cid)
         stage_draft(con, cid)
+        stage_enroll(con, cid)
         stage_sync(con, cid)
         stage_sync_task_outcomes(con, cid)
         stage_sync_approval_outcomes(con, cid)
@@ -254,7 +262,7 @@ def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="gtm", description="GTM Revenue Operations Engine")
     sub = p.add_subparsers(dest="cmd", required=True)
     for name in ("init-db", "load-raw", "validate", "score", "evaluate", "sync", "sync-task-outcomes", "sync-approval-outcomes",
-                 "erp-handoff", "forecast", "dq", "run-all", "scenarios"):
+                 "erp-handoff", "forecast", "enroll", "dq", "run-all", "scenarios"):
         sub.add_parser(name)
     d = sub.add_parser("draft")
     d.add_argument("--limit", type=int, default=None)
@@ -321,6 +329,8 @@ def main(argv=None) -> int:
             stage_erp_handoff(con, cid)
         elif args.cmd == "forecast":
             stage_forecast(con, cid)
+        elif args.cmd == "enroll":
+            stage_enroll(con, cid)
         elif args.cmd == "decide":
             stage_decide(con, cid, args.quote_id, args.decision, args.approver, args.reason)
         elif args.cmd == "dq":

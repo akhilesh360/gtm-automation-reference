@@ -35,3 +35,9 @@ forecast:
     Discovery: 0.25
     Proposal: 0.50
     Negotiation: 0.75
+
+outbound:
+  sequences:                  # tier -> sequence name; Tier 3 stays in nurture with no sequence
+    tier_1: tier1_exec_outreach
+    tier_2: tier2_outbound
+  max_active_per_account: 1

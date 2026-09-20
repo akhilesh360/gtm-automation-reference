@@ -83,3 +83,19 @@ ORDER BY o.sent_at DESC;
 CREATE OR REPLACE VIEW v_human_decisions AS
 SELECT quote_id, account_name, approval_status, approver, decision_at, rejection_reason, approval_route
 FROM quotes WHERE approver IS NOT NULL ORDER BY decision_at DESC;
+
+-- v2: outbound sequences
+CREATE OR REPLACE VIEW v_sequence_summary AS
+SELECT e.sequence_name, s.account_tier,
+       COUNT(*) AS enrolled,
+       SUM(CASE WHEN e.status = 'active' THEN 1 ELSE 0 END) AS active,
+       SUM(CASE WHEN e.status = 'replied' THEN 1 ELSE 0 END) AS replied,
+       SUM(CASE WHEN e.status = 'completed' THEN 1 ELSE 0 END) AS completed,
+       ROUND(100.0 * SUM(CASE WHEN e.status = 'replied' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0), 1) AS reply_rate_pct
+FROM sequence_enrollments e JOIN account_scores s ON s.account_id = e.account_id
+GROUP BY 1, 2 ORDER BY 2, 1;
+
+CREATE OR REPLACE VIEW v_sequence_enrollments AS
+SELECT e.enrollment_id, a.account_name, a.account_owner, s.account_tier, s.priority_score, e.sequence_name, e.status, e.enrolled_at
+FROM sequence_enrollments e JOIN accounts a ON a.account_id = e.account_id JOIN account_scores s ON s.account_id = e.account_id
+ORDER BY s.priority_score DESC;

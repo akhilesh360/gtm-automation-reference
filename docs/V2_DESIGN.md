@@ -157,3 +157,30 @@ Tier 1 deals over-attain their weighted forecast and Tier 2 and 3 under-attain, 
 ### Out of scope
 
 Tier-specific or learned probabilities, quota and coverage ratios, and forecast categories (commit, best case).
+
+
+## Item 4: Outbound sequence enrollment
+
+**Goal.** Make "outbound volume by tier" a measurable output of the scoring engine instead of an implied next step.
+
+### Rules (`config/policy.yaml` → `outbound`)
+
+| Tier | Sequence | Also gets |
+|---|---|---|
+| Tier 1 | `tier1_exec_outreach` | Salesforce Task via Flow B, AI-assisted or template outbound draft as the first touch |
+| Tier 2 | `tier2_outbound` | nothing else; the sequence is the action |
+| Tier 3 | none | nurture |
+
+One active enrollment per account (`max_active_per_account`). Re-running the pipeline never duplicates an enrollment; the `duplicate_active_enrollments` check enforces it and `tier2_without_enrollment` catches gaps.
+
+### Status
+
+In this version status is derived deterministically from signals: an account that requested a demo and engaged with at least six emails is `replied`; otherwise `active`. A real sequencer (Outreach, Salesloft, HubSpot Sequences) would own status in production; this module owns enrollment, dedupe and the first-touch draft.
+
+### Surfaces
+
+`python -m src.main enroll` runs the stage; it also runs in `run-all` after drafting and before the Salesforce sync. The Account Prioritization tab gains an Outbound sequences section with enrolled, active, replied and reply-rate metrics, a stacked status chart and the enrollment list. Views: `v_sequence_summary`, `v_sequence_enrollments`.
+
+### Out of scope
+
+Multi-step cadences, send scheduling, and pushing enrollments to a real sequencing tool.

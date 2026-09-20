@@ -56,3 +56,11 @@ WHERE o.stage <> 'Prospecting' AND h.history_id IS NULL;
 
 -- name: closed_won_missing_amount
 SELECT opportunity_id AS id FROM opportunities WHERE is_won AND (amount IS NULL OR amount <= 0);
+
+-- name: duplicate_active_enrollments
+SELECT account_id AS id FROM sequence_enrollments WHERE status IN ('active', 'replied') GROUP BY account_id HAVING COUNT(*) > 1;
+
+-- name: tier2_without_enrollment
+SELECT s.account_id AS id FROM account_scores s
+LEFT JOIN sequence_enrollments e ON e.account_id = s.account_id AND e.status IN ('active', 'replied')
+WHERE s.account_tier = 'Tier 2' AND e.enrollment_id IS NULL;

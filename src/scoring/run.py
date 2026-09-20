@@ -31,7 +31,7 @@ def score_all(con: duckdb.DuckDBPyConnection, policy: Policy, correlation_id: st
             [score_id, f.account_id, s.intent, s.engagement, s.firmographic, s.usage, p, tier, reason,
              None, None, None, None, policy.version, now, correlation_id],
         )
-        if tier in ("Tier 1", "Tier 2"):
+        if tier == "Tier 1":  # Tier 2 outbound is owned by sequence enrollment (src/outbound)
             existing = con.execute(
                 "SELECT task_id FROM sales_tasks WHERE account_id = ? AND priority = ? AND status IN ('planned','open','created')",
                 [f.account_id, "High" if tier == "Tier 1" else "Normal"],
