@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#10203A</headerColor>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
+    <description>Quotes, approvals, account scores and integration logs written by the GTM policy engine.</description>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <label>GTM Revenue Ops</label>
+    <navType>Standard</navType>
+    <tabs>standard-home</tabs>
+    <tabs>Quote__c</tabs>
+    <tabs>Approval_Audit__c</tabs>
+    <tabs>Account_Score__c</tabs>
+    <tabs>standard-Account</tabs>
+    <tabs>standard-Opportunity</tabs>
+    <tabs>standard-Task</tabs>
+    <tabs>Integration_Log__c</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>
